@@ -1,0 +1,16 @@
+.messageBubble {
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 15px;
+    max-width: 60%;
+}
+
+.messageBubble.self {
+    background-color: #dcf8c6;
+    align-self: flex-end;
+}
+
+.messageBubble {
+    background-color: #fff;
+    align-self: flex-start;
+}

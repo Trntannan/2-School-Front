@@ -1,0 +1,46 @@
+.navbar {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #fff;
+    border-top: 1px solid #ddd;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+}
+
+.navitem {
+    text-align: center;
+    cursor: pointer;
+    flex: 1;
+    position: relative; 
+}
+
+.navitem span {
+    display: block;
+    margin-top: 5px;
+    font-size: 12px;
+}
+
+.navitem svg {
+    font-size: 20px;
+}
+
+.navitemRequests:hover {
+    color: #007bff; 
+}
+
+.indicator {
+    position: absolute;
+    top: -10px;
+    right: 43%; 
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

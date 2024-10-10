@@ -1,0 +1,40 @@
+.chatPage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    padding-bottom: 50px;
+   
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #fff;
+}
+
+.headerTitle {
+    text-align: center;
+}
+
+.backIcon {
+    cursor: pointer;
+    font-size: 24px;
+    margin-right: 110px;
+
+}
+
+.headerActive .headerTitle {
+    flex: unset;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.chatArea {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}

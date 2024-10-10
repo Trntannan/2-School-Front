@@ -1,0 +1,59 @@
+.landingPage {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+
+div.form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.input {
+  margin: 10px;
+}
+
+.button {
+  margin: 10px;
+  width: 50%;
+}
+
+.option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.toggleBtn {
+ border: none;
+ background: none;
+ font-size: 12px;
+ margin-top: 5px;
+}
+
+.loginBtn {
+  border-radius: 5px;
+  padding: 10px;
+  background-color: #0070f3;
+  color: white;
+  border: none;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.loginBtn:hover {
+  background-color: #005bb5;
+}
+
+.toggleText {
+  text-align: center;
+}
+
+.option:hover {
+  cursor: pointer;
+}
