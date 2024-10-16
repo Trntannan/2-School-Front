@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styles from "../styles/home.module.css";
 import Login from "../components/Login";
-import Signup from "../components/Signup";
+import Signup from "../components/Signup1";
 
 const Home = () => {
   const [isSignup, setIsSignup] = useState(true);

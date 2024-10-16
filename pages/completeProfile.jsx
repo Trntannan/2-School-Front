@@ -1,57 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "../styles/profile.module.css";
-import { useRouter } from 'next/router';
-import jwtDecode from 'jwt-decode';
 
-const CompleteProfile = () => {
-  const [formData, setFormData] = useState({
+const CompleteProfile = ({ onClose }) => {
+  const [form, setForm] = useState({
     fullName: "",
     kidCount: "",
     school: "",
     bio: "",
-    profilePic: null,
   });
-  const router = useRouter();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleFileChange = (e) => {
-    setFormData({ ...formData, profilePic: e.target.files[0] });
+    setForm({ ...form, [name]: value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    await fetch('http://localhost:5000/api/users/profile', { 
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem("token")}`
+      },
+      body: JSON.stringify({ ...form })
+    });
 
-    // Create a FormData object to handle file uploads
-    const data = new FormData();
-    const token = localStorage.getItem('token');
-    data.append('token', token);
-    data.append('fullName', formData.fullName);
-    data.append('kidCount', formData.kidCount);
-    data.append('school', formData.school);
-    data.append('bio', formData.bio);
-    if (formData.profilePic) {
-      data.append('profilePic', formData.profilePic);
-    }
-
-    try {
-      const response = await fetch('/api/users/completeProfile', {
-        method: 'POST',
-        body: data
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-        router.push('/userProfile'); // Redirect to user profile page
-      } else {
-        alert('Failed to complete profile');
-      }
-    } catch (error) {
-      console.error('Error completing profile:', error);
-    }
+    onClose();
   };
 
   return (
@@ -75,10 +49,6 @@ const CompleteProfile = () => {
         <div className={styles.formGroup}>
           <label htmlFor="bio">Bio</label>
           <textarea id="bio" name="bio" value={formData.bio} onChange={handleChange} required />
-        </div>
-        <div className={styles.profilePicContainer}>
-          <label htmlFor="profilePic">Profile Picture</label>
-          <input id="profilePic" type="file" name="profilePic" onChange={handleFileChange} />
         </div>
         <button type="submit">Save Profile</button>
       </form>

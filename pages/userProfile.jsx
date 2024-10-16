@@ -1,45 +1,49 @@
 import React, { useState, useEffect } from "react";
 import styles from "../styles/profile.module.css";
 import BottomNavBar from "../components/BottomNavBar";
-import { useRouter } from "next/router";
-import jwtDecode from "jwt-decode";
+import QRCode from "react-qr-code";
+import axios from "axios";
 
 const UserProfile = () => {
-  const [profile, setProfile] = useState(null);
-  const [qrCode, setQrCode] = useState(
-    "https://quickchart.io/qr?text=dummyText"
-  );
+  const [profile, setProfile] = useState({
+    fullName: "",
+    school: "",
+    kidCount: "",
+    bio: "",
+    profilePic: null,
+  });
+
   const [editField, setEditField] = useState(null);
   const [tempData, setTempData] = useState({});
-  const router = useRouter();
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const token = localStorage.getItem("token"); // Get token from localStorage
-      if (!token) {
-        router.push("/login");
-        return;
-      }
+      const token = localStorage.getItem("token");
+      const userId = localStorage.getItem("userId");
+      console.log(`Fetching profile for userId: ${userId}`);
 
-      const decoded = jwtDecode(token);
-      const userId = decoded.id;
-      console.log("User ID:", userId);
+      // Fetch user profile
+      const profileResponse = await fetch('http://localhost:5000/api/users/profile', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ userId })
+      });
+      const data = await profileResponse.json();
+      setProfile(data);
 
-      const response = await fetch(`/api/users/${userId}`);
-      if (response.ok) {
-        const data = await response.json();
-        setProfile(data.profile);
-      } else {
-        router.push("/completeProfile");
-      }
+      // Generate QR code using quickchart.io
+      const qrUrl = `https://quickchart.io/qr?text=${userId}`;
+      const qrResponse = await axios.get(qrUrl, { responseType: 'blob' });
+      const qrCodeUrl = URL.createObjectURL(qrResponse.data);
+      setQrCode(qrCodeUrl);
+
     };
 
     fetchProfile();
   }, []);
-
-  if (!profile) {
-    return <p>Loading...</p>;
-  }
 
   const handleEditClick = (field) => {
     setEditField(field);
@@ -47,34 +51,26 @@ const UserProfile = () => {
   };
 
   const handleSaveClick = async (field) => {
-    const updatedProfile = { ...profile, [field]: tempData[field] };
-    setProfile(updatedProfile);
+    setProfile((prevProfile) => ({
+      ...prevProfile,
+      [field]: tempData[field],
+    }));
     setEditField(null);
-
-    // Save updated profile back to the backend
-    const token = localStorage.getItem("token");
-    const decoded = jwtDecode(token);
-    const userId = decoded.id;
-
-    const data = new FormData();
-    data.append("token", token);
-    data.append("userId", userId);
-    data.append(field, tempData[field]);
-    if (field === "profilePic" && tempData[field]) {
-      data.append("profilePic", tempData[field]);
-    }
-
     try {
-      const response = await fetch(`/api/users/completeProfile`, {
-        method: "POST",
-        body: data,
+      const token = localStorage.getItem("token");
+      const userId = localStorage.getItem("userId");
+      const response = await fetch(`http://localhost:5000/api/users/profile/${userId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({ [field]: tempData[field] })
       });
-
-      if (!response.ok) {
-        alert("Failed to save profile data");
-      }
+      const data = await response.json();
+      setProfile(data);
     } catch (error) {
-      console.error("Error saving profile data:", error);
+      console.error("Error updating profile data", error);
     }
   };
 
@@ -162,6 +158,32 @@ const UserProfile = () => {
         </p>
       </div>
       <div className={styles.formGroup}>
+        <p>
+          <strong>Kid Count:</strong>
+          {editField === "kidCount" ? (
+            <div className={styles.formGroup}>
+              <input
+                type="text"
+                name="kidCount"
+                value={tempData.kidCount}
+                onChange={handleChange}
+              />
+              <button onClick={() => handleSaveClick("kidCount}")}>Save</button>
+            </div>
+          ) : (
+            <>
+              {profile.kidCount}
+              <button
+                className={styles.editButton}
+                onClick={() => handleEditClick("kidCount}")}
+              >
+                <span className={styles.editIcon}>&#9998;</span>
+              </button>
+            </>
+          )}
+        </p>
+      </div>
+      <div className={styles.formGroup}>
         <h3>Bio</h3>
         {editField === "bio" ? (
           <div className={styles.formGroup}>
@@ -182,8 +204,8 @@ const UserProfile = () => {
       </div>
       <div className={styles.qrCodeContainer}>
         <h2>QR Code</h2>
-        {qrCode ? (
-          <img src={qrCode} alt="QR Code" />
+        {QRCode ? (
+          <img src={QRCode} alt="QR Code" />
         ) : (
           <p>Loading QR Code...</p>
         )}

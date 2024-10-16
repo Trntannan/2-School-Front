@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import styles from "../styles/home.module.css";
 import router from "next/router";
+import axios from "axios";
+import bycrypt from "bcryptjs";
+
+//use bcryptjs to hash the password
+
 
 const Signup = () => {
   const [form, setForm] = useState({
@@ -22,25 +27,18 @@ const Signup = () => {
       alert("Passwords do not match");
       return;
     }
- 
     try {
-      const response = await fetch("http://localhost:5000/api/users/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, email, password }),
+      const response = await axios.post("/api/register", {
+        username,
+        email,
+        password,
       });
-      const data = await response.json();
-      if (response.ok) {
-        alert("Registration successful!");
-        router.push("/completeProfile"); 
-      } else {
-        alert(data.message);
-      }
+      alert(response.data.message);
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("userId", response.data.userId);
+      router.push("/completeProfile");
     } catch (error) {
-      console.error("Error during signup:", error);
-      alert("Sign up failed");
+      alert(error.response.data.message || "Error signing up");
     }
   };
 

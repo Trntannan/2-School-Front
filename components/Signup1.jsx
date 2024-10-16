@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import styles from "../styles/home.module.css";
 import router from "next/router";
 
-
-const Login = () => {
+const Signup = () => {
   const [form, setForm] = useState({
     username: "",
+    email: "",
     password: "",
+    confirmPassword: "",
   });
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -16,34 +18,31 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { username, password } = form;
-    if(password === "" || username === "") {
-      alert("Please enter username and password");
+    const { username, email, password, confirmPassword } = form;
+    if (password !== confirmPassword) {
+      alert("Passwords do not match");
       return;
     }
-
     try {
-      const response = await fetch("http://localhost:5000/api/users/login", {
+      const response = await fetch("http://localhost:5000/api/users/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          username, password
-        }),
+        body: JSON.stringify({ username, email, password }),
       });
       const data = await response.json();
       if (response.ok) {
-        alert("Login successful");
+        alert("Registration successful!");
         localStorage.setItem("token", data.token);
         localStorage.setItem("userId", data.userId);
-        router.push("/groups");
+        router.push("/userProfile"); 
       } else {
-        alert(errorData.message);
+        alert(data.message);
       }
     } catch (error) {
-      console.error("Error during login:", error);
-      alert("Login failed");
+      console.error("Error during signup:", error);
+      alert("Sign up failed");
     }
   };
 
@@ -62,6 +61,15 @@ const Login = () => {
           />
           <input
             className={styles.input}
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={form.email}
+            onChange={handleChange}
+            required
+          />
+          <input
+            className={styles.input}
             type="password"
             name="password"
             placeholder="Password"
@@ -69,8 +77,17 @@ const Login = () => {
             onChange={handleChange}
             required
           />
+          <input
+            className={styles.input}
+            type="password"
+            name="confirmPassword"
+            placeholder="Confirm Password"
+            value={form.confirmPassword}
+            onChange={handleChange}
+            required
+          />
           <button type="submit" className={styles.loginBtn}>
-            Login
+            Sign up
           </button>
         </form>
       </div>
@@ -78,4 +95,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Signup;
