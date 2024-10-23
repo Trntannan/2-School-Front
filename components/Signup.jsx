@@ -1,11 +1,7 @@
 import React, { useState } from "react";
 import styles from "../styles/home.module.css";
-import router from "next/router";
+import { useRouter } from "next/router";
 import axios from "axios";
-import bycrypt from "bcryptjs";
-
-//use bcryptjs to hash the password
-
 
 const Signup = () => {
   const [form, setForm] = useState({
@@ -14,6 +10,8 @@ const Signup = () => {
     password: "",
     confirmPassword: "",
   });
+
+  const router = useRouter();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -27,19 +25,23 @@ const Signup = () => {
       alert("Passwords do not match");
       return;
     }
+
     try {
-      const response = await axios.post("/api/register", {
+      const response = await axios.post("http://localhost:5000/api/user/register", {
         username,
         email,
         password,
       });
-      alert(response.data.message);
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("userId", response.data.userId);
+
+      const token = response.data.token;
+      console.log("Token received:", token);
+
+      localStorage.setItem("token", token);
+      alert("Registration successful");
       router.push("/completeProfile");
-    } catch (error) {
-      alert(error.response.data.message || "Error signing up");
-    }
+    } catch (err) {
+      alert("Error registering user");
+    } 
   };
 
   return (

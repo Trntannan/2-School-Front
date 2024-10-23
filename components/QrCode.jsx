@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import styles from "../styles/profile.module.css";
 
-const QRCodeComponent = ({ userId }) => {
+const QRCode = ({ userId }) => {
   const [qrCode, setQrCode] = useState(null);
 
   useEffect(() => {
@@ -26,14 +27,14 @@ const QRCodeComponent = ({ userId }) => {
   }
 
   return (
-    <div>
+    <div className={styles.qrCodeContainer}>
       <h2>QR Code</h2>
       <img src={qrCode} alt="QR Code" />
     </div>
   );
 };
 
-export default QRCodeComponent;
+export default QRCode;
 
  // Example usage: <QRCodeComponent userId={localStorage.getItem("userId")} /> 
 

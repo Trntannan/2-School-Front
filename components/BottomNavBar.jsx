@@ -18,7 +18,7 @@ const BottomNavBar = ({ activePage, requests = [] }) => {
 
   const navItems = {
     home: { icon: faHome, label: 'Home', path: '/groups' },
-    profile: { icon: faUser, label: 'Profile', path: '/userProfile' },
+    profile: { icon: faUser, label: 'Profile', path: '/profile' },
     requests: { icon: faEnvelope, label: 'Requests', onClick: handleRequestsClick },
     chat: { icon: faComments, label: 'Chat', path: '/ChatPage' },
   };

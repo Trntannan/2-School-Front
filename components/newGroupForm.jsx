@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import PropTypes from "prop-types";
-import styles from "../styles/groups.module.css"; 
+import styles from "../styles/groups.module.css";
 
 const NewGroupForm = ({ map, mapsApi, setGroups }) => {
   const [form, setForm] = useState({
@@ -15,29 +15,45 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
 
   const autocompleteRef = useRef(null);
   const searchBoxRef = useRef(null);
+  const meetupMarker = useRef(null);
+  const schoolMarker = useRef(null);
+  const directionsRenderer = useRef(null);
 
   useEffect(() => {
-    const initAutocomplete = () => {
-      if (mapsApi && mapsApi.places) {
-        const autocomplete = new mapsApi.places.Autocomplete(autocompleteRef.current, { types: ["geocode"] });
-        autocomplete.addListener("place_changed", handlePlaceChanged(autocomplete, "meetupPoint"));
-
-        const searchBox = new mapsApi.places.SearchBox(searchBoxRef.current);
-        searchBox.addListener("places_changed", handleSearchBoxChanged(searchBox));
-      }
-    };
-
     if (mapsApi) {
       initAutocomplete();
+      directionsRenderer.current = new mapsApi.DirectionsRenderer({ map });
     }
   }, [mapsApi]);
+
+  const initAutocomplete = () => {
+    // Autocomplete for the meetup point
+    const autocomplete = new mapsApi.places.Autocomplete(
+      autocompleteRef.current,
+      {
+        types: ["geocode"],
+      }
+    );
+    autocomplete.addListener(
+      "place_changed",
+      handlePlaceChanged(autocomplete, "meetupPoint")
+    );
+
+    // SearchBox for the school location
+    const searchBox = new mapsApi.places.SearchBox(searchBoxRef.current);
+    searchBox.addListener("places_changed", handleSearchBoxChanged(searchBox));
+  };
 
   const handlePlaceChanged = (autocomplete, field) => () => {
     const place = autocomplete.getPlace();
     if (place.geometry) {
       const location = place.geometry.location;
-      setForm((prevForm) => ({ ...prevForm, [field]: `${location.lat()},${location.lng()}` }));
-      new mapsApi.Marker({ position: location, map: map });
+      setForm((prevForm) => ({
+        ...prevForm,
+        [field]: `${location.lat()},${location.lng()}`,
+      }));
+      setMarker(field, location);
+      if (form.schoolLocation) calculateRoute();
     }
   };
 
@@ -46,45 +62,62 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
     if (!places.length) return;
 
     const place = places[0];
-    if (place.geometry) {
-      const location = place.geometry.location;
-      setForm((prevForm) => ({ ...prevForm, schoolLocation: `${location.lat()},${location.lng()}` }));
-      new mapsApi.Marker({ position: location, map: map });
-      calculateRoute({ ...form, schoolLocation: `${location.lat()},${location.lng()}` }, form.meetupPoint);
-    }
+    const location = place.geometry.location;
+    setForm((prevForm) => ({
+      ...prevForm,
+      schoolLocation: `${location.lat()},${location.lng()}`,
+    }));
+    setMarker("schoolLocation", location);
+    if (form.meetupPoint) calculateRoute();
   };
 
-  const calculateRoute = (formValues, newMeetupPoint) => {
-    const directionsService = new mapsApi.DirectionsService();
-    const meetupPoint = newMeetupPoint || formValues.meetupPoint;
-    const schoolLocation = formValues.schoolLocation;
+  const setMarker = (field, location) => {
+    const marker = field === "meetupPoint" ? meetupMarker : schoolMarker;
+    if (marker.current) marker.current.setMap(null); // Remove any existing marker
 
-    if (meetupPoint && schoolLocation && mapsApi) {
-      directionsService.route(
-        {
-          origin: meetupPoint,
-          destination: schoolLocation,
-          travelMode: "WALKING",
-        },
-        (result, status) => {
-          if (status === mapsApi.DirectionsStatus.OK) {
-            const distance = result.routes[0].legs[0].distance.text;
-            const duration = result.routes[0].legs[0].duration.text;
-            setRouteInfo({ distance, duration });
-          } else {
-            console.error("Error calculating route:", status);
-          }
+    marker.current = new mapsApi.Marker({
+      position: location,
+      map,
+      label: field === "meetupPoint" ? "M" : "S", // 'M' for Meetup, 'S' for School
+    });
+
+    map.panTo(location);
+  };
+
+  const calculateRoute = () => {
+    const directionsService = new mapsApi.DirectionsService();
+    directionsService.route(
+      {
+        origin: form.meetupPoint,
+        destination: form.schoolLocation,
+        travelMode: "WALKING",
+      },
+      (result, status) => {
+        if (status === "OK") {
+          directionsRenderer.current.setDirections(result);
+          const { distance, duration } = result.routes[0].legs[0];
+          setRouteInfo({ distance: distance.text, duration: duration.text });
+        } else {
+          console.error("Error calculating route:", status);
         }
-      );
-    }
+      }
+    );
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const userId = localStorage.getItem("userId");
 
+    if (!form.meetupPoint || !form.schoolLocation) {
+      alert("Please select both a meetup point and school location.");
+      return;
+    }
+
     try {
-      const response = await axios.post("/api/groups", { userId, groupData: form });
+      const response = await axios.post("http://localhost:5000/api/user/new-group", {
+        userId,
+        groupData: form,
+      });
       setGroups((prevGroups) => [...prevGroups, response.data.group]);
     } catch (error) {
       console.error("Error creating group:", error);
@@ -100,22 +133,23 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
           id="groupName"
           name="groupName"
           value={form.groupName}
-          onChange={(e) => setForm({ ...form, [e.target.name]: e.target.value })}
+          onChange={(e) => setForm({ ...form, groupName: e.target.value })}
           required
         />
       </div>
+
       <div>
-        <label htmlFor="meetupPoint">Meetup/Start Point:</label>
+        <label htmlFor="meetupPoint">Meetup Point:</label>
         <input
           type="text"
           id="meetupPoint"
           name="meetupPoint"
           ref={autocompleteRef}
-          defaultValue={form.meetupPoint}
-          onBlur={() => calculateRoute(form)}
+          placeholder="Select a meetup point"
           required
         />
       </div>
+
       <div>
         <label htmlFor="schoolName">School Name:</label>
         <input
@@ -123,10 +157,11 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
           id="schoolName"
           name="schoolName"
           value={form.schoolName}
-          onChange={(e) => setForm({ ...form, [e.target.name]: e.target.value })}
+          onChange={(e) => setForm({ ...form, schoolName: e.target.value })}
           required
         />
       </div>
+
       <div>
         <label htmlFor="schoolLocation">School Location:</label>
         <input
@@ -134,12 +169,11 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
           id="schoolLocation"
           name="schoolLocation"
           ref={searchBoxRef}
-          defaultValue={form.schoolLocation}
-          onBlur={() => calculateRoute(form)}
+          placeholder="Search for the school location"
           required
         />
       </div>
-      <div ref={map} style={{ height: "100px", width: "100%" }} />
+
       <div>
         <label htmlFor="startTime">Start Time:</label>
         <input
@@ -147,16 +181,18 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
           id="startTime"
           name="startTime"
           value={form.startTime}
-          onChange={(e) => setForm({ ...form, [e.target.name]: e.target.value })}
+          onChange={(e) => setForm({ ...form, startTime: e.target.value })}
           required
         />
       </div>
+
       {routeInfo.distance && routeInfo.duration && (
         <div className={styles.routeInfo}>
           <p>Distance: {routeInfo.distance}</p>
           <p>Estimated Duration: {routeInfo.duration}</p>
         </div>
       )}
+
       <button type="submit">Create Group</button>
     </form>
   );

@@ -3,6 +3,7 @@ import styles from "../styles/groups.module.css";
 import NewGroupForm from "../components/newGroupForm";
 import BottomNavBar from "../components/BottomNavBar";
 import WrappedMapComponent from "../components/MapComponent";
+import axios from "axios";
 
 const mockRequests = [
   {
@@ -21,16 +22,53 @@ const mockRequests = [
   }
 ];
 
+const mockGroup =
+  {
+    meetupPoint: { lat: -36.8485, lng: 174.7633 },
+    schoolLocation: { lat: -36.852, lng: 174.768 },
+    groupName: "Test Group",
+    status: "active"
+  };
+
 const Groups = () => {
-  const [groups, setGroups] = useState([
-    {
-      meetupPoint: { lat: -36.8485, lng: 174.7633 },
-      schoolLocation: { lat: -36.852, lng: 174.768 },
-      groupName: "Test Group",
-      status: "active"
-    }
-  ]);
+  const router = useRouter();
+  const [groups, setGroups] = useState([]);
   const [showNewGroupForm, setShowNewGroupForm] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/login");
+    } else {
+      axios
+        .get("http://localhost:5000/api/user/get-groups", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then(() => {
+          fetchGroups();
+        })
+        .catch((error) => {
+          console.error("Error fetching groups:", error);
+        });
+    }
+  }, []);
+
+  const fetchGroups =async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/api/user/get-groups", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setGroups(response.data.groups);
+    } catch (error) {
+      console.error("Error fetching groups:", error);
+    }
+  };
+
+  const token = localStorage.getItem("token");
 
   return (
     <div className={styles.groupsPage}>

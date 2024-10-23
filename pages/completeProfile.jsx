@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styles from "../styles/profile.module.css";
+import axios from "axios";
+import router from "next/router";
 
-const CompleteProfile = ({ onClose }) => {
-  const [form, setForm] = useState({
+
+const CompleteProfile = ({}) => {
+  const [formData, setForm] = useState({
     fullName: "",
     kidCount: "",
     school: "",
@@ -11,21 +14,23 @@ const CompleteProfile = ({ onClose }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm({ ...form, [name]: value });
+    setForm({ ...formData, [name]: value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await fetch('http://localhost:5000/api/users/profile', { 
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem("token")}`
-      },
-      body: JSON.stringify({ ...form })
-    });
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.post(
+        "http://localhost:5000/api/user/complete-profile", formData,
+        { headers: { "Authorization": `Bearer ${token}` } } 
+      );
 
-    onClose();
+       alert("Profile created successfully");
+      router.push("/profile");
+    } catch (error) {
+      console.error("Error creating profile:", error);
+    }
   };
 
   return (

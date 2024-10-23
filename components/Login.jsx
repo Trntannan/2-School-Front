@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styles from "../styles/home.module.css";
 import router from "next/router";
+import axios from "axios";
 
 
 const Login = () => {
@@ -14,36 +15,24 @@ const Login = () => {
     setForm({ ...form, [name]: value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const { username, password } = form;
-    if(password === "" || username === "") {
-      alert("Please enter username and password");
+  const handleSubmit = async () => {
+    if (!form.username || !form.password) {
+      alert("Please fill in all fields");
       return;
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/users/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username, password
-        }),
+      const response = await axios.post("http://localhost:5000/api/user/login", {
+        username: form.username,
+        password: form.password,
       });
-      const data = await response.json();
-      if (response.ok) {
-        alert("Login successful");
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("userId", data.userId);
-        router.push("/groups");
-      } else {
-        alert(errorData.message);
-      }
+
+      alert(response.data.message);
+      const token = response.data.token;
+      localStorage.setItem("token", token);
+      router.push("/profile");
     } catch (error) {
-      console.error("Error during login:", error);
-      alert("Login failed");
+      console.error(error);
     }
   };
 
@@ -62,7 +51,7 @@ const Login = () => {
           />
           <input
             className={styles.input}
-            type="password"
+            type="text"
             name="password"
             placeholder="Password"
             value={form.password}
