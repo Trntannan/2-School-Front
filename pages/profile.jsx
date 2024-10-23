@@ -5,9 +5,16 @@ import QRCode from "../components/QrCode";
 import axios from "axios";
 
 const UserProfile = () => {
-  const [profile, setProfile] = useState({});
+  const [profile, setProfile] = useState({
+    fullName: "",
+    school: "",
+    kidCount: 0,
+    bio: "",
+  });
+
   const [editField, setEditField] = useState(null);
   const [tempData, setTempData] = useState({});
+
 
   useEffect(() => {
     const fetchProfile = async () => {

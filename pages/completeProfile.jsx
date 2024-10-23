@@ -21,8 +21,7 @@ const CompleteProfile = ({}) => {
     e.preventDefault();
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.post(
-        "http://localhost:5000/api/user/complete-profile", formData,
+      await axios.post( "http://localhost:5000/api/user/complete-profile", formData,
         { headers: { "Authorization": `Bearer ${token}` } } 
       );
 
@@ -54,6 +53,10 @@ const CompleteProfile = ({}) => {
         <div className={styles.formGroup}>
           <label htmlFor="bio">Bio</label>
           <textarea id="bio" name="bio" value={formData.bio} onChange={handleChange} required />
+        </div>
+        <div className={styles.formGroup}>
+          <label htmlFor="profilePic">Profile Picture</label>
+          <input id="profilePic" type="file" name="profilePic" onChange={handleChange} />
         </div>
         <button type="submit">Save Profile</button>
       </form>
