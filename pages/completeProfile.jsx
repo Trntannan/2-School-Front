@@ -21,7 +21,7 @@ const CompleteProfile = ({}) => {
     e.preventDefault();
     try {
       const token = localStorage.getItem("token");
-      await axios.post( "http://localhost:5000/api/user/complete-profile", formData,
+      await axios.post( "https://two-school-backend.onrender.com/api/user/complete-profile", formData,
         { headers: { "Authorization": `Bearer ${token}` } } 
       );
 

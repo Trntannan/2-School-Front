@@ -12,6 +12,7 @@ const Signup = () => {
   });
 
   const router = useRouter();
+  const backendUrl = "https://two-school-backend.onrender.com";
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -27,11 +28,15 @@ const Signup = () => {
     }
 
     try {
-      const response = await axios.post("http://localhost:5000/api/user/register", {
-        username,
-        email,
-        password,
-      });
+      const response = await axios.post(
+        `${backendUrl}/api/users/signup`,
+        {
+          username,
+          email,
+          password,
+        }
+      );
+
 
       const token = response.data.token;
       console.log("Token received:", token);
