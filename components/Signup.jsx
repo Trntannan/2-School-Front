@@ -36,8 +36,7 @@ const Signup = () => {
           password,
         }
       );
-
-
+      
       const token = response.data.token;
       console.log("Token received:", token);
 
