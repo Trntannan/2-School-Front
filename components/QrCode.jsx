@@ -1,11 +1,35 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import styles from "../styles/profile.module.css";
+import jwtDecode from "jwt-decode"; 
 
-const QRCode = ({ userId }) => {
+const QRCode = () => {
   const [qrCode, setQrCode] = useState(null);
+  const [error, setError] = useState(null);
+
+  const getUserIdFromToken = () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      return null;
+    }
+    try {
+      const decoded = jwtDecode(token); 
+      return decoded.id;
+    } catch (error) {
+      console.error("Invalid token", error); 
+      return null;
+    }
+  };
+  
 
   useEffect(() => {
+    const userId = getUserIdFromToken();
+
+    if (!userId) {
+      setError("User not authenticated or token is invalid.");
+      return;
+    }
+
     const generateQRCode = async () => {
       try {
         const qrUrl = `https://quickchart.io/qr?text=${userId}`;
@@ -14,13 +38,16 @@ const QRCode = ({ userId }) => {
         setQrCode(qrCodeUrl);
       } catch (error) {
         console.error("Error generating QR Code", error);
+        setError("Failed to generate QR Code.");
       }
     };
 
-    if (userId) {
-      generateQRCode();
-    }
-  }, [userId]);
+    generateQRCode();
+  }, []);
+
+  if (error) {
+    return <p>{error}</p>;
+  }
 
   if (!qrCode) {
     return <p>Loading QR Code...</p>;
@@ -35,6 +62,5 @@ const QRCode = ({ userId }) => {
 };
 
 export default QRCode;
-
- // Example usage: <QRCodeComponent userId={localStorage.getItem("userId")} /> 
+ 
 

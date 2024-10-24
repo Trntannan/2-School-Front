@@ -22,18 +22,19 @@ const mockRequests = [
   }
 ];
 
-const mockGroup =
+const Groups = () => {
+  const [groups, setGroups] = useState([
   {
     meetupPoint: { lat: -36.8485, lng: 174.7633 },
     schoolLocation: { lat: -36.852, lng: 174.768 },
     groupName: "Test Group",
     status: "active"
-  };
-
-const Groups = () => {
-  const [groups, setGroups] = useState([]);
+  }
+]);
   const [showNewGroupForm, setShowNewGroupForm] = useState(false);
 
+  const token = localStorage.getItem("token");
+  
   // useEffect(() => {
   //   const token = localStorage.getItem("token");
   //   if (!token) {
