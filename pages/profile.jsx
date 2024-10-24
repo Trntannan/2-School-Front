@@ -1,14 +1,10 @@
-"use client";
-
-export const dynamic = "force-dynamic";
-
-import React, { useState, useEffect, use } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "../styles/profile.module.css";
 import BottomNavBar from "../components/BottomNavBar";
 import QRCode from "../components/QrCode";
 import axios from "axios";
 
-const UserProfile = () => {
+const Profile = () => {
   const [profile, setProfile] = useState({
     fullName: "",
     school: "",
@@ -22,7 +18,7 @@ const UserProfile = () => {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const token = window.localStorage.getItem("token");
+      const token = localStorage.getItem("token");
       if (!token) {
         console.error("No token found");
         return;
@@ -47,7 +43,7 @@ const UserProfile = () => {
   };
 
   const handleSaveClick = async (field) => {
-    const token = window.localStorage.getItem("token");
+    const token = localStorage.getItem("token");
     try {
       const response = await axios.put(
         "http://localhost:5000/api/user/update-profile",
@@ -174,4 +170,5 @@ const UserProfile = () => {
   );
 };
 
-export default UserProfile;
+export const dynamic = "force-dynamic";
+export default Profile;
