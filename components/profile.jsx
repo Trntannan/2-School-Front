@@ -6,7 +6,6 @@ import axios from "axios";
 
 const Profile = () => {
   const [profile, setProfile] = useState({
-    fullName: "",
     school: "",
     kidCount: 0,
     bio: "",
@@ -93,20 +92,20 @@ const Profile = () => {
       </div>
 
       <h2 className={styles.fullName}>
-        {editField === "fullName" ? (
+        {editField === "userName" ? (
           <>
             <input
               type="text"
-              name="fullName"
-              value={tempData.fullName || ""}
+              name="userName"
+              value={tempData.userName || ""}
               onChange={handleChange}
             />
-            <button onClick={() => handleSaveClick("fullName")}>Save</button>
+            <button onClick={() => handleSaveClick("userName")}>Save</button>
           </>
         ) : (
           <>
-            {profile.fullName}
-            <button onClick={() => setEditField("fullName")}>&#9998;</button>
+            {profile.userName}
+            <button onClick={() => setEditField("userName")}>&#9998;</button>
           </>
         )}
       </h2>

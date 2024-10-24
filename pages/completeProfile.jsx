@@ -6,7 +6,6 @@ import router from "next/router";
 
 const CompleteProfile = ({}) => {
   const [formData, setForm] = useState({
-    fullName: "",
     kidCount: "",
     school: "",
     bio: "",
@@ -38,10 +37,6 @@ const CompleteProfile = ({}) => {
         <h1>Complete Your Profile</h1>
       </div>
       <form onSubmit={handleSubmit} className={styles.formContainer}>
-        <div className={styles.formGroup}>
-          <label htmlFor="fullName">Full Name</label>
-          <input id="fullName" type="text" name="fullName" value={formData.fullName} onChange={handleChange} required />
-        </div>
         <div className={styles.formGroup}>
           <label htmlFor="kidCount">Number of kids</label>
           <input id="kidCount" type="text" name="kidCount" value={formData.kidCount} onChange={handleChange} />

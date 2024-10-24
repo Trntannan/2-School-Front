@@ -32,8 +32,6 @@ const Groups = () => {
   }
 ]);
   const [showNewGroupForm, setShowNewGroupForm] = useState(false);
-
-  const token = localStorage.getItem("token");
   
   // useEffect(() => {
   //   const token = localStorage.getItem("token");
