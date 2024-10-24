@@ -1,4 +1,4 @@
-const GroupSchema = new mongoose.Schema({
+const NewGroup = new mongoose.Schema({
   name: { type: String, required: true },
   description: { type: String },
   startTime: { type: Date, required: true },
@@ -15,7 +15,7 @@ const GroupSchema = new mongoose.Schema({
       },
       waypoints: [
         {
-          // Optional waypoints for the route
+          name: { type: String, required: true },
           latitude: { type: Number, required: true },
           longitude: { type: Number, required: true },
         },
@@ -25,3 +25,5 @@ const GroupSchema = new mongoose.Schema({
   ],
   createdAt: { type: Date, default: Date.now },
 });
+
+module.exports = mongoose.model("Group", NewGroup);

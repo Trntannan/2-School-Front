@@ -34,6 +34,12 @@ const Signup = () => {
           username,
           email,
           password,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
         }
       );
       
