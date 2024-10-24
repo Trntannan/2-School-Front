@@ -16,14 +16,14 @@ const QRCode = () => {
       const decoded = jwtDecode(token); 
       return decoded.id;
     } catch (error) {
-      console.error("Invalid token", error); 
+      console.error("Error decoding token:", error);
       return null;
     }
   };
-  
 
+  const userId = getUserIdFromToken();
+  
   useEffect(() => {
-    const userId = getUserIdFromToken();
 
     if (!userId) {
       setError("User not authenticated or token is invalid.");

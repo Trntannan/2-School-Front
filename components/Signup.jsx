@@ -61,7 +61,7 @@ const Signup = () => {
         <form onSubmit={handleSubmit}>
         <input
             className={styles.input}
-            type="username"
+            type="text"
             name="username"
             placeholder="Username"
             value={form.username}
@@ -70,7 +70,7 @@ const Signup = () => {
           />
           <input
             className={styles.input}
-            type="email"
+            type="text"
             name="email"
             placeholder="Email"
             value={form.email}
