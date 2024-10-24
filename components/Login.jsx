@@ -10,29 +10,42 @@ const Login = () => {
     password: "",
   });
 
+  const backendUrl = "https://two-school-backend.onrender.com";
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
   };
 
-  const handleSubmit = async () => {
-    if (!form.username || !form.password) {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const { username, password } = form;
+    if (username === "" || password === "") {
       alert("Please fill in all fields");
       return;
     }
-
     try {
-      const response = await axios.post("https://two-school-backend.onrender.com/api/user/login", {
-        username: form.username,
-        password: form.password,
-      });
+      const response = await axios.post(`${backendUrl}/api/user/login`, 
+        {
+          username,
+          password,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
+        }
+      );
 
-      alert(response.data.message);
       const token = response.data.token;
+      console.log("Token received:", token);
+
       localStorage.setItem("token", token);
+      console.log("Login successful");
       router.push("/profile");
     } catch (error) {
-      console.error(error);
+      console.error("Error logging in:", error);
     }
   };
 

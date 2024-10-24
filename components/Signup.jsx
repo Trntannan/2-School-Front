@@ -3,9 +3,9 @@ import styles from "../styles/home.module.css";
 import { useRouter } from "next/router";
 import axios from "axios";
 
+const MONGODB_URI = process.env.MONGODB_URI;
 const Signup = () => {
   const [form, setForm] = useState({
-    username: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -21,7 +21,7 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { username, email, password, confirmPassword } = form;
+    const { email, password, confirmPassword } = form;
     if (password !== confirmPassword) {
       alert("Passwords do not match");
       return;
@@ -31,7 +31,6 @@ const Signup = () => {
       const response = await axios.post(
         `${backendUrl}/api/user/register`,
         {
-          username,
           email,
           password,
         },
@@ -58,15 +57,6 @@ const Signup = () => {
     <div>
       <div>
         <form onSubmit={handleSubmit}>
-          <input
-            className={styles.input}
-            type="text"
-            name="username"
-            placeholder="Username"
-            value={form.username}
-            onChange={handleChange}
-            required
-          />
           <input
             className={styles.input}
             type="email"

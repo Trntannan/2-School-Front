@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+
 const RouteSchema = new mongoose.Schema({
   groupId: { type: mongoose.Schema.Types.ObjectId, ref: "Group" },
   start: {
