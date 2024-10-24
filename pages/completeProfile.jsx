@@ -25,7 +25,7 @@ const CompleteProfile = ({}) => {
         { headers: { "Authorization": `Bearer ${token}` } } 
       );
 
-       alert("Profile created successfully");
+       console.log("Profile created successfully");
       router.push("/profile");
     } catch (error) {
       console.error("Error creating profile:", error);

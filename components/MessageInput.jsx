@@ -1,4 +1,3 @@
-// MessageInput.js
 import React, { useState } from 'react';
 import styles from '../styles/MessageInput.module.css';
 

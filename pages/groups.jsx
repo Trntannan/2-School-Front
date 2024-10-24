@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "../styles/groups.module.css";
 import NewGroupForm from "../components/newGroupForm";
 import BottomNavBar from "../components/BottomNavBar";
@@ -31,29 +31,28 @@ const mockGroup =
   };
 
 const Groups = () => {
-  const router = useRouter();
   const [groups, setGroups] = useState([]);
   const [showNewGroupForm, setShowNewGroupForm] = useState(false);
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      router.push("/login");
-    } else {
-      axios
-        .get("http://localhost:5000/api/user/get-groups", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then(() => {
-          fetchGroups();
-        })
-        .catch((error) => {
-          console.error("Error fetching groups:", error);
-        });
-    }
-  }, []);
+  // useEffect(() => {
+  //   const token = localStorage.getItem("token");
+  //   if (!token) {
+  //     router.push("/login");
+  //   } else {
+  //     axios
+  //       .get("http://localhost:5000/api/user/get-groups", {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       })
+  //       .then(() => {
+  //         fetchGroups();
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error fetching groups:", error);
+  //       });
+  //   }
+  // }, []);
 
   const fetchGroups =async () => {
     try {
@@ -67,8 +66,6 @@ const Groups = () => {
       console.error("Error fetching groups:", error);
     }
   };
-
-  const token = localStorage.getItem("token");
 
   return (
     <div className={styles.groupsPage}>

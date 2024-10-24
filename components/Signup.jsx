@@ -37,7 +37,7 @@ const Signup = () => {
       console.log("Token received:", token);
 
       localStorage.setItem("token", token);
-      alert("Registration successful");
+      console.log("Registration successful");
       router.push("/completeProfile");
     } catch (err) {
       alert("Error registering user");

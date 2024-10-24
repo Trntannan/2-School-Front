@@ -27,7 +27,6 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
   }, [mapsApi]);
 
   const initAutocomplete = () => {
-    // Autocomplete for the meetup point
     const autocomplete = new mapsApi.places.Autocomplete(
       autocompleteRef.current,
       {
@@ -39,7 +38,6 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
       handlePlaceChanged(autocomplete, "meetupPoint")
     );
 
-    // SearchBox for the school location
     const searchBox = new mapsApi.places.SearchBox(searchBoxRef.current);
     searchBox.addListener("places_changed", handleSearchBoxChanged(searchBox));
   };
@@ -73,12 +71,12 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
 
   const setMarker = (field, location) => {
     const marker = field === "meetupPoint" ? meetupMarker : schoolMarker;
-    if (marker.current) marker.current.setMap(null); // Remove any existing marker
+    if (marker.current) marker.current.setMap(null); 
 
     marker.current = new mapsApi.Marker({
       position: location,
       map,
-      label: field === "meetupPoint" ? "M" : "S", // 'M' for Meetup, 'S' for School
+      label: field === "meetupPoint" ? "M" : "S", 
     });
 
     map.panTo(location);
@@ -106,7 +104,7 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const userId = localStorage.getItem("userId");
+    const user = localStorage.getItem("token");
 
     if (!form.meetupPoint || !form.schoolLocation) {
       alert("Please select both a meetup point and school location.");
@@ -115,7 +113,7 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
 
     try {
       const response = await axios.post("http://localhost:5000/api/user/new-group", {
-        userId,
+        user,
         groupData: form,
       });
       setGroups((prevGroups) => [...prevGroups, response.data.group]);
