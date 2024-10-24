@@ -20,7 +20,7 @@ const UserProfile = () => {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const token = localStorage.getItem("token");
+      const token = window.localStorage.getItem("token");
       if (!token) {
         console.error("No token found");
         return;
@@ -45,7 +45,7 @@ const UserProfile = () => {
   };
 
   const handleSaveClick = async (field) => {
-    const token = localStorage.getItem("token");
+    const token = window.localStorage.getItem("token");
     try {
       const response = await axios.put(
         "http://localhost:5000/api/user/update-profile",

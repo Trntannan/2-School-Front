@@ -30,7 +30,7 @@ const Login = () => {
       alert(response.data.message);
       const token = response.data.token;
       localStorage.setItem("token", token);
-      router.push("../pages/profile.jsx");
+      router.push("/profile");
     } catch (error) {
       console.error(error);
     }
