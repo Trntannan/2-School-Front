@@ -29,7 +29,7 @@ const Signup = () => {
 
     try {
       const response = await axios.post(
-        `${backendUrl}/api/users/signup`,
+        `${backendUrl}/api/user/signup`,
         {
           username,
           email,
