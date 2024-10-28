@@ -2,10 +2,10 @@
   "name": "to-school",
   "version": "0.1.0",
   "scripts": {
-    "dev": "npm run open-browser && next dev -p 3000 --turbopack",
+    "dev": "npm run open-browser && next dev -p 3000 --turbo",
     "open-browser": "start http://localhost:3000",
     "start": "next start",
-    "build": "next build --turbopack"
+    "build": "next build --turbo"
   },
   "dependencies": {
     "@emotion/react": "^11.13.3",
@@ -46,6 +46,7 @@
     "react-dom": "18.3.1",
     "react-google-autocomplete": "^2.7.3",
     "react-qr-code": "^2.0.15",
+    "turbo": "^2.2.3",
     "uuid": "^10.0.0",
     "vercel": "^37.7.1"
   },
