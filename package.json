@@ -2,10 +2,10 @@
   "name": "to-school",
   "version": "0.1.0",
   "scripts": {
-    "dev": "npm run open-browser && next dev -p 3000 --turbo",
+    "dev": "npm run open-browser && next dev -p 3000 --turbopack",
     "open-browser": "start http://localhost:3000",
     "start": "next start",
-    "build": "next build --turbo"
+    "build": "next build --turbopack"
   },
   "dependencies": {
     "@emotion/react": "^11.13.3",
