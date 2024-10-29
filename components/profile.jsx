@@ -11,7 +11,10 @@ const Profile = () => {
     bio: "",
   });
 
-  const [username, setUsername] = useState("");
+  const [username, setUsername] = useState({
+    username: "",
+  });
+  
   const [editField, setEditField] = useState(null);
   const [tempData, setTempData] = useState({});
   const [isClient, setIsClient] = useState(false);
@@ -57,7 +60,7 @@ const Profile = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       
-      if (field === "username") {
+      if (field === "userName") {
         setUsername(tempData[field]);
       } else {
         setProfile((prevProfile) => ({ ...prevProfile, [field]: response.data[field] }));
@@ -96,20 +99,21 @@ const Profile = () => {
       </div>
 
       <h2 className={styles.fullName}>
-        {editField === "userName" ? (
+        <strong>UserName: </strong>
+        {editField === "username" ? (
           <>
             <input
               type="text"
-              name="userName"
-              value={tempData.userName || ""}
+              name="username"
+              value={tempData.username || ""}
               onChange={handleChange}
             />
-            <button onClick={() => handleSaveClick("userName")}>Save</button>
+            <button onClick={() => handleSaveClick("username")}>Save</button>
           </>
         ) : (
           <>
-            {profile.userName}
-            <button onClick={() => setEditField("userName")}>&#9998;</button>
+            {profile.username}
+            <button onClick={() => setEditField("username")}>&#9998;</button>
           </>
         )}
       </h2>
