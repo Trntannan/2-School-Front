@@ -34,8 +34,11 @@ const Groups = () => {
   const [showNewGroupForm, setShowNewGroupForm] = useState(false);
 
   const fetchGroups =async () => {
+    const token = localStorage.getItem('token');
     try {
-      const response = await axios.get('https://two-school-backend.onrender.com/api/user/get-group');
+      const response = await axios.get('https://two-school-backend.onrender.com/api/user/get-group', { 
+        headers: { Authorization: `Bearer ${token}` } 
+      });
       setGroups(response.data);
     } catch (error) {
       console.error(error);
