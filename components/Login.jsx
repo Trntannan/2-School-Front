@@ -45,7 +45,7 @@ const Login = () => {
 
       localStorage.setItem("token", token);
       console.log("Login successful");
-      router.push("/profile");
+      router.push("/groups");
     } catch (error) {
       console.error("Error logging in:", error);
     }

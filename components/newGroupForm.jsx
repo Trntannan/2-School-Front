@@ -3,7 +3,7 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import styles from "../styles/groups.module.css";
 
-const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+const backendUrl = process.env.BACKEND_URL;
 
 const NewGroupForm = ({ map, mapsApi, setGroups }) => {
   const [form, setForm] = useState({
@@ -115,7 +115,7 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
 
     try {
       const response = await axios.post("https://two-school-backend.onrender.com/api/user/new-group", {
-        user,
+        userId: token,
         groupData: form,
       });
       setGroups((prevGroups) => [...prevGroups, response.data.group]);

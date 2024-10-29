@@ -1,15 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faEnvelope, faComments, faHome } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faEnvelope, faComments, faHome, faCog } from '@fortawesome/free-solid-svg-icons';
 import styles from '../styles/BottomNavBar.module.css';
 import { useRouter } from 'next/router';
-import Requests from '../components/Requests.jsx'; // Import the Requests component
+import Requests from '../components/Requests.jsx'; 
 
 const BottomNavBar = ({ activePage, requests = [] }) => {
   const router = useRouter();
   const [showRequests, setShowRequests] = useState(false);
 
-  // Calculate the number of new requests
   const numRequests = requests.length;
 
   const handleRequestsClick = () => {
@@ -21,18 +20,19 @@ const BottomNavBar = ({ activePage, requests = [] }) => {
     profile: { icon: faUser, label: 'Profile', path: '/profile' },
     requests: { icon: faEnvelope, label: 'Requests', onClick: handleRequestsClick },
     chat: { icon: faComments, label: 'Chat', path: '/ChatPage' },
+    settings: { icon: faCog, label: 'Settings', path: '../components/settings' },
   };
 
   const getNavBar = () => {
     switch (activePage) {
       case 'home':
-        return ['profile', 'requests', 'chat'];
+        return ['profile', 'chat', 'settings'];
       case 'profile':
-        return ['home', 'requests', 'chat'];
+        return ['home', 'chat', 'settings'];
       case 'chat':
-        return ['home', 'requests', 'profile'];
+        return ['home', 'profile', 'settings'];
       default:
-        return ['home', 'requests', 'chat'];
+        return ['home', 'profile', 'settings'];
     }
   };
 

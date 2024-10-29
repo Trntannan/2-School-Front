@@ -1,0 +1,60 @@
+.settingsContainer {
+    padding: 20px;
+    text-align: center;
+}
+
+.button {
+    margin: 10px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+.deleteButton {
+    background-color: red;
+    color: #fff;
+    margin-top: 20px;
+}
+
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modalContent {
+    background: #fff;
+    padding: 20px;
+    max-width: 400px;
+    text-align: center;
+    border-radius: 5px;
+}
+
+.buttonGroup {
+    margin-top: 10px;
+}
+
+.confirmButton {
+    padding: 10px 15px;
+    margin-right: 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.cancelButton {
+    padding: 10px 15px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    cursor: pointer;
+}

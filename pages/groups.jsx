@@ -23,14 +23,7 @@ const mockRequests = [
 ];
 
 const Groups = () => {
-  const [groups, setGroups] = useState([
-  {
-    meetupPoint: { lat: -36.8485, lng: 174.7633 },
-    schoolLocation: { lat: -36.852, lng: 174.768 },
-    groupName: "Test Group",
-    status: "active"
-  }
-]);
+  const [groups, setGroups] = useState([]);
   const [showNewGroupForm, setShowNewGroupForm] = useState(false);
 
   const fetchGroups =async () => {
@@ -39,9 +32,18 @@ const Groups = () => {
       const response = await axios.get('https://two-school-backend.onrender.com/api/user/get-group', { 
         headers: { Authorization: `Bearer ${token}` } 
       });
-      setGroups(response.data);
+      const fetchedGroups = response.data;
+      console.log("Fetched groups:", fetchedGroups);
+
+      if (Array.isArray(fetchedGroups)) {
+        setGroups(fetchedGroups);
+      } else {
+        console.error("Expected an array", fetchedGroups);
+        setGroups([]);
+      }
     } catch (error) {
-      console.error(error);
+      console.error("Error fetching groups:", error);
+      setGroups([]);
     }
   };
 
@@ -79,14 +81,18 @@ const Groups = () => {
               +
             </button>
           </div>
-          <ul>
-            {groups.map((group, index) => (
-              <li key={index} className={styles.groupItem}>
-                <span className={styles[group.status]}></span>
-                {group.groupName}
-              </li>
-            ))}
-          </ul>
+          {Array.isArray(groups) && groups.length > 0 ? (
+            <ul>
+              {groups.map((group, index) => (
+                <li key={index} className={styles.groupItem}>
+                  <span className={styles[group.status]}></span>
+                  {group.groupName}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No groups found.</p>
+          )}
         </div>
       </main>
       <BottomNavBar activePage="home" requests={mockRequests} />
