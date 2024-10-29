@@ -53,7 +53,7 @@ const CompleteProfile = ({}) => {
           <label htmlFor="profilePic">Profile Picture</label>
           <input id="profilePic" type="file" name="profilePic" onChange={handleChange} />
         </div>
-        <button type="submit">Save Profile</button>
+        <button type="submit" className={styles.completeProfBtn}>Save Profile</button>
       </form>
     </div>
   );

@@ -46,7 +46,7 @@
   text-align: center;
 }
 
-.completeBtn {
+.completeProfBtn {
   padding: 10px 20px;
   background-color: #0070f3;
   color: white;
@@ -56,9 +56,10 @@
   transition: background-color 0.3s ease;
 }
 
-.completeBtn:hover {
+.completeProfBtn:hover {
   background-color: #005bb5;
 }
+
 
 .infoSection {
   display: flex;
