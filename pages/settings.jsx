@@ -23,7 +23,7 @@ const Settings = () => {
       );
       console.log("Account deleted successfully:", response.data);
       localStorage.removeItem("token");
-      window.location.href = "../pages/index.jsx";
+      window.location.href = "/";
     } catch (error) {
       console.error("Error deleting account:", error);
     }
