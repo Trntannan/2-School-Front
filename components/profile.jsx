@@ -14,7 +14,7 @@ const Profile = () => {
   const [username, setUsername] = useState({
     username: "",
   });
-  
+
   const [editField, setEditField] = useState(null);
   const [tempData, setTempData] = useState({});
   const [isClient, setIsClient] = useState(false);
@@ -96,27 +96,29 @@ const Profile = () => {
         ) : (
           <button onClick={() => setEditField("profilePic")}>&#9998;</button>
         )}
-      </div>
 
-      <h2 className={styles.fullName}>
-        <strong>UserName: </strong>
-        {editField === "username" ? (
-          <>
-            <input
-              type="text"
-              name="username"
-              value={tempData.username || ""}
-              onChange={handleChange}
-            />
-            <button onClick={() => handleSaveClick("username")}>Save</button>
-          </>
-        ) : (
-          <>
-            {profile.username}
-            <button onClick={() => setEditField("username")}>&#9998;</button>
-          </>
-        )}
-      </h2>
+
+        <h2 className={styles.fullName}>
+          <strong>UserName: </strong>
+          {editField === "username" ? (
+            <>
+              <input
+                type="text"
+                name="username"
+                value={tempData.username || ""}
+                onChange={handleChange}
+              />
+              <button onClick={() => handleSaveClick("username")}>Save</button>
+            </>
+          ) : (
+            <>
+              {username}
+              <button onClick={() => setEditField("username")}>&#9998;</button>
+            </>
+          )}
+        </h2>
+
+      </div>
 
       <div className={styles.formGroup}>
         <strong>No. of Children: </strong>
