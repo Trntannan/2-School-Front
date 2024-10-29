@@ -3,6 +3,8 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import styles from "../styles/groups.module.css";
 
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+
 const NewGroupForm = ({ map, mapsApi, setGroups }) => {
   const [form, setForm] = useState({
     groupName: "",
@@ -112,7 +114,7 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
     }
 
     try {
-      const response = await axios.post("http://localhost:5000/api/user/new-group", {
+      const response = await axios.post("https://two-school-backend.onrender.com/api/user/new-group", {
         user,
         groupData: form,
       });
@@ -123,8 +125,8 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className={styles.form}>
-      <div>
+    <form onSubmit={handleSubmit} className="form-container">
+      <div className="form-group">
         <label htmlFor="groupName">Group Name:</label>
         <input
           type="text"
@@ -136,7 +138,7 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
         />
       </div>
 
-      <div>
+      <div className="form-group">
         <label htmlFor="meetupPoint">Meetup Point:</label>
         <input
           type="text"
@@ -148,7 +150,7 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
         />
       </div>
 
-      <div>
+      <div className="form-group">
         <label htmlFor="schoolName">School Name:</label>
         <input
           type="text"
@@ -160,7 +162,7 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
         />
       </div>
 
-      <div>
+      <div className="form-group">
         <label htmlFor="schoolLocation">School Location:</label>
         <input
           type="text"
@@ -172,7 +174,7 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
         />
       </div>
 
-      <div>
+      <div className="form-group">
         <label htmlFor="startTime">Start Time:</label>
         <input
           type="time"
@@ -191,7 +193,7 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
         </div>
       )}
 
-      <button type="submit">Create Group</button>
+      <button type="submit" className="login-btn">Create Group</button>
     </form>
   );
 };

@@ -32,39 +32,19 @@ const Groups = () => {
   }
 ]);
   const [showNewGroupForm, setShowNewGroupForm] = useState(false);
-  
-  // useEffect(() => {
-  //   const token = localStorage.getItem("token");
-  //   if (!token) {
-  //     router.push("/login");
-  //   } else {
-  //     axios
-  //       .get("http://localhost:5000/api/user/get-groups", {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       })
-  //       .then(() => {
-  //         fetchGroups();
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error fetching groups:", error);
-  //       });
-  //   }
-  // }, []);
 
   const fetchGroups =async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/user/get-groups", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setGroups(response.data.groups);
+      const response = await axios.get('https://two-school-backend.onrender.com/api/user/get-group');
+      setGroups(response.data);
     } catch (error) {
-      console.error("Error fetching groups:", error);
+      console.error(error);
     }
   };
+
+  useEffect(() => {
+    fetchGroups();
+  }, []);
 
   return (
     <div className="page-container">
