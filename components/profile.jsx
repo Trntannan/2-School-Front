@@ -4,18 +4,12 @@ import BottomNavBar from "./BottomNavBar";
 import QRCode from "./QrCode"; 
 import axios from "axios";
 
-require("dotenv").config();
-
-
-
 const Profile = () => {
   const [profile, setProfile] = useState({
     school: "",
     kidCount: 0,
     bio: "",
   });
-
-  const BACKEND_URL = process.env.BACKEND_URL;
 
   const [editField, setEditField] = useState(null);
   const [tempData, setTempData] = useState({});
@@ -28,7 +22,6 @@ const Profile = () => {
 
     const fetchProfile = async () => {
       const token = localStorage.getItem("token");
-      console.log(`Fetching profile for token: ${token}`);
       if (!token) {
         console.error("No token found");
         return;
@@ -36,7 +29,7 @@ const Profile = () => {
 
       try {
         const response = await axios.get(
-          `${BACKEND_URL}/api/user/get-profile`,
+          "https://two-school-backend.onrender.com/api/user/get-profile",
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setProfile(response.data.profile);
@@ -56,7 +49,7 @@ const Profile = () => {
     const token = localStorage.getItem("token");
     try {
       const response = await axios.put(
-        `${BACKEND_URL}/api/user/update-profile`,
+        "https://two-school-backend.onrender.com/api/user/update-profile",
         { [field]: tempData[field] },
         { headers: { Authorization: `Bearer ${token}` } }
       );
