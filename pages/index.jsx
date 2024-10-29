@@ -4,7 +4,7 @@ import Login from "../components/Login";
 import Signup from "../components/Signup";
 
 const Home = () => {
-  const [isSignup, setIsSignup] = useState(true);
+  const [isSignup, setIsSignup] = useState(false);
 
   const handleToggle = () => {
     setIsSignup(!isSignup);
