@@ -20,7 +20,7 @@ const BottomNavBar = ({ activePage, requests = [] }) => {
     profile: { icon: faUser, label: 'Profile', path: '/profile' },
     requests: { icon: faEnvelope, label: 'Requests', onClick: handleRequestsClick },
     chat: { icon: faComments, label: 'Chat', path: '/ChatPage' },
-    settings: { icon: faCog, label: 'Settings', path: '../components/settings' },
+    settings: { icon: faCog, label: 'Settings', path: '/settings' },
   };
 
   const getNavBar = () => {

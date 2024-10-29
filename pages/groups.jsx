@@ -35,12 +35,7 @@ const Groups = () => {
       const fetchedGroups = response.data;
       console.log("Fetched groups:", fetchedGroups);
 
-      if (Array.isArray(fetchedGroups)) {
-        setGroups(fetchedGroups);
-      } else {
-        console.error("Expected an array", fetchedGroups);
-        setGroups([]);
-      }
+      setGroups(fetchedGroups);
     } catch (error) {
       console.error("Error fetching groups:", error);
       setGroups([]);
