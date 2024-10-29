@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import styles from "../styles/settings.module.css";
+import styles from "../styles/logout.module.css";
 
 const Settings = () => {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
