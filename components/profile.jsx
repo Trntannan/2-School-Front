@@ -11,13 +11,13 @@ const Profile = () => {
     bio: "",
   });
 
+  const [username, setUsername] = useState("");
   const [editField, setEditField] = useState(null);
   const [tempData, setTempData] = useState({});
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     setIsClient(true); 
-
     if (!isClient) return; 
 
     const fetchProfile = async () => {
@@ -32,7 +32,10 @@ const Profile = () => {
           "https://two-school-backend.onrender.com/api/user/get-profile",
           { headers: { Authorization: `Bearer ${token}` } }
         );
-        setProfile(response.data.profile);
+
+        const { profile, username } = response.data;
+        setProfile(profile);
+        setUsername(username);
       } catch (error) {
         console.error("Error retrieving profile data", error);
       }
@@ -53,10 +56,12 @@ const Profile = () => {
         { [field]: tempData[field] },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setProfile((prevProfile) => ({
-        ...prevProfile,
-        [field]: response.data[field],
-      }));
+      
+      if (field === "username") {
+        setUsername(tempData[field]);
+      } else {
+        setProfile((prevProfile) => ({ ...prevProfile, [field]: response.data[field] }));
+      }
       setEditField(null);
     } catch (error) {
       console.error(`Error updating ${field}`, error);
