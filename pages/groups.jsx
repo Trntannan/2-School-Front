@@ -81,12 +81,11 @@ const Groups = () => {
               +
             </button>
           </div>
-          {Array.isArray(groups) && groups.length > 0 ? (
+          {groups.length > 0 ? (
             <ul>
-              {groups.map((group, index) => (
-                <li key={index} className={styles.groupItem}>
-                  <span className={styles[group.status]}></span>
-                  {group.groupName}
+              {groups.map((group) => (
+                <li key={group._id}>
+                  <p>{group.groupName}</p>
                 </li>
               ))}
             </ul>

@@ -115,14 +115,13 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
 
     try {
       const response = await axios.post("https://two-school-backend.onrender.com/api/user/new-group", {
-        userId: token,
         groupData: form,
       },
       {
         headers: {
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       }
     );
