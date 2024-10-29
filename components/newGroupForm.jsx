@@ -106,7 +106,7 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const user = localStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
     if (!form.meetupPoint || !form.schoolLocation) {
       alert("Please select both a meetup point and school location.");
@@ -117,7 +117,13 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
       const response = await axios.post("https://two-school-backend.onrender.com/api/user/new-group", {
         userId: token,
         groupData: form,
-      });
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
       setGroups((prevGroups) => [...prevGroups, response.data.group]);
     } catch (error) {
       console.error("Error creating group:", error);
