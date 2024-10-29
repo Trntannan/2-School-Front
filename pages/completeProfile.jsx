@@ -3,6 +3,7 @@ import styles from "../styles/profile.module.css";
 import axios from "axios";
 import router from "next/router";
 
+require("dotenv").config();
 
 const CompleteProfile = ({}) => {
   const [formData, setForm] = useState({
@@ -11,6 +12,8 @@ const CompleteProfile = ({}) => {
     bio: "",
   });
 
+  const backendUrl = process.env.BACKEND_URL;
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm({ ...formData, [name]: value });
@@ -18,12 +21,25 @@ const CompleteProfile = ({}) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const { kidCount, school, bio } = formData;
+
+    if (!kidCount || !school || !bio) {
+      alert("Please fill in all fields");
+      return;
+    }
+
     try {
       const token = localStorage.getItem("token");
-      await axios.post( "https://two-school-backend.onrender.com/api/user/complete-profile", formData,
+      console.log("Token received:", token);
+      await axios.post( `${backendUrl}/api/user/complete-profile`, 
+        {
+          kidCount,
+          school,
+          bio,
+        },
         { headers: { "Authorization": `Bearer ${token}` } } 
       );
-
+      
        console.log("Profile created successfully");
       router.push("/profile");
     } catch (error) {
@@ -53,7 +69,7 @@ const CompleteProfile = ({}) => {
           <label htmlFor="profilePic">Profile Picture</label>
           <input id="profilePic" type="file" name="profilePic" onChange={handleChange} />
         </div>
-        <button type="submit">Save Profile</button>
+        <button type="submit" className={styles.completeBtn}>Save Profile</button>
       </form>
     </div>
   );

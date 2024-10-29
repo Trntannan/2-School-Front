@@ -3,7 +3,6 @@ import styles from "../styles/home.module.css";
 import { useRouter } from "next/router";
 import axios from "axios";
 
-const MONGODB_URI = process.env.MONGODB_URI;
 const Signup = () => {
   const [form, setForm] = useState({
     username: "",

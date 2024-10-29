@@ -3,6 +3,8 @@ import styles from "../styles/home.module.css";
 import router from "next/router";
 import axios from "axios";
 
+require("dotenv").config();
+
 
 const Login = () => {
   const [form, setForm] = useState({
@@ -10,7 +12,7 @@ const Login = () => {
     password: "",
   });
 
-  const backendUrl = "https://two-school-backend.onrender.com";
+  const backendUrl = process.env.BACKEND_URL;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
