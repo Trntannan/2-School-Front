@@ -70,7 +70,6 @@ const Profile = () => {
       <header className="page-header">
         <h1>Profile</h1>
       </header>
-
       <div className={styles.profilePicContainer}>
         <img
           src={

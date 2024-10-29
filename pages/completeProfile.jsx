@@ -18,9 +18,16 @@ const CompleteProfile = ({}) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const { kidCount, school, bio } = formData;
     try {
       const token = localStorage.getItem("token");
-      await axios.post( "https://two-school-backend.onrender.com/api/user/complete-profile", formData,
+      await axios.post( "https://two-school-backend.onrender.com/api/user/complete-profile", 
+        { 
+          kidCount, 
+          school, 
+          bio 
+        },
+        
         { headers: { "Authorization": `Bearer ${token}` } } 
       );
 
