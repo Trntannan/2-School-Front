@@ -1,3 +1,38 @@
+const updateUserProfile = async (req, res) => {
+  const { school, kidCount, bio, profilePic, username } = req.body;
+
+  try {
+    const update = {};
+    if (username) update.username = username;
+    if (school || kidCount || bio || profilePic) {
+      update.profile = {};
+      if (school) update.profile.school = school;
+      if (kidCount) update.profile.kidCount = kidCount;
+      if (bio) update.profile.bio = bio;
+      if (profilePic) update.profile.profilePic = profilePic;
+    }
+
+    const user = await usersCollection.findOneAndUpdate(
+      { _id: new ObjectId(req.userId) },
+      { $set: update },
+      { returnDocument: "after" }
+    );
+
+    if (!user.value) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({
+      message: "Profile updated successfully",
+      profile: user.value.profile,
+      username: user.value.username,
+    });
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    res.status(500).json({ message: "Error updating profile" });
+  }
+};
+
 const express = require("express");
 const next = require("next");
 const bodyParser = require("body-parser");
@@ -16,7 +51,7 @@ const upload = multer({ storage });
 const mongoURI =
   "mongodb+srv://trntannan1:Trentas.10@cluster0.gubddcm.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0i";
 
-let usersCollection; 
+let usersCollection;
 
 async function connectToMongoDB() {
   const client = new MongoClient(mongoURI, {
@@ -40,7 +75,7 @@ async function connectToMongoDB() {
     }
 
     usersCollection = db.collection("users");
-    
+
     return db;
   } catch (error) {
     console.error("Error connecting to MongoDB:", error);

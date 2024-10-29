@@ -11,16 +11,13 @@ const Profile = () => {
     bio: "",
   });
 
-  const [username, setUsername] = useState({
-    username: "",
-  });
-
   const [editField, setEditField] = useState(null);
   const [tempData, setTempData] = useState({});
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     setIsClient(true); 
+
     if (!isClient) return; 
 
     const fetchProfile = async () => {
@@ -35,10 +32,7 @@ const Profile = () => {
           "https://two-school-backend.onrender.com/api/user/get-profile",
           { headers: { Authorization: `Bearer ${token}` } }
         );
-
-        const { profile, username } = response.data;
-        setProfile(profile);
-        setUsername(username);
+        setProfile(response.data.profile);
       } catch (error) {
         console.error("Error retrieving profile data", error);
       }
@@ -59,12 +53,10 @@ const Profile = () => {
         { [field]: tempData[field] },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      
-      if (field === "userName") {
-        setUsername(tempData[field]);
-      } else {
-        setProfile((prevProfile) => ({ ...prevProfile, [field]: response.data[field] }));
-      }
+      setProfile((prevProfile) => ({
+        ...prevProfile,
+        [field]: response.data[field],
+      }));
       setEditField(null);
     } catch (error) {
       console.error(`Error updating ${field}`, error);
@@ -74,112 +66,108 @@ const Profile = () => {
   if (!isClient) return null;
 
   return (
-    <div className={styles.profilePage}>
-      <header className="page-header">
+    <div className="page-container">
+      <div className="page-header">
         <h1>Profile</h1>
-      </header>
-      <div className={styles.profilePicContainer}>
-        <img
-          src={
-            profile?.profilePic
-              ? `data:image/jpeg;base64,${profile.profilePic}`
-              : "https://randomuser.me/api/portraits/men/1.jpg"
-          }
-          alt="Profile"
-          className={styles.profilePic}
-        />
-        {editField === "profilePic" ? (
-          <>
-            <input type="file" name="profilePic" onChange={handleChange} />
-            <button onClick={() => handleSaveClick("profilePic")}>Save</button>
-          </>
-        ) : (
-          <button onClick={() => setEditField("profilePic")}>&#9998;</button>
-        )}
-
-
+      </div>
+      <main className="main-content">
+        <div className={styles.profilePicContainer}>
+          <img
+            src={
+              profile?.profilePic
+                ? `data:image/jpeg;base64,${profile.profilePic}`
+                : "https://randomuser.me/api/portraits/men/1.jpg"
+            }
+            alt="Profile"
+            className={styles.profilePic}
+          />
+          {editField === "profilePic" ? (
+            <>
+              <input type="file" name="profilePic" onChange={handleChange} />
+              <button onClick={() => handleSaveClick("profilePic")}>Save</button>
+            </>
+          ) : (
+            <button onClick={() => setEditField("profilePic")}>&#9998;</button>
+          )}
+        </div>
         <h2 className={styles.fullName}>
-          <strong>UserName: </strong>
-          {editField === "username" ? (
+          {editField === "userName" ? (
             <>
               <input
                 type="text"
-                name="username"
-                value={tempData.username || ""}
+                name="userName"
+                value={tempData.userName || ""}
                 onChange={handleChange}
               />
-              <button onClick={() => handleSaveClick("username")}>Save</button>
+              <button onClick={() => handleSaveClick("userName")}>Save</button>
             </>
           ) : (
             <>
-              {username}
-              <button onClick={() => setEditField("username")}>&#9998;</button>
+              {profile.userName}
+              <button onClick={() => setEditField("userName")}>&#9998;</button>
             </>
           )}
         </h2>
+        <div className={styles.formGroup}>
+          <strong>No. of Children: </strong>
+          {editField === "kidCount" ? (
+            <>
+              <input
+                type="number"
+                name="kidCount"
+                value={tempData.kidCount || ""}
+                onChange={handleChange}
+              />
+              <button onClick={() => handleSaveClick("kidCount")}>Save</button>
+            </>
+          ) : (
+            <>
+              {profile.kidCount}
+              <button onClick={() => setEditField("kidCount")}>&#9998;</button>
+            </>
+          )}
+        </div>
+        <div className={styles.formGroup}>
+          <strong>School: </strong>
+          {editField === "school" ? (
+            <>
+              <input
+                type="text"
+                name="school"
+                value={tempData.school || ""}
+                onChange={handleChange}
+              />
+              <button onClick={() => handleSaveClick("school")}>Save</button>
+            </>
+          ) : (
+            <>
+              {profile.school}
+              <button onClick={() => setEditField("school")}>&#9998;</button>
+            </>
+          )}
+        </div>
+        <div className={styles.formGroup}>
+          <strong>Bio: </strong>
+          {editField === "bio" ? (
+            <>
+              <textarea
+                name="bio"
+                value={tempData.bio || ""}
+                onChange={handleChange}
+              />
+              <button onClick={() => handleSaveClick("bio")}>Save</button>
+            </>
+          ) : (
+            <>
+              {profile.bio}
+              <button onClick={() => setEditField("bio")}>&#9998;</button>
+            </>
+          )}
+        </div>
+        <QRCode userId={localStorage.getItem("userId")} />
+      </main>
 
-      </div>
-
-      <div className={styles.formGroup}>
-        <strong>No. of Children: </strong>
-        {editField === "kidCount" ? (
-          <>
-            <input
-              type="number"
-              name="kidCount"
-              value={tempData.kidCount || ""}
-              onChange={handleChange}
-            />
-            <button onClick={() => handleSaveClick("kidCount")}>Save</button>
-          </>
-        ) : (
-          <>
-            {profile.kidCount}
-            <button onClick={() => setEditField("kidCount")}>&#9998;</button>
-          </>
-        )}
-      </div>
-
-      <div className={styles.formGroup}>
-        <strong>School: </strong>
-        {editField === "school" ? (
-          <>
-            <input
-              type="text"
-              name="school"
-              value={tempData.school || ""}
-              onChange={handleChange}
-            />
-            <button onClick={() => handleSaveClick("school")}>Save</button>
-          </>
-        ) : (
-          <>
-            {profile.school}
-            <button onClick={() => setEditField("school")}>&#9998;</button>
-          </>
-        )}
-      </div>
-
-      <div className={styles.formGroup}>
-        <strong>Bio: </strong>
-        {editField === "bio" ? (
-          <>
-            <textarea
-              name="bio"
-              value={tempData.bio || ""}
-              onChange={handleChange}
-            />
-            <button onClick={() => handleSaveClick("bio")}>Save</button>
-          </>
-        ) : (
-          <>
-            {profile.bio}
-            <button onClick={() => setEditField("bio")}>&#9998;</button>
-          </>
-        )}
-      </div>
-
-      <QRCode userId={localStorage.getItem("userId")} />
+      
       <BottomNavBar activePage="Profile" />
     </div>
   );

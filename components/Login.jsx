@@ -12,7 +12,7 @@ const Login = () => {
     password: "",
   });
 
-  const backendUrl = process.env.BACKEND_URL;
+  const backendUrl = "https://two-school-backend.onrender.com";
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -54,9 +54,9 @@ const Login = () => {
   return (
     <div>
       <div>
-        <form onSubmit={handleSubmit}>
+        <form className="form-container" onSubmit={handleSubmit}>
           <input
-            className={styles.input}
+            className="form-group"
             type="text"
             name="username"
             placeholder="Username"
@@ -65,7 +65,7 @@ const Login = () => {
             required
           />
           <input
-            className={styles.input}
+            className="form-group"
             type="text"
             name="password"
             placeholder="Password"
@@ -73,7 +73,7 @@ const Login = () => {
             onChange={handleChange}
             required
           />
-          <button type="submit" className={styles.loginBtn}>
+          <button type="submit" className="login-btn">
             Login
           </button>
         </form>

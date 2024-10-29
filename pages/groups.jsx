@@ -67,11 +67,11 @@ const Groups = () => {
   };
 
   return (
-    <div className={styles.groupsPage}>
+    <div className="page-container">
       <div className="page-header">
         <h1>Groups</h1>
       </div>
-      <div className={styles.mainContent}>
+      <main className={styles.mainContent}>
         <WrappedMapComponent groups={groups}>
           {(map, mapsApi) => (
             showNewGroupForm && (
@@ -105,7 +105,7 @@ const Groups = () => {
             ))}
           </ul>
         </div>
-      </div>
+      </main>
       <BottomNavBar activePage="home" requests={mockRequests} />
     </div>
   );

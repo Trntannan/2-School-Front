@@ -57,9 +57,9 @@ const Signup = () => {
   return (
     <div>
       <div>
-        <form onSubmit={handleSubmit}>
+        <form className="form-container" onSubmit={handleSubmit}>
         <input
-            className={styles.input}
+            className="form-group"
             type="text"
             name="username"
             placeholder="Username"
@@ -68,7 +68,7 @@ const Signup = () => {
             required
           />
           <input
-            className={styles.input}
+            className="form-group"
             type="text"
             name="email"
             placeholder="Email"
@@ -77,7 +77,7 @@ const Signup = () => {
             required
           />
           <input
-            className={styles.input}
+            className="form-group"
             type="password"
             name="password"
             placeholder="Password"
@@ -86,7 +86,7 @@ const Signup = () => {
             required
           />
           <input
-            className={styles.input}
+            className="form-group"
             type="password"
             name="confirmPassword"
             placeholder="Confirm Password"
@@ -94,7 +94,7 @@ const Signup = () => {
             onChange={handleChange}
             required
           />
-          <button type="submit" className={styles.loginBtn}>
+          <button type="submit" className="login-btn">
             Sign up
           </button>
         </form>
