@@ -25,14 +25,16 @@
       "@/*": [
         "./src/*"
       ]
-    }
+    },
+    "target": "ES2017"
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
-, "db.config/dbConfig.js"  ],
+    ".next/types/**/*.ts",
+    "db.config/dbConfig.js"
+  ],
   "exclude": [
     "node_modules"
   ]
