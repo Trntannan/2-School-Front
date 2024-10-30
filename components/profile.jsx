@@ -6,13 +6,13 @@ import axios from "axios";
 
 require("dotenv").config();
 
+const backendUrl = process.env.BACKEND_URL || 5000;
+
 const Profile = () => {
   const [profile, setProfile] = useState({});
   const [editField, setEditField] = useState(null);
   const [tempData, setTempData] = useState({});
   const [isClient, setIsClient] = useState(false);
-
-  const backendUrl = process.env.BACKEND_URL;
 
   useEffect(() => {
     const fetchProfile = async () => {
