@@ -27,15 +27,9 @@ const Profile = () => {
             Authorization: `Bearer ${token}`
            },
         });
-  
-        if (!response.ok) {
-          throw new Error('Failed to retrieve profile data');
-        }
-  
-        const data = await response.data;
 
-        console.log("Fetched profile:", data);
-        setProfile(data);
+        console.log("Fetched profile:", response.data);
+        setProfile(response.data.profile);
       } catch (error) {
         console.error("Error fetching profile:", error);
         setIsClient(false); 

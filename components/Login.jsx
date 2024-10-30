@@ -26,8 +26,8 @@ const Login = () => {
     try {
       const response = await axios.post(`${backendUrl}/api/user/login`, 
         {
-          username,
-          password,
+          username: username,
+          password: password,
         },
         {
           headers: {
