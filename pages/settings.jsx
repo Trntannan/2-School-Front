@@ -2,6 +2,10 @@ import React, { useState } from "react";
 import axios from "axios";
 import styles from "../styles/settings.module.css";
 
+require("dotenv").config();
+
+const backendUrl = process.env.BACKEND_URL;
+
 const Settings = () => {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -16,7 +20,7 @@ const Settings = () => {
 
     try {
       const response = await axios.delete(
-        "http://localhost:5000/api/user/delete-account",
+        `${backendUrl}/api/user/delete-account`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }

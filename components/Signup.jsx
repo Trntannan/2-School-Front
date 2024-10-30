@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
 
+require("dotenv").config();
+
+const backendUrl = process.env.BACKEND_URL;
+
 const Signup = () => {
   const [form, setForm] = useState({
     username: "",
@@ -8,8 +12,6 @@ const Signup = () => {
     password: "",
     confirmPassword: "",
   });
-
-  const backendUrl = "http://localhost:5000";
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -39,7 +41,7 @@ const Signup = () => {
           },
         }
       );
-      
+
       const token = response.data.token;
       console.log("Token received:", token);
 
@@ -48,14 +50,14 @@ const Signup = () => {
       window.location.href = "/completeProfile";
     } catch (err) {
       alert("Error registering user");
-    } 
+    }
   };
 
   return (
     <div>
       <div>
         <form className="form-container" onSubmit={handleSubmit}>
-        <input
+          <input
             className="form-group"
             type="text"
             name="username"

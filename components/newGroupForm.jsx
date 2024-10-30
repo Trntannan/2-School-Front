@@ -3,7 +3,9 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import styles from "../styles/groups.module.css";
 
-const backendUrl = "http://localhost:5000";
+require("dotenv").config();
+
+const backendUrl = process.env.BACKEND_URL;
 
 const NewGroupForm = ({ map, mapsApi, setGroups }) => {
   const [form, setForm] = useState({
@@ -72,12 +74,12 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
 
   const setMarker = (field, location) => {
     const marker = field === "meetupPoint" ? meetupMarker : schoolMarker;
-    if (marker.current) marker.current.setMap(null); 
+    if (marker.current) marker.current.setMap(null);
 
     marker.current = new mapsApi.Marker({
       position: location,
       map,
-      label: field === "meetupPoint" ? "M" : "S", 
+      label: field === "meetupPoint" ? "M" : "S",
     });
 
     map.panTo(location);
@@ -106,26 +108,26 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const token = localStorage.getItem("token");
-  
-    const [startLat, startLng] = form.meetupPoint.split(',').map(Number);
-    const [endLat, endLng] = form.endLocation.split(',').map(Number);
-  
+
+    const [startLat, startLng] = form.meetupPoint.split(",").map(Number);
+    const [endLat, endLng] = form.endLocation.split(",").map(Number);
+
     const groupData = {
       name: form.groupName,
       startTime: new Date(form.startTime),
-      members: [], 
+      members: [],
       routes: [
         {
           start: { latitude: startLat, longitude: startLng },
           end: { latitude: endLat, longitude: endLng },
-          waypoints: [], 
+          waypoints: [],
         },
       ],
     };
-  
+
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/user/new-group",
+        `${backendUrl}/api/user/new-group`,
         { groupData },
         {
           headers: {
@@ -139,7 +141,6 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
       console.error("Error creating group:", error);
     }
   };
-  
 
   return (
     <form onSubmit={handleSubmit} className="form-container">
@@ -199,7 +200,9 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
         </div>
       )}
 
-      <button type="submit" className="login-btn">Create Group</button>
+      <button type="submit" className="login-btn">
+        Create Group
+      </button>
     </form>
   );
 };

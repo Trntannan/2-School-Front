@@ -5,34 +5,36 @@ import BottomNavBar from "../components/BottomNavBar";
 import WrappedMapComponent from "../components/MapComponent";
 import axios from "axios";
 
-const backendUrl = "http://localhost:5000";
+require("dotenv").config();
+
+const backendUrl = process.env.BACKEND_URL;
 
 const mockRequests = [
   {
     id: 1,
-    profilePic: 'https://randomuser.me/api/portraits/men/1.jpg',
-    name: 'John Doe',
+    profilePic: "https://randomuser.me/api/portraits/men/1.jpg",
+    name: "John Doe",
     children: 2,
-    school: 'Springfield Elementary'
+    school: "Springfield Elementary",
   },
   {
     id: 2,
-    profilePic: 'https://randomuser.me/api/portraits/women/2.jpg',
-    name: 'Jane Smith',
+    profilePic: "https://randomuser.me/api/portraits/women/2.jpg",
+    name: "Jane Smith",
     children: 1,
-    school: 'Shelbyville High'
-  }
+    school: "Shelbyville High",
+  },
 ];
 
 const Groups = () => {
   const [groups, setGroups] = useState([]);
   const [showNewGroupForm, setShowNewGroupForm] = useState(false);
 
-  const fetchGroups =async () => {
-    const token = localStorage.getItem('token');
+  const fetchGroups = async () => {
+    const token = localStorage.getItem("token");
     try {
-      const response = await axios.get(`${backendUrl}/api/user/get-group`, { 
-        headers: { Authorization: `Bearer ${token}` } 
+      const response = await axios.get(`${backendUrl}/api/user/get-group`, {
+        headers: { Authorization: `Bearer ${token}` },
       });
       const fetchedGroups = response.data;
       console.log("Fetched groups:", fetchedGroups);
@@ -55,18 +57,25 @@ const Groups = () => {
       </div>
       <main className={styles.mainContent}>
         <WrappedMapComponent groups={groups}>
-          {(map, mapsApi) => (
+          {(map, mapsApi) =>
             showNewGroupForm && (
               <div className={styles.modalOverlay}>
                 <div className={styles.modalContent}>
-                  <button className={styles.closeButton} onClick={() => setShowNewGroupForm(false)}>
+                  <button
+                    className={styles.closeButton}
+                    onClick={() => setShowNewGroupForm(false)}
+                  >
                     X
                   </button>
-                  <NewGroupForm map={map} mapsApi={mapsApi} setGroups={setGroups} />
+                  <NewGroupForm
+                    map={map}
+                    mapsApi={mapsApi}
+                    setGroups={setGroups}
+                  />
                 </div>
               </div>
             )
-          )}
+          }
         </WrappedMapComponent>
         <div className={styles.groupsList}>
           <div className={styles.groupsHeader}>

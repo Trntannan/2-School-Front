@@ -3,7 +3,7 @@ import axios from "axios";
 
 require("dotenv").config();
 
-const backendUrl = "http://localhost:5000";
+const backendUrl = process.env.BACKEND_URL;
 
 const Login = () => {
   const [form, setForm] = useState({
@@ -24,7 +24,8 @@ const Login = () => {
       return;
     }
     try {
-      const response = await axios.post(`${backendUrl}/api/user/login`, 
+      const response = await axios.post(
+        `${backendUrl}/api/user/login`,
         {
           username: username,
           password: password,

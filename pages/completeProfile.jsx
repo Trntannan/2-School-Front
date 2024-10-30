@@ -1,21 +1,22 @@
 import React, { useState } from "react";
 import styles from "../styles/profile.module.css";
 import axios from "axios";
-import router from "next/router";
+
+require("dotenv").config();
+
+const backendUrl = process.env.BACKEND_URL;
 
 const CompleteProfile = () => {
   const [formData, setForm] = useState({
     kidCount: "",
     school: "",
     bio: "",
-    profilePic: null, 
+    profilePic: null,
   });
-
-  const backendUrl = "http://localhost:5000";
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    setForm({ ...formData, [name]: files ? files[0] : value }); 
+    setForm({ ...formData, [name]: files ? files[0] : value });
   };
 
   const handleSubmit = async (e) => {
@@ -24,18 +25,22 @@ const CompleteProfile = () => {
 
     try {
       const token = localStorage.getItem("token");
-      const formDataToSend = new FormData(); 
+      const formDataToSend = new FormData();
       formDataToSend.append("kidCount", kidCount);
       formDataToSend.append("school", school);
       formDataToSend.append("bio", bio);
       if (profilePic) formDataToSend.append("profilePic", profilePic);
 
-      await axios.post(`${backendUrl}/api/user/complete-profile`, formDataToSend, {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      await axios.post(
+        `${backendUrl}/api/user/complete-profile`,
+        formDataToSend,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       console.log("Profile created successfully");
       window.location.href = "/profile";
@@ -50,7 +55,10 @@ const CompleteProfile = () => {
         <h1>Complete Your Profile</h1>
       </div>
       <main className={styles.completeProfMain}>
-        <form onSubmit={handleSubmit} className={styles.completeProfFormContainer}>
+        <form
+          onSubmit={handleSubmit}
+          className={styles.completeProfFormContainer}
+        >
           <div className={styles.completeProfForm}>
             <label htmlFor="kidCount">Number of kids:</label>
             <input

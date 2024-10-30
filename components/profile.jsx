@@ -4,13 +4,15 @@ import BottomNavBar from "./BottomNavBar";
 import QRCode from "./QrCode";
 import axios from "axios";
 
+require("dotenv").config();
+
 const Profile = () => {
   const [profile, setProfile] = useState({});
   const [editField, setEditField] = useState(null);
   const [tempData, setTempData] = useState({});
   const [isClient, setIsClient] = useState(false);
 
-  const backendUrl = "http://localhost:5000";
+  const backendUrl = process.env.BACKEND_URL;
 
   useEffect(() => {
     const fetchProfile = async () => {
