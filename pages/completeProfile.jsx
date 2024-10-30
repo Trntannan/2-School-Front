@@ -4,7 +4,7 @@ import axios from "axios";
 
 require("dotenv").config();
 
-const backendUrl = process.env.BACKEND_UR || 5000;
+const backendUrl = process.env.BACKEND_UR;
 
 const CompleteProfile = () => {
   const [formData, setForm] = useState({

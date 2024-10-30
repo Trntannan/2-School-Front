@@ -5,7 +5,7 @@ import styles from "../styles/groups.module.css";
 
 require("dotenv").config();
 
-const backendUrl = process.env.BACKEND_URL || 5000;
+const backendUrl = process.env.BACKEND_URL;
 
 const NewGroupForm = ({ map, mapsApi, setGroups }) => {
   const [form, setForm] = useState({

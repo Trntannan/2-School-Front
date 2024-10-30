@@ -4,7 +4,7 @@ import styles from "../styles/settings.module.css";
 
 require("dotenv").config();
 
-const backendUrl = process.env.BACKEND_URL || 5000;
+const backendUrl = process.env.BACKEND_URL;
 
 const Settings = () => {
   const [showLogoutModal, setShowLogoutModal] = useState(false);

@@ -7,7 +7,7 @@ import axios from "axios";
 
 require("dotenv").config();
 
-const backendUrl = process.env.BACKEND_URL || 5000;
+const backendUrl = process.env.BACKEND_URL;
 
 const mockRequests = [
   {
