@@ -19,13 +19,13 @@ const Profile = () => {
         console.error("No token found");
         return;
       }
-  
+
       try {
         const response = await axios.get(`${backendUrl}/api/user/get-profile`, {
           headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
-           },
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         });
 
         console.log("Fetched profile:", response.data);
@@ -36,14 +36,14 @@ const Profile = () => {
         });
       } catch (error) {
         console.error("Error fetching profile:", error);
-        setIsClient(false); 
+        setIsClient(false);
       }
     };
 
     fetchProfile();
     setIsClient(true);
   }, []);
-  
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setTempData((prevData) => ({ ...prevData, [name]: value }));
@@ -51,10 +51,10 @@ const Profile = () => {
 
   const handleSaveClick = async (field) => {
     const token = localStorage.getItem("token");
-  
+
     try {
       let formData = new FormData();
-  
+
       if (field === "profilePic") {
         const fileInput = document.querySelector('input[name="profilePic"]');
         if (fileInput.files.length > 0) {
@@ -63,7 +63,7 @@ const Profile = () => {
       } else {
         formData.append(field, tempData[field]);
       }
-  
+
       const response = await axios.put(
         `${backendUrl}/api/user/update-profile`,
         formData,
@@ -74,7 +74,7 @@ const Profile = () => {
           },
         }
       );
-  
+
       setProfile((prevProfile) => ({
         ...prevProfile,
         [field]: response.data.profile[field],
@@ -106,14 +106,16 @@ const Profile = () => {
           {editField === "profilePic" ? (
             <>
               <input type="file" name="profilePic" onChange={handleChange} />
-              <button onClick={() => handleSaveClick("profilePic")}>Save</button>
+              <button onClick={() => handleSaveClick("profilePic")}>
+                Save
+              </button>
             </>
           ) : (
             <button onClick={() => setEditField("profilePic")}>&#9998;</button>
           )}
         </div>
         <h2 className={styles.fullName}>
-          <strong>Name: </strong>
+          <strong>Username: </strong>
           {editField === "username" ? (
             <>
               <input
@@ -190,7 +192,6 @@ const Profile = () => {
         <QRCode userId={localStorage.getItem("userId")} />
       </main>
 
-      
       <BottomNavBar activePage="Profile" />
     </div>
   );
