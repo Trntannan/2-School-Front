@@ -5,6 +5,8 @@ import BottomNavBar from "../components/BottomNavBar";
 import WrappedMapComponent from "../components/MapComponent";
 import axios from "axios";
 
+const backendUrl = "http://localhost:5000";
+
 const mockRequests = [
   {
     id: 1,
@@ -29,7 +31,7 @@ const Groups = () => {
   const fetchGroups =async () => {
     const token = localStorage.getItem('token');
     try {
-      const response = await axios.get('https://two-school-backend.onrender.com/api/user/get-group', { 
+      const response = await axios.get(`${backendUrl}/api/user/get-group`, { 
         headers: { Authorization: `Bearer ${token}` } 
       });
       const fetchedGroups = response.data;

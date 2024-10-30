@@ -16,8 +16,7 @@ const BottomNavBar = ({ activePage, requests = [] }) => {
   };
 
   const navItems = {
-    home: { icon: faHome, label: 'Home', path: '/' },
-    groups: { icon: faHome, label: 'Groups', path: '/groups' },
+    home: { icon: faHome, label: 'Home', path: '/groups' },
     profile: { icon: faUser, label: 'Profile', path: '/profile' },
     requests: { icon: faEnvelope, label: 'Requests', onClick: handleRequestsClick },
     chat: { icon: faComments, label: 'Chat', path: '/ChatPage' },
@@ -26,14 +25,14 @@ const BottomNavBar = ({ activePage, requests = [] }) => {
 
   const getNavBar = () => {
     switch (activePage) {
-      case 'groups':
+      case 'home':
         return ['profile', 'chat', 'settings'];
       case 'profile':
         return ['home', 'chat', 'settings'];
       case 'chat':
         return ['home', 'profile', 'settings'];
       default:
-        return ['home', 'profile', 'settings'];
+        return ['home', 'chat', 'settings'];
     }
   };
 

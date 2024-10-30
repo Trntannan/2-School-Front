@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import styles from "../styles/home.module.css";
-import { useRouter } from "next/router";
 import axios from "axios";
 
 const Signup = () => {
@@ -11,8 +9,7 @@ const Signup = () => {
     confirmPassword: "",
   });
 
-  const router = useRouter();
-  const backendUrl = "https://two-school-backend.onrender.com";
+  const backendUrl = "http://localhost:5000";
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -48,7 +45,7 @@ const Signup = () => {
 
       localStorage.setItem("token", token);
       console.log("Registration successful");
-      router.push("/completeProfile");
+      window.location.href = "/completeProfile";
     } catch (err) {
       alert("Error registering user");
     } 

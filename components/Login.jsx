@@ -1,18 +1,15 @@
 import React, { useState } from "react";
-import styles from "../styles/home.module.css";
-import router from "next/router";
 import axios from "axios";
 
 require("dotenv").config();
 
+const backendUrl = "http://localhost:5000";
 
 const Login = () => {
   const [form, setForm] = useState({
     username: "",
     password: "",
   });
-
-  const backendUrl = "https://two-school-backend.onrender.com";
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -39,13 +36,14 @@ const Login = () => {
           },
         }
       );
+      console.log(response.data);
 
       const token = response.data.token;
       console.log("Token received:", token);
 
       localStorage.setItem("token", token);
       console.log("Login successful");
-      router.push("/groups");
+      window.location.href = "/groups";
     } catch (error) {
       console.error("Error logging in:", error);
     }

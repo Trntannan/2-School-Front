@@ -114,7 +114,7 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
     }
 
     try {
-      const response = await axios.post("https://two-school-backend.onrender.com/api/user/new-group", {
+      const response = await axios.post("http://localhost:5000/api/user/new-group", {
         groupData: form,
       },
       {

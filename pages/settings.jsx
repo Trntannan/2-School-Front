@@ -16,7 +16,7 @@ const Settings = () => {
 
     try {
       const response = await axios.delete(
-        "https://two-school-backend.onrender.com/api/user/delete-account",
+        "http://localhost:5000/api/user/delete-account",
         {
           headers: { Authorization: `Bearer ${token}` },
         }

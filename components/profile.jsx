@@ -1,45 +1,51 @@
 import React, { useState, useEffect } from "react";
 import styles from "../styles/profile.module.css";
-import BottomNavBar from "./BottomNavBar"; 
-import QRCode from "./QrCode"; 
+import BottomNavBar from "./BottomNavBar";
+import QRCode from "./QrCode";
 import axios from "axios";
 
 const Profile = () => {
-  const [profile, setProfile] = useState({
-    school: "",
-    kidCount: 0,
-    bio: "",
-  });
-
+  const [profile, setProfile] = useState({});
   const [editField, setEditField] = useState(null);
   const [tempData, setTempData] = useState({});
   const [isClient, setIsClient] = useState(false);
 
+  const backendUrl = "http://localhost:5000";
+
   useEffect(() => {
-    setIsClient(true); 
-
-    if (!isClient) return; 
-
     const fetchProfile = async () => {
       const token = localStorage.getItem("token");
       if (!token) {
         console.error("No token found");
         return;
       }
-
+  
       try {
-        const response = await axios.get(
-          "https://two-school-backend.onrender.com/api/user/get-profile",
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        setProfile(response.data.profile);
+        const response = await axios.get(`${backendUrl}/api/user/get-profile`, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+           },
+        });
+  
+        if (!response.ok) {
+          throw new Error('Failed to retrieve profile data');
+        }
+  
+        const data = await response.data;
+
+        console.log("Fetched profile:", data);
+        setProfile(data);
       } catch (error) {
-        console.error("Error retrieving profile data", error);
+        console.error("Error fetching profile:", error);
+        setIsClient(false); 
       }
     };
-    fetchProfile();
-  }, [isClient]);
 
+    fetchProfile();
+    setIsClient(true);
+  }, []);
+  
   const handleChange = (event) => {
     const { name, value } = event.target;
     setTempData((prevData) => ({ ...prevData, [name]: value }));
@@ -47,15 +53,33 @@ const Profile = () => {
 
   const handleSaveClick = async (field) => {
     const token = localStorage.getItem("token");
+  
     try {
+      let formData = new FormData();
+  
+      if (field === "profilePic") {
+        const fileInput = document.querySelector('input[name="profilePic"]');
+        if (fileInput.files.length > 0) {
+          formData.append("profilePic", fileInput.files[0]);
+        }
+      } else {
+        formData.append(field, tempData[field]);
+      }
+  
       const response = await axios.put(
-        "https://two-school-backend.onrender.com/api/user/update-profile",
-        { [field]: tempData[field] },
-        { headers: { Authorization: `Bearer ${token}` } }
+        `${backendUrl}/api/user/update-profile`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
+  
       setProfile((prevProfile) => ({
         ...prevProfile,
-        [field]: response.data[field],
+        [field]: response.data.profile[field],
       }));
       setEditField(null);
     } catch (error) {
