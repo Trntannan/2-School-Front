@@ -3,13 +3,12 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import styles from "../styles/groups.module.css";
 
-const backendUrl = process.env.BACKEND_URL;
+const backendUrl = "http://localhost:5000";
 
 const NewGroupForm = ({ map, mapsApi, setGroups }) => {
   const [form, setForm] = useState({
     groupName: "",
-    schoolName: "",
-    schoolLocation: "",
+    endLocation: "",
     meetupPoint: "",
     startTime: "",
   });
@@ -89,7 +88,7 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
     directionsService.route(
       {
         origin: form.meetupPoint,
-        destination: form.schoolLocation,
+        destination: form.endLocation,
         travelMode: "WALKING",
       },
       (result, status) => {
@@ -107,29 +106,40 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const token = localStorage.getItem("token");
-
-    if (!form.meetupPoint || !form.schoolLocation) {
-      alert("Please select both a meetup point and school location.");
-      return;
-    }
-
-    try {
-      const response = await axios.post("http://localhost:5000/api/user/new-group", {
-        groupData: form,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+  
+    const [startLat, startLng] = form.meetupPoint.split(',').map(Number);
+    const [endLat, endLng] = form.endLocation.split(',').map(Number);
+  
+    const groupData = {
+      name: form.groupName,
+      startTime: new Date(form.startTime),
+      members: [], 
+      routes: [
+        {
+          start: { latitude: startLat, longitude: startLng },
+          end: { latitude: endLat, longitude: endLng },
+          waypoints: [], 
         },
-      }
-    );
+      ],
+    };
+  
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/user/new-group",
+        { groupData },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       setGroups((prevGroups) => [...prevGroups, response.data.group]);
     } catch (error) {
       console.error("Error creating group:", error);
     }
   };
+  
 
   return (
     <form onSubmit={handleSubmit} className="form-container">
@@ -141,16 +151,17 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
           name="groupName"
           value={form.groupName}
           onChange={(e) => setForm({ ...form, groupName: e.target.value })}
+          placeholder="Enter group name"
           required
         />
       </div>
 
       <div className="form-group">
-        <label htmlFor="meetupPoint">Meetup Point:</label>
+        <label htmlFor="startLocation">Meetup Point:</label>
         <input
           type="text"
-          id="meetupPoint"
-          name="meetupPoint"
+          id="startLocation"
+          name="startLocation"
           ref={autocompleteRef}
           placeholder="Select a meetup point"
           required
@@ -158,25 +169,13 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
       </div>
 
       <div className="form-group">
-        <label htmlFor="schoolName">School Name:</label>
+        <label htmlFor="endLocation">End Location:</label>
         <input
           type="text"
-          id="schoolName"
-          name="schoolName"
-          value={form.schoolName}
-          onChange={(e) => setForm({ ...form, schoolName: e.target.value })}
-          required
-        />
-      </div>
-
-      <div className="form-group">
-        <label htmlFor="schoolLocation">School Location:</label>
-        <input
-          type="text"
-          id="schoolLocation"
-          name="schoolLocation"
+          id="endLocation"
+          name="endLocation"
           ref={searchBoxRef}
-          placeholder="Search for the school location"
+          placeholder="Search for end location"
           required
         />
       </div>

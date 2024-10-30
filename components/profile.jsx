@@ -29,7 +29,11 @@ const Profile = () => {
         });
 
         console.log("Fetched profile:", response.data);
-        setProfile(response.data.profile);
+
+        setProfile({
+          ...response.data.profile,
+          username: response.data.username,
+        });
       } catch (error) {
         console.error("Error fetching profile:", error);
         setIsClient(false); 
@@ -109,20 +113,21 @@ const Profile = () => {
           )}
         </div>
         <h2 className={styles.fullName}>
-          {editField === "userName" ? (
+          <strong>Name: </strong>
+          {editField === "username" ? (
             <>
               <input
                 type="text"
-                name="userName"
-                value={tempData.userName || ""}
+                name="username"
+                value={tempData.username || ""}
                 onChange={handleChange}
               />
-              <button onClick={() => handleSaveClick("userName")}>Save</button>
+              <button onClick={() => handleSaveClick("username")}>Save</button>
             </>
           ) : (
             <>
-              {profile.userName}
-              <button onClick={() => setEditField("userName")}>&#9998;</button>
+              {profile.username || "No username available"}
+              <button onClick={() => setEditField("username")}>&#9998;</button>
             </>
           )}
         </h2>
