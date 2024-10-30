@@ -6,13 +6,14 @@ import axios from "axios";
 
 require("dotenv").config();
 
-const backendUrl = process.env.BACKEND_URL;
+const backendUrl = "https://two-school-backend.onrender.com";
 
 const Profile = () => {
   const [profile, setProfile] = useState({});
   const [editField, setEditField] = useState(null);
   const [tempData, setTempData] = useState({});
   const [isClient, setIsClient] = useState(false);
+  const [showQrModal, setShowQrModal] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -191,7 +192,20 @@ const Profile = () => {
             </>
           )}
         </div>
-        <QRCode userId={localStorage.getItem("userId")} />
+        <div
+          className={styles.qrCodeContainer}
+          onClick={() => setShowQrModal(true)}
+        >
+          <QRCode userId={localStorage.getItem("userId")} />
+        </div>
+
+        {showQrModal && (
+          <div className={styles.qrModal} onClick={() => setShowQrModal(false)}>
+            <div className={styles.qrModalContent}>
+              <QRCode userId={localStorage.getItem("userId")} />
+            </div>
+          </div>
+        )}
       </main>
 
       <BottomNavBar activePage="Profile" />

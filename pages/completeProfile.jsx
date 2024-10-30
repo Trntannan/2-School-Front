@@ -4,7 +4,7 @@ import axios from "axios";
 
 require("dotenv").config();
 
-const backendUrl = process.env.BACKEND_UR;
+const backendUrl = "https://two-school-backend.onrender.com";
 
 const CompleteProfile = () => {
   const [formData, setForm] = useState({

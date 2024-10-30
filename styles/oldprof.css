@@ -1,0 +1,69 @@
+.completeProfMain {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    gap: 20px;
+  }
+  
+  .profilePicContainer {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+  
+  .profilePic img {
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+    object-fit: cover;
+  }
+  
+  .fullName {
+    font-size: 1.2rem;
+    color: var(--secondary-bg-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .formGroup {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 12px;
+    border-bottom: 1px solid var(--gray-border-color);
+    padding: 8px 0;
+  }
+  
+  .qrCodeContainer {
+    cursor: pointer;
+  }
+  
+  .qrModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+  }
+  
+  .qrModalContent {
+    background: var(--white-color);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  
