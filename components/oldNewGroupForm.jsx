@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import styles from "../styles/groups.module.css";
 
+require("dotenv").config();
+
 const backendUrl = "https://two-school-backend.onrender.com" || 5000;
 
 const NewGroupForm = ({ map, mapsApi, setGroups }) => {
@@ -129,6 +131,7 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
         {
           headers: {
             "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
             Authorization: `Bearer ${token}`,
           },
         }
@@ -153,34 +156,35 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
           required
         />
       </div>
+
       <div className="form-group">
-        <label htmlFor="meetupPoint">Meetup Point:</label>
+        <label htmlFor="startLocation">Meetup Point:</label>
         <input
           type="text"
-          id="meetupPoint"
-          name="meetupPoint"
-          value={form.meetupPoint}
-          onChange={(e) => setForm({ ...form, meetupPoint: e.target.value })}
-          placeholder="Enter meetup point"
+          id="startLocation"
+          name="startLocation"
+          ref={autocompleteRef}
+          placeholder="Select a meetup point"
           required
         />
       </div>
+
       <div className="form-group">
         <label htmlFor="endLocation">End Location:</label>
         <input
           type="text"
           id="endLocation"
           name="endLocation"
-          value={form.endLocation}
-          onChange={(e) => setForm({ ...form, endLocation: e.target.value })}
-          placeholder="Enter end location"
+          ref={searchBoxRef}
+          placeholder="Search for end location"
           required
         />
       </div>
+
       <div className="form-group">
         <label htmlFor="startTime">Start Time:</label>
         <input
-          type="datetime-local"
+          type="time"
           id="startTime"
           name="startTime"
           value={form.startTime}
@@ -188,6 +192,14 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
           required
         />
       </div>
+
+      {routeInfo.distance && routeInfo.duration && (
+        <div className={styles.routeInfo}>
+          <p>Distance: {routeInfo.distance}</p>
+          <p>Estimated Duration: {routeInfo.duration}</p>
+        </div>
+      )}
+
       <button type="submit" className="login-btn">
         Create Group
       </button>

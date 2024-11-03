@@ -38,7 +38,8 @@ const Groups = () => {
   };
 
   const handleEdit = (groupId) => {
-    // Logic to handle editing a group can be added here
+    // Open the form in edit mode with pre-filled data (modify NewGroupForm to support this)
+    // Example logic to set form with the selected group's data could be added here
   };
 
   useEffect(() => {
@@ -51,29 +52,27 @@ const Groups = () => {
         <h1>Groups</h1>
       </div>
       <main className={styles.mainContent}>
-        <div className={styles.mapContainer}>
-          <WrappedMapComponent groups={groups}>
-            {(map, mapsApi) =>
-              showNewGroupForm && (
-                <div className={styles.modalOverlay}>
-                  <div className={styles.modalContent}>
-                    <button
-                      className={styles.closeButton}
-                      onClick={() => setShowNewGroupForm(false)}
-                    >
-                      X
-                    </button>
-                    <NewGroupForm
-                      map={map}
-                      mapsApi={mapsApi}
-                      setGroups={setGroups}
-                    />
-                  </div>
+        <WrappedMapComponent groups={groups}>
+          {(map, mapsApi) =>
+            showNewGroupForm && (
+              <div className={styles.modalOverlay}>
+                <div className={styles.modalContent}>
+                  <button
+                    className={styles.closeButton}
+                    onClick={() => setShowNewGroupForm(false)}
+                  >
+                    X
+                  </button>
+                  <NewGroupForm
+                    map={map}
+                    mapsApi={mapsApi}
+                    setGroups={setGroups}
+                  />
                 </div>
-              )
-            }
-          </WrappedMapComponent>
-        </div>
+              </div>
+            )
+          }
+        </WrappedMapComponent>
         <div className={styles.groupsList}>
           <div className={styles.groupsHeader}>
             <h2 className={styles.userGroups}>Active Groups</h2>
@@ -89,9 +88,9 @@ const Groups = () => {
               {groups.map((group) => (
                 <li key={group._id}>
                   <p>{group.groupName}</p>
-                  <button onClick={() => handleEdit(group._id)}>&#9998;</button>
+                  <button onClick={() => handleEdit(group._id)}>Edit</button>
                   <button onClick={() => handleDelete(group._id)}>
-                    &#128465;
+                    Delete
                   </button>
                 </li>
               ))}

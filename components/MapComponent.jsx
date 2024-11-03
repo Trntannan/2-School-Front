@@ -1,63 +1,49 @@
-import React, { useEffect, useState, useRef } from "react";
-import GoogleMapReact from "google-map-react";
+import React, { useEffect, useRef } from "react";
+import PropTypes from "prop-types";
 import styles from "../styles/groups.module.css";
 
-const MapComponent = ({ groups, setMap, setMapsApi }) => {
-  const handleApiLoaded = (map, mapsApi) => {
-    setMap(map);
-    setMapsApi(mapsApi);
-    if (groups.length) {
-      groups.forEach(group => renderDirections(map, mapsApi, group));
+const MapComponent = ({ groups, onMapReady }) => {
+  const mapRef = useRef(null);
+
+  useEffect(() => {
+    if (window.google) {
+      initMap();
+    } else {
+      const script = document.createElement("script");
+      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyDnZFGBT7fBegTCG1unMndZ4eEV5pFEzfI&libraries=places`;
+      script.async = true;
+      script.onload = () => initMap();
+      document.body.appendChild(script);
     }
+  }, []);
+
+  const initMap = () => {
+    const map = new window.google.maps.Map(mapRef.current, {
+      center: { lat: -36.892057, lng: 174.618656 },
+      zoom: 12,
+    });
+
+    const mapsApi = window.google.maps;
+
+    if (onMapReady) onMapReady(map, mapsApi);
+
+    // Display group markers on the map
+    groups.forEach((group) => {
+      const { latitude, longitude } = group.routes[0].start;
+      new mapsApi.Marker({
+        position: { lat: latitude, lng: longitude },
+        map,
+        label: group.name[0], // First letter of the group name
+      });
+    });
   };
 
-  const renderDirections = (map, mapsApi, group) => {
-    const { meetupPoint, schoolLocation } = group;
-    const directionsService = new mapsApi.DirectionsService();
-    const directionsRenderer = new mapsApi.DirectionsRenderer();
-
-    directionsRenderer.setMap(map);
-
-    directionsService.route(
-      {
-        origin: meetupPoint,
-        destination: schoolLocation,
-        travelMode: "WALKING",
-      },
-      (result, status) => {
-        if (status === mapsApi.DirectionsStatus.OK) {
-          directionsRenderer.setDirections(result);
-        } else {
-          console.error(`Directions request failed due to ${status}`);
-        }
-      }
-    );
-  };
-
-  return (
-    <div className={styles.mapContainer}>
-      <GoogleMapReact
-        bootstrapURLKeys={{ key: "AIzaSyDnZFGBT7fBegTCG1unMndZ4eEV5pFEzfI", libraries: ["places"] }}
-        defaultCenter={{ lat: -36.892057, lng: 174.618656 }}
-        defaultZoom={10}
-        className={styles.map}
-        yesIWantToUseGoogleMapApiInternals
-        onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
-      />
-    </div>
-  );
+  return <div ref={mapRef} className={styles.mapContainer}></div>;
 };
 
-const WrappedMapComponent = ({ groups, children }) => {
-  const [map, setMap] = useState(null);
-  const [mapsApi, setMapsApi] = useState(null);
-
-  return (
-    <>
-      <MapComponent groups={groups} setMap={setMap} setMapsApi={setMapsApi} />
-      {children(map, mapsApi)}
-    </>
-  );
+MapComponent.propTypes = {
+  groups: PropTypes.array.isRequired,
+  onMapReady: PropTypes.func,
 };
 
-export default WrappedMapComponent;
+export default MapComponent;
