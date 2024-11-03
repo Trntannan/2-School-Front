@@ -58,6 +58,7 @@ a {
 }
 
 .main-content {
+  display: flex;
   flex: 1;
   overflow-y:scroll;
   margin-top: 60px; 
