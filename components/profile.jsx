@@ -116,26 +116,32 @@ const Profile = () => {
           ) : (
             <button onClick={() => setEditField("profilePic")}>&#9998;</button>
           )}
+
+          <h2 className={styles.fullName}>
+            <strong>Username: </strong>
+            {editField === "username" ? (
+              <>
+                <input
+                  type="text"
+                  name="username"
+                  value={tempData.username || ""}
+                  onChange={handleChange}
+                />
+                <button onClick={() => handleSaveClick("username")}>
+                  Save
+                </button>
+              </>
+            ) : (
+              <>
+                {profile.username || "No username available"}
+                <button onClick={() => setEditField("username")}>
+                  &#9998;
+                </button>
+              </>
+            )}
+          </h2>
         </div>
-        <h2 className={styles.fullName}>
-          <strong>Username: </strong>
-          {editField === "username" ? (
-            <>
-              <input
-                type="text"
-                name="username"
-                value={tempData.username || ""}
-                onChange={handleChange}
-              />
-              <button onClick={() => handleSaveClick("username")}>Save</button>
-            </>
-          ) : (
-            <>
-              {profile.username || "No username available"}
-              <button onClick={() => setEditField("username")}>&#9998;</button>
-            </>
-          )}
-        </h2>
+
         <div className={styles.formGroup}>
           <strong>No. of Children: </strong>
           {editField === "kidCount" ? (
