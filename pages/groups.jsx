@@ -10,14 +10,21 @@ const backendUrl = "https://two-school-backend.onrender.com" || 5000;
 const Groups = () => {
   const [groups, setGroups] = useState([]);
   const [showNewGroupForm, setShowNewGroupForm] = useState(false);
+  const [map, setMap] = useState(null);
+  const [mapsApi, setMapsApi] = useState(null);
 
   const fetchGroups = async () => {
     const token = localStorage.getItem("token");
     try {
       const response = await axios.get(`${backendUrl}/api/user/get-group`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+          Authorization: `Bearer ${token}`,
+        },
       });
-      setGroups(response.data);
+      console.log("Fetched groups:", response.data);
+      setGroups(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       console.error("Error fetching groups:", error);
     }
@@ -37,10 +44,6 @@ const Groups = () => {
     }
   };
 
-  const handleEdit = (groupId) => {
-    // Logic for handling edit can be added here
-  };
-
   useEffect(() => {
     fetchGroups();
   }, []);
@@ -53,8 +56,10 @@ const Groups = () => {
       <main className={styles.mainContent}>
         <MapComponent
           groups={groups}
-          onMapReady={(map, mapsApi) => {
-            // Pass the map and mapsApi to be used in NewGroupForm if needed
+          className={styles.mapContainer}
+          onMapReady={(mapInstance, mapsApiInstance) => {
+            setMap(mapInstance);
+            setMapsApi(mapsApiInstance);
           }}
         />
         <div className={styles.groupsList}>
@@ -72,7 +77,6 @@ const Groups = () => {
               {groups.map((group) => (
                 <li key={group._id}>
                   <p>{group.groupName}</p>
-                  <button onClick={() => handleEdit(group._id)}>Edit</button>
                   <button onClick={() => handleDelete(group._id)}>
                     Delete
                   </button>
@@ -93,7 +97,7 @@ const Groups = () => {
             >
               X
             </button>
-            <NewGroupForm setGroups={setGroups} />
+            <NewGroupForm map={map} mapsApi={mapsApi} setGroups={setGroups} />
           </div>
         </div>
       )}
