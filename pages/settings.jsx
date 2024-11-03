@@ -34,59 +34,58 @@ const Settings = () => {
   };
 
   return (
-    <div className={styles.settingsContainer}>
-      <h1>Settings</h1>
-      <button
-        onClick={() => setShowLogoutModal(true)}
-        className={styles.button}
-      >
-        Logout
-      </button>
-
-      {showLogoutModal && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.modalContent}>
-            <p>Confirm Logout</p>
-            <div className={styles.buttonGroup}>
-              <button onClick={handleLogout} className={styles.confirmButton}>
-                Yes
-              </button>
-              <button
-                onClick={() => setShowLogoutModal(false)}
-                className={styles.cancelButton}
-              >
-                Cancel
-              </button>
+    <div className="page-container">
+      <div className="page-content">
+        <h1>Settings</h1>
+        <button
+          onClick={() => setShowLogoutModal(true)}
+          className={styles.logoutBtn}
+        >
+          Logout
+        </button>
+        {showLogoutModal && (
+          <div className={styles.modalOverlay}>
+            <div className={styles.modalContent}>
+              <p>Confirm Logout</p>
+              <div className={styles.buttonGroup}>
+                <button onClick={handleLogout} className={styles.confirmButton}>
+                  Yes
+                </button>
+                <button
+                  onClick={() => setShowLogoutModal(false)}
+                  className={styles.cancelButton}
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-
-      <button
-        onClick={() => setShowDeleteModal(true)}
-        className={styles.deleteButton}
-      >
-        Delete Account
-      </button>
-
-      {showDeleteModal && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.modalContent}>
-            <p>Are you sure you want to permanently DELETE your account?</p>
-            <div className={styles.buttonGroup}>
-              <button onClick={handleDelete} className={styles.confirmButton}>
-                Yes
-              </button>
-              <button
-                onClick={() => setShowDeleteModal(false)}
-                className={styles.cancelButton}
-              >
-                Cancel
-              </button>
+        )}
+        <button
+          onClick={() => setShowDeleteModal(true)}
+          className={styles.deleteButton}
+        >
+          Delete Account
+        </button>
+        {showDeleteModal && (
+          <div className={styles.modalOverlay}>
+            <div className={styles.modalContent}>
+              <p>Are you sure you want to permanently DELETE your account?</p>
+              <div className={styles.buttonGroup}>
+                <button onClick={handleDelete} className={styles.confirmButton}>
+                  Yes
+                </button>
+                <button
+                  onClick={() => setShowDeleteModal(false)}
+                  className={styles.cancelButton}
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

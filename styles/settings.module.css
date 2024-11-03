@@ -1,9 +1,4 @@
-.settingsContainer {
-    padding: 20px;
-    text-align: center;
-}
-
-.button {
+.logoutBtn {
     margin: 10px;
     padding: 10px 20px;
     background-color: #007bff;
