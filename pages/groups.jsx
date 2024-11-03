@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styles from "../styles/groups.module.css";
 import NewGroupForm from "../components/newGroupForm";
 import BottomNavBar from "../components/BottomNavBar";
-import WrappedMapComponent from "../components/MapComponent";
+import MapComponent from "../components/MapComponent";
 import axios from "axios";
 
 const backendUrl = "https://two-school-backend.onrender.com" || 5000;
@@ -38,7 +38,7 @@ const Groups = () => {
   };
 
   const handleEdit = (groupId) => {
-    // Logic to handle editing a group can be added here
+    // Logic for handling edit can be added here
   };
 
   useEffect(() => {
@@ -51,29 +51,12 @@ const Groups = () => {
         <h1>Groups</h1>
       </div>
       <main className={styles.mainContent}>
-        <div className={styles.mapContainer}>
-          <WrappedMapComponent groups={groups}>
-            {(map, mapsApi) =>
-              showNewGroupForm && (
-                <div className={styles.modalOverlay}>
-                  <div className={styles.modalContent}>
-                    <button
-                      className={styles.closeButton}
-                      onClick={() => setShowNewGroupForm(false)}
-                    >
-                      X
-                    </button>
-                    <NewGroupForm
-                      map={map}
-                      mapsApi={mapsApi}
-                      setGroups={setGroups}
-                    />
-                  </div>
-                </div>
-              )
-            }
-          </WrappedMapComponent>
-        </div>
+        <MapComponent
+          groups={groups}
+          onMapReady={(map, mapsApi) => {
+            // Pass the map and mapsApi to be used in NewGroupForm if needed
+          }}
+        />
         <div className={styles.groupsList}>
           <div className={styles.groupsHeader}>
             <h2 className={styles.userGroups}>Active Groups</h2>
@@ -89,9 +72,9 @@ const Groups = () => {
               {groups.map((group) => (
                 <li key={group._id}>
                   <p>{group.groupName}</p>
-                  <button onClick={() => handleEdit(group._id)}>&#9998;</button>
+                  <button onClick={() => handleEdit(group._id)}>Edit</button>
                   <button onClick={() => handleDelete(group._id)}>
-                    &#128465;
+                    Delete
                   </button>
                 </li>
               ))}
@@ -101,6 +84,19 @@ const Groups = () => {
           )}
         </div>
       </main>
+      {showNewGroupForm && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <button
+              className={styles.closeButton}
+              onClick={() => setShowNewGroupForm(false)}
+            >
+              X
+            </button>
+            <NewGroupForm setGroups={setGroups} />
+          </div>
+        </div>
+      )}
       <BottomNavBar activePage="home" />
     </div>
   );

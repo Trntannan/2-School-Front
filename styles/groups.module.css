@@ -94,9 +94,9 @@
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -106,10 +106,14 @@
 .modalContent {
   background: white;
   padding: 20px;
-  border-radius: 5px;
+  border-radius: 8px;
   position: relative;
-  max-width: 600px;
-  width: 100%;
+  max-width: 500px;
+  width: 90%;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  -ms-border-radius: 8px;
+  -o-border-radius: 8px;
 }
 
 .closeButton {
