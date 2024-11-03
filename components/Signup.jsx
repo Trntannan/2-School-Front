@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
-// .env
 
 require("dotenv").config();
 
-const backendUrl = process.env.BACKEND_URL;
+const backendUrl = "https://two-school-backend.onrender.com" || 5000;
 
 const Signup = () => {
   const [form, setForm] = useState({
