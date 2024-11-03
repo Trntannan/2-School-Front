@@ -29,6 +29,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  position: relative;
+  margin-bottom: 20px;
 }
 
 .fullName {
@@ -36,6 +38,10 @@
   display: flex;
   user-select: none;
 }
+
+.profilePicSection {
+  position: relative;
+}  
 
 .profilePic {
   border-radius: 50%;
@@ -54,21 +60,48 @@
   font-size: 2rem;
 }
 
+.fullNameContainer,
+.bioContainer {
+  position: relative;
+}
+
+.fullNameContainer {
+  font-size: 3rem;
+}
+
+.bioContainer { 
+  align-self: center;
+  margin-bottom: 20px;
+  width: 80vw;
+}
+
 .bioInput {
   border: 2px solid grey;
 }
 
+.bioHeader {
+  font-size: 1.5rem;
+}
+
 .qrCodeContainer {
-  display: flex;
-  flex-direction: row;
   align-items: center;
   align-self: center;
   cursor: pointer;
   margin-top: 25px;
   user-select: none;
-  cursor: pointer;
   max-width: 150px;
   font-size: 1.3rem;
+}
+
+.editButton {
+  position: absolute;
+  right: -20px;
+  top: 60%;
+  transform: translateY(-50%);
+  /* background: transparent; */
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
 }
 
 .qrModal {
@@ -81,14 +114,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 2000;
+  z-index: 1;
+
 }
 
 .qrModalContent {
   background: var(--white-color);
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+  
 }
 
 

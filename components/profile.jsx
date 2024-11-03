@@ -115,12 +115,15 @@ const Profile = () => {
                 </button>
               </>
             ) : (
-              <button onClick={() => setEditField("profilePic")}>
+              <button
+                className={styles.editButton}
+                onClick={() => setEditField("profilePic")}
+              >
                 &#9998;
               </button>
             )}
           </div>
-          <h2 className={styles.fullName}>
+          <h2 className={styles.fullNameContainer}>
             {editField === "username" ? (
               <>
                 <input
@@ -136,7 +139,10 @@ const Profile = () => {
             ) : (
               <>
                 {profile.username || "No username available"}
-                <button onClick={() => setEditField("username")}>
+                <button
+                  className={styles.editButton}
+                  onClick={() => setEditField("username")}
+                >
                   &#9998;
                 </button>
               </>
@@ -144,8 +150,8 @@ const Profile = () => {
           </h2>
         </div>
 
-        <div className={styles.bio}>
-          <strong>About me: </strong>
+        <div className={styles.bioContainer}>
+          <strong className={styles.bioHeader}>About me: </strong>
           {editField === "bio" ? (
             <>
               <textarea
@@ -158,7 +164,12 @@ const Profile = () => {
           ) : (
             <>
               {profile.bio}
-              <button onClick={() => setEditField("bio")}>&#9998;</button>
+              <button
+                className={styles.editButton}
+                onClick={() => setEditField("bio")}
+              >
+                &#9998;
+              </button>
             </>
           )}
         </div>
@@ -167,6 +178,7 @@ const Profile = () => {
           className={styles.qrCodeContainer}
           onClick={() => setShowQrModal(true)}
         >
+          <h2>QR Code</h2>
           <QRCode userId={localStorage.getItem("userId")} />
         </div>
 
