@@ -97,28 +97,30 @@ const Profile = () => {
       </div>
       <main className="main-content">
         <div className={styles.profilePicContainer}>
-          <img
-            src={
-              profile?.profilePic
-                ? `data:image/jpeg;base64,${profile.profilePic}`
-                : "https://randomuser.me/api/portraits/men/1.jpg"
-            }
-            alt="Profile"
-            className={styles.profilePic}
-          />
-          {editField === "profilePic" ? (
-            <>
-              <input type="file" name="profilePic" onChange={handleChange} />
-              <button onClick={() => handleSaveClick("profilePic")}>
-                Save
+          <div className={styles.profilePicSection}>
+            <img
+              src={
+                profile?.profilePic
+                  ? `data:image/jpeg;base64,${profile.profilePic}`
+                  : "https://randomuser.me/api/portraits/men/1.jpg"
+              }
+              alt="Profile"
+              className={styles.profilePic}
+            />
+            {editField === "profilePic" ? (
+              <>
+                <input type="file" name="profilePic" onChange={handleChange} />
+                <button onClick={() => handleSaveClick("profilePic")}>
+                  Save
+                </button>
+              </>
+            ) : (
+              <button onClick={() => setEditField("profilePic")}>
+                &#9998;
               </button>
-            </>
-          ) : (
-            <button onClick={() => setEditField("profilePic")}>&#9998;</button>
-          )}
-
+            )}
+          </div>
           <h2 className={styles.fullName}>
-            <strong>Username: </strong>
             {editField === "username" ? (
               <>
                 <input
@@ -142,46 +144,8 @@ const Profile = () => {
           </h2>
         </div>
 
-        <div className={styles.formGroup}>
-          <strong>No. of Children: </strong>
-          {editField === "kidCount" ? (
-            <>
-              <input
-                type="number"
-                name="kidCount"
-                value={tempData.kidCount || ""}
-                onChange={handleChange}
-              />
-              <button onClick={() => handleSaveClick("kidCount")}>Save</button>
-            </>
-          ) : (
-            <>
-              {profile.kidCount}
-              <button onClick={() => setEditField("kidCount")}>&#9998;</button>
-            </>
-          )}
-        </div>
-        <div className={styles.formGroup}>
-          <strong>School: </strong>
-          {editField === "school" ? (
-            <>
-              <input
-                type="text"
-                name="school"
-                value={tempData.school || ""}
-                onChange={handleChange}
-              />
-              <button onClick={() => handleSaveClick("school")}>Save</button>
-            </>
-          ) : (
-            <>
-              {profile.school}
-              <button onClick={() => setEditField("school")}>&#9998;</button>
-            </>
-          )}
-        </div>
-        <div className={styles.formGroup}>
-          <strong>Bio: </strong>
+        <div className={styles.bio}>
+          <strong>About me: </strong>
           {editField === "bio" ? (
             <>
               <textarea
@@ -198,6 +162,7 @@ const Profile = () => {
             </>
           )}
         </div>
+
         <div
           className={styles.qrCodeContainer}
           onClick={() => setShowQrModal(true)}
