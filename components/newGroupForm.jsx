@@ -10,8 +10,8 @@ const backendUrl = process.env.BACKEND_URL;
 const NewGroupForm = ({ map, mapsApi, setGroups }) => {
   const [form, setForm] = useState({
     groupName: "",
-    endLocation: "",
     meetupPoint: "",
+    endLocation: "",
     startTime: "",
   });
   const [routeInfo, setRouteInfo] = useState({ distance: "", duration: "" });
