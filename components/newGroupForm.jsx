@@ -141,6 +141,8 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
     <form className="form-container" onSubmit={handleSubmit}>
       <input
         type="text"
+        name="groupName"
+        id="groupName"
         value={form.groupName}
         className="form-group"
         placeholder="Group Name"
@@ -149,17 +151,23 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
       <input
         ref={autocompleteRef}
         type="text"
+        name="meetupPoint"
+        id="meetupPoint"
         className="form-group"
         placeholder="Meetup Point"
       />
       <input
         ref={searchBoxRef}
         type="text"
+        name="endLocation"
+        id="endLocation"
         className="form-group"
         placeholder="End Location"
       />
       <input
         type="datetime-local"
+        name="startTime"
+        id="startTime"
         value={form.startTime}
         className="form-group"
         onChange={(e) => setForm({ ...form, startTime: e.target.value })}
