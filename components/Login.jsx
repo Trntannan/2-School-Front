@@ -6,6 +6,7 @@ require("dotenv").config();
 const backendUrl = "https://two-school-backend.onrender.com" || 5000;
 
 const Login = () => {
+  const [error, setError] = useState(null);
   const [form, setForm] = useState({
     username: "",
     password: "",
@@ -19,34 +20,21 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { username, password } = form;
-    if (username === "" || password === "") {
+
+    if (!username || !password) {
       alert("Please fill in all fields");
       return;
     }
+
     try {
-      const response = await axios.post(
-        `${backendUrl}/api/user/login`,
-        {
-          username: username,
-          password: password,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-          },
-        }
-      );
-      console.log(response.data);
-
-      const token = response.data.token;
-      console.log("Token received:", token);
-
-      localStorage.setItem("token", token);
-      console.log("Login successful");
+      const response = await axios.post(`${backendUrl}/api/user/login`, {
+        username,
+        password,
+      });
+      localStorage.setItem("token", response.data.token);
       window.location.href = "/groups";
     } catch (error) {
-      console.error("Error logging in:", error);
+      setError("Invalid username or password");
     }
   };
 

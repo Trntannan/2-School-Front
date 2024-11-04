@@ -21,35 +21,35 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { username, email, password, confirmPassword } = form;
+    if (!/^[a-zA-Z0-9._%+-]+@example\.com$/.test(email)) {
+      alert("Email must be in '@example.com' domain");
+      return;
+    }
     if (password !== confirmPassword) {
       alert("Passwords do not match");
       return;
     }
-
-    try {
-      const response = await axios.post(
-        `${backendUrl}/api/user/register`,
-        {
-          username,
-          email,
-          password,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-          },
-        }
+    if (
+      !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
+        password
+      )
+    ) {
+      alert(
+        "Password must be at least 8 characters and include uppercase, number, and special character"
       );
-
+      return;
+    }
+    try {
+      const response = await axios.post(`${backendUrl}/api/user/register`, {
+        username,
+        email,
+        password,
+      });
       const token = response.data.token;
-      console.log("Token received:", token);
-
       localStorage.setItem("token", token);
-      console.log("Registration successful");
       window.location.href = "/completeProfile";
     } catch (err) {
-      alert("Error registering user");
+      alert(err.response?.data?.message || "Error registering user");
     }
   };
 
