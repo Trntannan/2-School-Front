@@ -23,8 +23,8 @@ const CompleteProfile = () => {
     e.preventDefault();
     const { kidCount, school, bio, profilePic } = formData;
 
+    const token = localStorage.getItem("token");
     try {
-      const token = localStorage.getItem("token");
       const formDataToSend = new FormData();
       formDataToSend.append("kidCount", kidCount);
       formDataToSend.append("school", school);

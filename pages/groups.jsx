@@ -20,6 +20,7 @@ const Groups = () => {
         headers: {
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Headers": "Content-Type, Authorization",
           Authorization: `Bearer ${token}`,
         },
       });
@@ -34,7 +35,11 @@ const Groups = () => {
     const token = localStorage.getItem("token");
     try {
       await axios.delete(`${backendUrl}/api/user/delete-group/${groupId}`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+          Authorization: `Bearer ${token}`,
+        },
       });
       setGroups((prevGroups) =>
         prevGroups.filter((group) => group._id !== groupId)
@@ -57,8 +62,9 @@ const Groups = () => {
         <MapComponent
           groups={groups}
           className={styles.mapContainer}
-          onMapReady={(map, mapsApi) => {
-            console.log("Map is ready");
+          onMapReady={(mapInstance, mapsApiInstance) => {
+            setMap(mapInstance);
+            setMapsApi(mapsApiInstance);
           }}
         />
         <div className={styles.groupsList}>

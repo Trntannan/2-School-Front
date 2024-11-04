@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
-import styles from "../styles/groups.module.css";
 
 const backendUrl = "https://two-school-backend.onrender.com" || 5000;
 
@@ -27,7 +26,6 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
     }
   }, [mapsApi]);
 
-  // Initialize Google Places Autocomplete and SearchBox for inputs
   const initAutocomplete = () => {
     const autocomplete = new mapsApi.places.Autocomplete(
       autocompleteRef.current,
@@ -69,21 +67,19 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
     if (form.meetupPoint) calculateRoute();
   };
 
-  // Set a marker on the map using AdvancedMarkerElement
   const setMarker = (field, location) => {
-    const markerRef = field === "meetupPoint" ? meetupMarker : schoolMarker;
-    if (markerRef.current) markerRef.current.setMap(null);
+    const marker = field === "meetupPoint" ? meetupMarker : schoolMarker;
+    if (marker.current) marker.current.setMap(null);
 
-    markerRef.current = new mapsApi.marker.AdvancedMarkerElement({
+    marker.current = new mapsApi.Marker({
       position: location,
       map,
-      title: field === "meetupPoint" ? "Meetup Point" : "School",
+      label: field === "meetupPoint" ? "M" : "S",
     });
 
     map.panTo(location);
   };
 
-  // Calculate the walking route between meetup and end points
   const calculateRoute = () => {
     const directionsService = new mapsApi.DirectionsService();
     directionsService.route(
@@ -104,41 +100,77 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
     );
   };
 
-  // Form submission handler to create a new group
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const token = localStorage.getItem("token");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
+    if (!form.meetupPoint || !form.endLocation) {
+      alert("Please enter both meetup point and end location");
+      return;
+    } else if (form.meetupPoint === form.endLocation) {
+      alert("Meetup point and end location cannot be the same");
+      return;
+    } else if (!form.startTime) {
+      alert("Please enter a start time");
+      return;
+    } else if (!form.groupName) {
+      alert("Please enter a group name");
+      return;
+    }
+
+    setForm((prevForm) => ({
+      ...prevForm,
+      startTime: new Date(form.startTime).toISOString(),
+    }));
     const [startLat, startLng] = form.meetupPoint.split(",").map(Number);
     const [endLat, endLng] = form.endLocation.split(",").map(Number);
 
-    const groupData = {
-      name: form.groupName,
-      startTime: new Date(form.startTime),
-      routes: [
-        {
-          start: { latitude: startLat, longitude: startLng },
-          end: { latitude: endLat, longitude: endLng },
-        },
-      ],
-    };
-
     try {
-      const response = await axios.post(
-        `${backendUrl}/api/user/new-group`,
-        { groupData },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-            Authorization: `Bearer ${token}`,
-          },
-        }
+      const response = await axios.get(
+        `https://maps.googleapis.com/maps/api/directions/json?origin=${startLat},${startLng}&destination=${endLat},${endLng}&key=AIzaSyDnZFGBT7fBegTCG1unMndZ4eEV5pFEzfI`
       );
-      setGroups((prevGroups) => [...prevGroups, response.data]);
+
+      const { distance, duration } = response.data.routes[0].legs[0];
+      setRouteInfo({ distance: distance.text, duration: duration.text });
     } catch (error) {
-      console.error("Error creating group:", error);
+      console.error("Error calculating route:", error);
     }
+
+    createGroup();
+  };
+
+  const createGroup = async () => {
+    if (!form.groupName) {
+      alert("Please enter a group name");
+      return;
+    }
+
+    setForm((prevForm) => ({
+      ...prevForm,
+      startTime: new Date(form.startTime).toISOString(),
+    }));
+
+    const formData = new FormData();
+    formData.append("groupName", form.groupName);
+    formData.append("meetupPoint", form.meetupPoint);
+    formData.append("endLocation", form.endLocation);
+    formData.append("startTime", form.startTime);
+
+    const response = await axios.post(
+      `${backendUrl}/api/user/new-group`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "multipart/form-data",
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "POST, PUT",
+          "Access-Control-Allow-Headers": "Content-Type, Authorization",
+        },
+      }
+    );
+
+    console.log("Group created:", response.data);
+    setGroups((prevGroups) => [...prevGroups, response.data]);
   };
 
   return (
