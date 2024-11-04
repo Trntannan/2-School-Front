@@ -1,60 +1,114 @@
-import React, { useEffect, useRef } from "react";
-import GoogleMapReact from "google-map-react";
+import React, { useState, useEffect } from "react";
 import styles from "../styles/groups.module.css";
+import NewGroupForm from "../components/newGroupForm";
+import BottomNavBar from "../components/BottomNavBar";
+import MapComponent from "../components/MapComponent";
+import axios from "axios";
 
-const MapComponent = ({ groups, selectedStart, selectedEnd, setRouteInfo }) => {
-  const mapRef = useRef(null);
-  const directionsRenderer = useRef(null);
+const backendUrl = "https://two-school-backend.onrender.com" || 5000;
+
+const Groups = () => {
+  const [groups, setGroups] = useState([]);
+  const [showNewGroupForm, setShowNewGroupForm] = useState(false);
+  const [map, setMap] = useState(null);
+  const [mapsApi, setMapsApi] = useState(null);
+
+  const fetchGroups = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await axios.get(`${backendUrl}/api/user/get-group`, {
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Headers": "Content-Type, Authorization",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log("Fetched groups:", response.data);
+      setGroups(Array.isArray(response.data) ? response.data : []);
+    } catch (error) {
+      console.error("Error fetching groups:", error);
+    }
+  };
+
+  const handleDelete = async (groupId) => {
+    const token = localStorage.getItem("token");
+    try {
+      await axios.delete(`${backendUrl}/api/user/delete-group/${groupId}`, {
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setGroups((prevGroups) =>
+        prevGroups.filter((group) => group._id !== groupId)
+      );
+    } catch (error) {
+      console.error("Error deleting group:", error);
+    }
+  };
 
   useEffect(() => {
-    if (mapRef.current && selectedStart && selectedEnd) {
-      renderDirections(selectedStart, selectedEnd);
-    }
-  }, [selectedStart, selectedEnd]);
-
-  const renderDirections = (start, end) => {
-    const { map, mapsApi } = mapRef.current;
-    if (!map || !mapsApi) return;
-
-    if (!directionsRenderer.current) {
-      directionsRenderer.current = new mapsApi.DirectionsRenderer();
-      directionsRenderer.current.setMap(map);
-    }
-
-    const directionsService = new mapsApi.DirectionsService();
-    directionsService.route(
-      { origin: start, destination: end, travelMode: "WALKING" },
-      (result, status) => {
-        if (status === "OK") {
-          directionsRenderer.current.setDirections(result);
-          const { distance, duration } = result.routes[0].legs[0];
-          setRouteInfo({ distance: distance.text, duration: duration.text });
-        } else {
-          console.error("Directions request failed:", status);
-        }
-      }
-    );
-  };
-
-  const handleApiLoaded = (map, mapsApi) => {
-    mapRef.current = { map, mapsApi };
-    groups.forEach(({ start, end }) => renderDirections(start, end));
-  };
+    fetchGroups();
+  }, []);
 
   return (
-    <div className={styles.mapContainer}>
-      <GoogleMapReact
-        bootstrapURLKeys={{
-          key: process.env.GOOGLE_MAPS_API_KEY,
-          libraries: ["places"],
-        }}
-        defaultCenter={{ lat: -36.892057, lng: 174.618656 }}
-        defaultZoom={14}
-        yesIWantToUseGoogleMapApiInternals
-        onGoogleApiLoaded={({ map, mapsApi }) => handleApiLoaded(map, mapsApi)}
-      />
+    <div className="page-container">
+      <div className="page-header">
+        <h1>Groups</h1>
+      </div>
+      <main className={styles.mainContent}>
+        <MapComponent
+          groups={groups}
+          className={styles.mapContainer}
+          onMapReady={(mapInstance, mapsApiInstance) => {
+            setMap(mapInstance);
+            setMapsApi(mapsApiInstance);
+          }}
+        />
+        <div className={styles.groupsList}>
+          <div className={styles.groupsHeader}>
+            <h2 className={styles.userGroups}>Active Groups</h2>
+            <button
+              className={styles.addGroupButton}
+              onClick={() => setShowNewGroupForm(true)}
+            >
+              +
+            </button>
+          </div>
+          {groups.length > 0 ? (
+            <ul>
+              {groups.map((group) => (
+                <li key={group._id}>
+                  <p>{group.groupName}</p>
+                  <button onClick={() => handleDelete(group._id)}>
+                    Delete
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No groups found.</p>
+          )}
+        </div>
+      </main>
+      {showNewGroupForm && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <button
+              className={styles.closeButton}
+              onClick={() => setShowNewGroupForm(false)}
+            >
+              X
+            </button>
+            <NewGroupForm map={map} mapsApi={mapsApi} setGroups={setGroups} />
+          </div>
+        </div>
+      )}
+      <BottomNavBar activePage="home" />
     </div>
   );
 };
 
-export default MapComponent;
+export default Groups;
