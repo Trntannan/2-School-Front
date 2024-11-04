@@ -27,6 +27,7 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
     }
   }, [mapsApi]);
 
+  // Initialize Google Places Autocomplete and SearchBox for inputs
   const initAutocomplete = () => {
     const autocomplete = new mapsApi.places.Autocomplete(
       autocompleteRef.current,
@@ -68,19 +69,21 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
     if (form.meetupPoint) calculateRoute();
   };
 
+  // Set a marker on the map using AdvancedMarkerElement
   const setMarker = (field, location) => {
-    const marker = field === "meetupPoint" ? meetupMarker : schoolMarker;
-    if (marker.current) marker.current.setMap(null);
+    const markerRef = field === "meetupPoint" ? meetupMarker : schoolMarker;
+    if (markerRef.current) markerRef.current.setMap(null);
 
-    marker.current = new mapsApi.Marker({
+    markerRef.current = new mapsApi.marker.AdvancedMarkerElement({
       position: location,
       map,
-      label: field === "meetupPoint" ? "M" : "S",
+      title: field === "meetupPoint" ? "Meetup Point" : "School",
     });
 
     map.panTo(location);
   };
 
+  // Calculate the walking route between meetup and end points
   const calculateRoute = () => {
     const directionsService = new mapsApi.DirectionsService();
     directionsService.route(
@@ -101,6 +104,7 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
     );
   };
 
+  // Form submission handler to create a new group
   const handleSubmit = async (event) => {
     event.preventDefault();
     const token = localStorage.getItem("token");
