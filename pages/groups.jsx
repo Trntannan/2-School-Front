@@ -57,9 +57,8 @@ const Groups = () => {
         <MapComponent
           groups={groups}
           className={styles.mapContainer}
-          onMapReady={(mapInstance, mapsApiInstance) => {
-            setMap(mapInstance);
-            setMapsApi(mapsApiInstance);
+          onMapReady={(map, mapsApi) => {
+            console.log("Map is ready");
           }}
         />
         <div className={styles.groupsList}>
