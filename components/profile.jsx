@@ -35,7 +35,6 @@ const Profile = () => {
 
         setProfile({
           ...response.data.profile,
-          username: response.data.username,
         });
       } catch (error) {
         console.error("Error fetching profile:", error);
@@ -49,12 +48,12 @@ const Profile = () => {
 
   const handleEditClick = (field) => {
     setEditField(field);
-    setTempData({ [field]: profile[field] || "" }); // Initialize tempData with the current field value
+    setTempData({ [field]: profile[field] }); // Initialize tempData with the current field value
   };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setTempData((prevData) => ({ ...prevData, [name]: value }));
+    setTempData({ ...tempData, [name]: value });
   };
 
   const handleSaveClick = async (field) => {
@@ -68,6 +67,8 @@ const Profile = () => {
         if (fileInput.files.length > 0) {
           formData.append("profilePic", fileInput.files[0]);
         }
+      } else if (field === "username") {
+        formData.append("username", tempData.username); // Add username to formData
       } else {
         formData.append(field, tempData[field]);
       }
