@@ -9,7 +9,7 @@ const backendUrl = "https://two-school-backend.onrender.com" || 5000;
 // initialize server and database as soon as the page loads
 const initializeServer = async () => {
   try {
-    const response = await axios.post(
+    const response = await axios.get(
       `${backendUrl}/api/user/initialize-server`
     );
     if (!response.ok) {
