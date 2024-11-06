@@ -104,8 +104,8 @@ const Profile = () => {
               src={
                 profile?.profilePic
                   ? `data:image/jpeg;base64,${profile.profilePic}`
-                  : // jpeg in media folder
-                    `../media/avatar.jpeg`
+                  : // placeholder jpeg from media folder
+                    require("../media/avatar.jpeg")
               }
               alt="Profile"
               className={styles.profilePic}
