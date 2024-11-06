@@ -7,7 +7,6 @@ import axios from "axios";
 const backendUrl = "https://two-school-backend.onrender.com" || 5000;
 
 const Profile = () => {
-  const [username, setUsername] = useState("");
   const [profile, setProfile] = useState({});
   const [isEditing, setIsEditing] = useState(false);
   const [tempData, setTempData] = useState({});
@@ -25,10 +24,10 @@ const Profile = () => {
         });
 
         if (response.data) {
-          setUsername(response.data.username);
           setProfile(response.data.profile);
           setTempData(response.data.profile);
         }
+        console.log(response.data);
       } catch (error) {
         console.error("Error fetching profile:", error);
       }
@@ -46,6 +45,11 @@ const Profile = () => {
     setTempData({ ...tempData, [name]: value });
   };
 
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    setTempData({ ...tempData, profilePic: file });
+  };
+
   const handleSaveClick = async () => {
     const token = localStorage.getItem("token");
 
@@ -54,9 +58,8 @@ const Profile = () => {
       formData.append("username", tempData.username);
       formData.append("bio", tempData.bio);
 
-      const fileInput = document.querySelector('input[name="profilePic"]');
-      if (fileInput && fileInput.files.length > 0) {
-        formData.append("profilePic", fileInput.files[0]);
+      if (tempData.profilePic) {
+        formData.append("profilePic", tempData.profilePic);
       }
 
       const response = await axios.put(
@@ -70,9 +73,8 @@ const Profile = () => {
         }
       );
 
-      setProfile(response.data.profile || response.data.username);
+      setProfile(response.data.profile);
       setIsEditing(false);
-      window.location.reload();
     } catch (error) {
       console.error("Error saving profile:", error);
     }
