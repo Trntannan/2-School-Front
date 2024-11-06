@@ -4,16 +4,13 @@ import BottomNavBar from "./BottomNavBar";
 import QRCode from "./QrCode";
 import axios from "axios";
 
-require("dotenv").config();
-
 const backendUrl = "https://two-school-backend.onrender.com" || 5000;
 
 const Profile = () => {
   const [username, setUsername] = useState("");
   const [profile, setProfile] = useState({});
-  const [editField, setEditField] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
   const [tempData, setTempData] = useState({});
-  const [isClient, setIsClient] = useState(false);
   const [showQrModal, setShowQrModal] = useState(false);
 
   useEffect(() => {
@@ -30,9 +27,8 @@ const Profile = () => {
         if (response.data) {
           setUsername(response.data.username);
           setProfile(response.data.profile);
+          setTempData(response.data.profile);
         }
-
-        console.log("Fetched profile:", response.data);
       } catch (error) {
         console.error("Error fetching profile:", error);
       }
@@ -41,9 +37,8 @@ const Profile = () => {
     fetchProfile();
   }, []);
 
-  const handleEditClick = (field) => {
-    setEditField(field);
-    setTempData({ [field]: profile[field] }); // Initialize tempData with the current field value
+  const handleEditToggle = () => {
+    setIsEditing(!isEditing);
   };
 
   const handleChange = (event) => {
@@ -51,21 +46,17 @@ const Profile = () => {
     setTempData({ ...tempData, [name]: value });
   };
 
-  const handleSaveClick = async (field) => {
+  const handleSaveClick = async () => {
     const token = localStorage.getItem("token");
 
     try {
-      let formData = new FormData();
+      const formData = new FormData();
+      formData.append("username", tempData.username);
+      formData.append("bio", tempData.bio);
 
-      if (field === "profilePic") {
-        const fileInput = document.querySelector('input[name="profilePic"]');
-        if (fileInput.files.length > 0) {
-          formData.append("profilePic", fileInput.files[0]);
-        }
-      } else if (field === "username") {
-        formData.append("username", tempData.username); // Add username to formData
-      } else {
-        formData.append(field, tempData[field]);
+      const fileInput = document.querySelector('input[name="profilePic"]');
+      if (fileInput && fileInput.files.length > 0) {
+        formData.append("profilePic", fileInput.files[0]);
       }
 
       const response = await axios.put(
@@ -79,18 +70,13 @@ const Profile = () => {
         }
       );
 
-      setProfile((prevProfile) => ({
-        ...prevProfile,
-        [field]: response.data.profile[field] || response.data.username,
-      }));
-      setEditField(null);
+      setProfile(response.data.profile || response.data.username);
+      setIsEditing(false);
       window.location.reload();
     } catch (error) {
-      console.error(`Error updating ${field}`, error);
+      console.error("Error saving profile:", error);
     }
   };
-
-  if (!isClient) return null;
 
   return (
     <div className="page-container">
@@ -109,72 +95,48 @@ const Profile = () => {
               alt="Profile"
               className={styles.profilePic}
             />
-            {editField === "profilePic" ? (
-              <>
-                <input type="file" name="profilePic" onChange={handleChange} />
-                <button onClick={() => handleSaveClick("profilePic")}>
-                  Save
-                </button>
-              </>
-            ) : (
-              <button
-                className={styles.editButton}
-                onClick={() => handleEditClick("profilePic")}
-              >
-                &#9998;
-              </button>
+            {isEditing && (
+              <input type="file" name="profilePic" onChange={handleChange} />
             )}
           </div>
           <h2 className={styles.fullNameContainer}>
-            {editField === "username" ? (
-              <>
-                <input
-                  type="text"
-                  name="username"
-                  value={tempData.username || ""}
-                  onChange={handleChange}
-                />
-                <button onClick={() => handleSaveClick("username")}>
-                  Save
-                </button>
-              </>
+            {isEditing ? (
+              <input
+                type="text"
+                name="username"
+                value={tempData.username || ""}
+                onChange={handleChange}
+              />
             ) : (
-              <>
-                {profile.username || "No username available"}
-                <button
-                  className={styles.editButton}
-                  onClick={() => handleEditClick("username")}
-                >
-                  &#9998;
-                </button>
-              </>
+              profile.username || "No username available"
             )}
           </h2>
+          <button
+            className={styles.editProfileButton}
+            onClick={handleEditToggle}
+          >
+            {isEditing ? "Cancel" : "Edit Profile"}
+          </button>
         </div>
 
         <div className={styles.bioContainer}>
           <strong className={styles.bioHeader}>About me: </strong>
-          {editField === "bio" ? (
-            <>
-              <textarea
-                name="bio"
-                value={tempData.bio || ""}
-                onChange={handleChange}
-              />
-              <button onClick={() => handleSaveClick("bio")}>Save</button>
-            </>
+          {isEditing ? (
+            <textarea
+              name="bio"
+              value={tempData.bio || ""}
+              onChange={handleChange}
+            />
           ) : (
-            <>
-              {profile.bio}
-              <button
-                className={styles.editButton}
-                onClick={() => handleEditClick("bio")}
-              >
-                &#9998;
-              </button>
-            </>
+            profile.bio || "No bio available"
           )}
         </div>
+
+        {isEditing && (
+          <button className={styles.saveButton} onClick={handleSaveClick}>
+            Save
+          </button>
+        )}
 
         <div
           className={styles.qrCodeContainer}
