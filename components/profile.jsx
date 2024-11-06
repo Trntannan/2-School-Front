@@ -4,18 +4,26 @@ import BottomNavBar from "./BottomNavBar";
 import QRCode from "./QrCode";
 import axios from "axios";
 
+require("dotenv").config();
+
 const backendUrl = "https://two-school-backend.onrender.com" || 5000;
 
 const Profile = () => {
   const [profile, setProfile] = useState({});
-  const [isEditing, setIsEditing] = useState(false);
+  const [editField, setEditField] = useState(null);
   const [tempData, setTempData] = useState({});
+  const [isClient, setIsClient] = useState(false);
   const [showQrModal, setShowQrModal] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("No token found");
+        return;
+      }
+
       try {
-        const token = localStorage.getItem("token");
         const response = await axios.get(`${backendUrl}/api/user/get-profile`, {
           headers: {
             "Content-Type": "application/json",
@@ -23,43 +31,42 @@ const Profile = () => {
           },
         });
 
-        if (response.data) {
-          setProfile(response.data.profile);
-          setTempData(response.data.profile);
-        }
-        console.log(response.data);
+        console.log("Fetched profile:", response.data);
+
+        setProfile({
+          ...response.data.profile,
+          username: response.data.username,
+        });
       } catch (error) {
         console.error("Error fetching profile:", error);
+        setIsClient(false);
       }
     };
 
     fetchProfile();
+    setIsClient(true);
   }, []);
 
-  const handleEditToggle = () => {
-    setIsEditing(!isEditing);
-  };
-
-  const handleChange = (event) => {
+  const handleChange = async (event) => {
     const { name, value } = event.target;
-    setTempData({ ...tempData, [name]: value });
+    setTempData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    setTempData({ ...tempData, profilePic: file });
-  };
-
-  const handleSaveClick = async () => {
+  const handleSaveClick = async (field) => {
     const token = localStorage.getItem("token");
 
     try {
-      const formData = new FormData();
-      formData.append("username", tempData.username);
-      formData.append("bio", tempData.bio);
+      let formData = new FormData();
 
-      if (tempData.profilePic) {
-        formData.append("profilePic", tempData.profilePic);
+      if (field === "profilePic") {
+        const fileInput = document.querySelector('input[name="profilePic"]');
+        if (fileInput.files.length > 0) {
+          formData.append("profilePic", fileInput.files[0]);
+          window.location.reload();
+        }
+      } else {
+        formData.append(field, tempData[field]);
+        window.location.reload();
       }
 
       const response = await axios.put(
@@ -73,12 +80,17 @@ const Profile = () => {
         }
       );
 
-      setProfile(response.data.profile);
-      setIsEditing(false);
+      setProfile((prevProfile) => ({
+        ...prevProfile,
+        [field]: response.data.profile[field],
+      }));
+      setEditField(null);
     } catch (error) {
-      console.error("Error saving profile:", error);
+      console.error(`Error updating ${field}`, error);
     }
   };
+
+  if (!isClient) return null;
 
   return (
     <div className="page-container">
@@ -92,53 +104,78 @@ const Profile = () => {
               src={
                 profile?.profilePic
                   ? `data:image/jpeg;base64,${profile.profilePic}`
-                  : "https://randomuser.me/api/portraits/men/1.jpg"
+                  : // jpeg in media folder
+                    `../media/avatar.jpeg`
               }
               alt="Profile"
               className={styles.profilePic}
             />
-            {isEditing && (
-              <input type="file" name="profilePic" onChange={handleChange} />
+            {editField === "profilePic" ? (
+              <>
+                <input type="file" name="profilePic" onChange={handleChange} />
+                <button onClick={() => handleSaveClick("profilePic")}>
+                  Save
+                </button>
+              </>
+            ) : (
+              <button
+                className={styles.editButton}
+                onClick={() => setEditField("profilePic")}
+              >
+                &#9998;
+              </button>
             )}
           </div>
           <h2 className={styles.fullNameContainer}>
-            {isEditing ? (
-              <input
-                type="text"
-                name="username"
-                value={tempData.username || ""}
-                onChange={handleChange}
-              />
+            {editField === "username" ? (
+              <>
+                <input
+                  type="text"
+                  name="username"
+                  value={tempData.username || ""}
+                  onChange={handleChange}
+                />
+                <button onClick={() => handleSaveClick("username")}>
+                  Save
+                </button>
+              </>
             ) : (
-              profile.username || "No username available"
+              <>
+                {profile.username || "No username available"}
+                <button
+                  className={styles.editButton}
+                  onClick={() => setEditField("username")}
+                >
+                  &#9998;
+                </button>
+              </>
             )}
           </h2>
-          <button
-            className={styles.editProfileButton}
-            onClick={handleEditToggle}
-          >
-            {isEditing ? "Cancel" : "Edit Profile"}
-          </button>
         </div>
 
         <div className={styles.bioContainer}>
           <strong className={styles.bioHeader}>About me: </strong>
-          {isEditing ? (
-            <textarea
-              name="bio"
-              value={tempData.bio || ""}
-              onChange={handleChange}
-            />
+          {editField === "bio" ? (
+            <>
+              <textarea
+                name="bio"
+                value={tempData.bio || ""}
+                onChange={handleChange}
+              />
+              <button onClick={() => handleSaveClick("bio")}>Save</button>
+            </>
           ) : (
-            profile.bio || "No bio available"
+            <>
+              {profile.bio}
+              <button
+                className={styles.editButton}
+                onClick={() => setEditField("bio")}
+              >
+                &#9998;
+              </button>
+            </>
           )}
         </div>
-
-        {isEditing && (
-          <button className={styles.saveButton} onClick={handleSaveClick}>
-            Save
-          </button>
-        )}
 
         <div
           className={styles.qrCodeContainer}

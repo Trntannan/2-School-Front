@@ -13,8 +13,6 @@ const Settings = () => {
   const handleLogout = async () => {
     localStorage.removeItem("token");
     window.location.href = "/";
-    // refresh the page
-    window.location.reload();
   };
 
   const handleDelete = async () => {
