@@ -47,6 +47,11 @@ const Profile = () => {
     setIsClient(true);
   }, []);
 
+  const handleEditClick = (field) => {
+    setEditField(field);
+    setTempData({ [field]: profile[field] || "" }); // Initialize tempData with the current field value
+  };
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setTempData((prevData) => ({ ...prevData, [name]: value }));
@@ -80,7 +85,7 @@ const Profile = () => {
 
       setProfile((prevProfile) => ({
         ...prevProfile,
-        [field]: response.data.profile[field],
+        [field]: response.data.profile[field] || response.data.username,
       }));
       setEditField(null);
     } catch (error) {
@@ -117,7 +122,7 @@ const Profile = () => {
             ) : (
               <button
                 className={styles.editButton}
-                onClick={() => setEditField("profilePic")}
+                onClick={() => handleEditClick("profilePic")}
               >
                 &#9998;
               </button>
@@ -141,7 +146,7 @@ const Profile = () => {
                 {profile.username || "No username available"}
                 <button
                   className={styles.editButton}
-                  onClick={() => setEditField("username")}
+                  onClick={() => handleEditClick("username")}
                 >
                   &#9998;
                 </button>
@@ -166,7 +171,7 @@ const Profile = () => {
               {profile.bio}
               <button
                 className={styles.editButton}
-                onClick={() => setEditField("bio")}
+                onClick={() => handleEditClick("bio")}
               >
                 &#9998;
               </button>
