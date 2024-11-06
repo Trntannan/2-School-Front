@@ -117,26 +117,31 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
       return;
     }
 
-    setForm((prevForm) => ({
-      ...prevForm,
-      startTime: new Date(form.startTime).toISOString(),
-    }));
-    const [startLat, startLng] = form.meetupPoint.split(",").map(Number);
-    const [endLat, endLng] = form.endLocation.split(",").map(Number);
-
     try {
-      const response = await axios.get(
-        `https://maps.googleapis.com/maps/api/directions/json?origin=${startLat},${startLng}&destination=${endLat},${endLng}&key=AIzaSyDnZFGBT7fBegTCG1unMndZ4eEV5pFEzfI`
+      const formData = new FormData();
+      formData.append("groupName", form.groupName);
+      formData.append("meetupPoint", form.meetupPoint);
+      formData.append("endLocation", form.endLocation);
+      formData.append("startTime", form.startTime);
+
+      const response = await axios.post(
+        `${backendUrl}/api/user/new-group`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
 
-      const { distance, duration } = response.data.routes[0].legs[0];
-      setRouteInfo({ distance: distance.text, duration: duration.text });
+      setGroups((prevGroups) => [...prevGroups, response.data]);
     } catch (error) {
-      console.error("Error calculating route:", error);
+      console.error("Error creating group:", error);
     }
-
-    createGroup();
   };
+
+  createGroup();
 
   const createGroup = async () => {
     if (!form.groupName) {

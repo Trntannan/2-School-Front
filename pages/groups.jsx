@@ -19,8 +19,6 @@ const Groups = () => {
       const response = await axios.get(`${backendUrl}/api/user/get-group`, {
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Headers": "Content-Type, Authorization",
           Authorization: `Bearer ${token}`,
         },
       });
@@ -37,7 +35,6 @@ const Groups = () => {
       await axios.delete(`${backendUrl}/api/user/delete-group/${groupId}`, {
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
           Authorization: `Bearer ${token}`,
         },
       });
