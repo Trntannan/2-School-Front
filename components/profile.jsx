@@ -9,6 +9,7 @@ require("dotenv").config();
 const backendUrl = "https://two-school-backend.onrender.com" || 5000;
 
 const Profile = () => {
+  const [username, setUsername] = useState("");
   const [profile, setProfile] = useState({});
   const [editField, setEditField] = useState(null);
   const [tempData, setTempData] = useState({});
@@ -17,13 +18,8 @@ const Profile = () => {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        console.error("No token found");
-        return;
-      }
-
       try {
+        const token = localStorage.getItem("token");
         const response = await axios.get(`${backendUrl}/api/user/get-profile`, {
           headers: {
             "Content-Type": "application/json",
@@ -31,19 +27,18 @@ const Profile = () => {
           },
         });
 
-        console.log("Fetched profile:", response.data);
+        if (response.data) {
+          setUsername(response.data.username);
+          setProfile(response.data.profile);
+        }
 
-        setProfile({
-          ...response.data.profile,
-        });
+        console.log("Fetched profile:", response.data);
       } catch (error) {
         console.error("Error fetching profile:", error);
-        setIsClient(false);
       }
     };
 
     fetchProfile();
-    setIsClient(true);
   }, []);
 
   const handleEditClick = (field) => {
