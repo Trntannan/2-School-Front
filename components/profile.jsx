@@ -89,6 +89,7 @@ const Profile = () => {
         [field]: response.data.profile[field] || response.data.username,
       }));
       setEditField(null);
+      window.location.reload();
     } catch (error) {
       console.error(`Error updating ${field}`, error);
     }

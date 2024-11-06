@@ -53,7 +53,7 @@ const Login = () => {
           />
           <input
             className="form-group"
-            type="text"
+            type="password"
             name="password"
             placeholder="Password"
             value={form.password}
