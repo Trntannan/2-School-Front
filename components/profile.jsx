@@ -37,6 +37,7 @@ const Profile = () => {
           ...response.data.profile,
           username: response.data.username,
         });
+        setTempData(response.data.profile);
       } catch (error) {
         console.error("Error fetching profile:", error);
         setIsClient(false);
@@ -66,7 +67,6 @@ const Profile = () => {
         }
       } else {
         formData.append(field, tempData[field]);
-        window.location.reload();
       }
 
       const response = await axios.put(
@@ -90,6 +90,14 @@ const Profile = () => {
     }
   };
 
+  const handleEditToggle = () => {
+    if (editField === null) {
+      setEditField("all");
+    } else {
+      setEditField(null);
+    }
+  };
+
   if (!isClient) return null;
 
   return (
@@ -110,7 +118,7 @@ const Profile = () => {
               alt="Profile"
               className={styles.profilePic}
             />
-            {editField === "profilePic" ? (
+            {editField === "profilePic" || editField === "all" ? (
               <>
                 <input type="file" name="profilePic" onChange={handleChange} />
                 <button onClick={() => handleSaveClick("profilePic")}>
@@ -127,7 +135,7 @@ const Profile = () => {
             )}
           </div>
           <h2 className={styles.fullNameContainer}>
-            {editField === "username" ? (
+            {editField === "username" || editField === "all" ? (
               <>
                 <input
                   type="text"
@@ -155,7 +163,7 @@ const Profile = () => {
 
         <div className={styles.bioContainer}>
           <strong className={styles.bioHeader}>About me: </strong>
-          {editField === "bio" ? (
+          {editField === "bio" || editField === "all" ? (
             <>
               <textarea
                 name="bio"
@@ -176,6 +184,10 @@ const Profile = () => {
             </>
           )}
         </div>
+
+        <button className={styles.editProfileButton} onClick={handleEditToggle}>
+          {editField === null ? "Edit Profile" : "Cancel Editing"}
+        </button>
 
         <div
           className={styles.qrCodeContainer}
