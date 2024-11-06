@@ -6,6 +6,24 @@ import axios from "axios";
 
 const backendUrl = "https://two-school-backend.onrender.com" || 5000;
 
+// initialize server and database as soon as the page loads
+const initializeServer = async () => {
+  try {
+    const response = await axios.post(
+      `${backendUrl}/api/user/initialize-server`
+    );
+    if (!response.ok) {
+      throw new Error("Failed to initialize server");
+    } else {
+      console.log("Server initialized successfully");
+    }
+  } catch (error) {
+    console.error("Error initializing server:", error);
+  }
+};
+
+initializeServer();
+
 const Home = () => {
   const [isSignup, setIsSignup] = useState(false);
 
