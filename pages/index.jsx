@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styles from "../styles/home.module.css";
 import Login from "../components/Login";
 import Signup from "../components/Signup";
+import axios from "axios";
 
 const backendUrl = "https://two-school-backend.onrender.com" || 5000;
 
