@@ -8,8 +8,6 @@ const backendUrl = "https://two-school-backend.onrender.com" || 5000;
 
 const CompleteProfile = () => {
   const [formData, setForm] = useState({
-    kidCount: "",
-    school: "",
     bio: "",
     profilePic: null,
   });
@@ -21,13 +19,11 @@ const CompleteProfile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { kidCount, school, bio, profilePic } = formData;
+    const { bio, profilePic } = formData;
 
     const token = localStorage.getItem("token");
     try {
       const formDataToSend = new FormData();
-      formDataToSend.append("kidCount", kidCount);
-      formDataToSend.append("school", school);
       formDataToSend.append("bio", bio);
       if (profilePic) formDataToSend.append("profilePic", profilePic);
 
@@ -60,30 +56,10 @@ const CompleteProfile = () => {
           className={styles.completeProfFormContainer}
         >
           <div className={styles.completeProfForm}>
-            <label htmlFor="kidCount">Number of kids:</label>
-            <input
-              id="kidCount"
-              type="number"
-              name="kidCount"
-              value={formData.kidCount}
-              onChange={handleChange}
-              required
-              min="0"
-            />
-          </div>
-          <div className={styles.completeProfForm}>
-            <label htmlFor="school">School:</label>
-            <input
-              id="school"
-              type="text"
-              name="school"
-              value={formData.school}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className={styles.completeProfForm}>
-            <label htmlFor="bio">Bio:</label>
+            <label htmlFor="bio">
+              Tell us a little bit about yourself, This will be displayed on
+              your profile.
+            </label>
             <textarea
               id="bio"
               name="bio"

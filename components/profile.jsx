@@ -24,8 +24,6 @@ const Profile = () => {
           },
         });
 
-        console.log("Fetched profile:", response.data);
-
         setProfile({
           ...response.data.profile,
           username: response.data.username,
@@ -40,22 +38,26 @@ const Profile = () => {
     setIsClient(true);
   }, []);
 
-  const handleChange = async (event) => {
+  const handleChange = (event) => {
     const { name, value } = event.target;
     setTempData((prevData) => ({ ...prevData, [name]: value }));
   };
-  const handleSaveClick = async (field) => {
+
+  const handleSaveClick = async () => {
     try {
       const token = localStorage.getItem("token");
       let formData = new FormData();
 
-      if (field === "profilePic") {
-        const fileInput = document.querySelector('input[name="profilePic"]');
-        if (fileInput.files.length > 0) {
-          formData.append("profilePic", fileInput.files[0]);
+      // Only include fields that have been edited
+      for (let field in tempData) {
+        if (field === "profilePic" && tempData.profilePic) {
+          const fileInput = document.querySelector('input[name="profilePic"]');
+          if (fileInput.files.length > 0) {
+            formData.append("profilePic", fileInput.files[0]);
+          }
+        } else {
+          formData.append(field, tempData[field]);
         }
-      } else {
-        formData.append(field, tempData[field]);
       }
 
       const response = await axios.put(
@@ -69,14 +71,15 @@ const Profile = () => {
         }
       );
 
+      // Update only the fields that were edited
       setProfile((prevProfile) => ({
         ...prevProfile,
-        [field]: response.data.profile[field],
+        ...response.data.profile,
       }));
       setEditMode(false);
-      window.location.reload();
+      setTempData({});
     } catch (error) {
-      console.error(`Error updating ${field}:`, error);
+      console.error("Error updating profile:", error);
     }
   };
 
@@ -100,20 +103,20 @@ const Profile = () => {
               className={styles.profilePic}
             />
             {editMode && (
-              <>
-                <input type="file" name="profilePic" onChange={handleChange} />
-              </>
+              <input type="file" name="profilePic" onChange={handleChange} />
             )}
           </div>
           {editMode ? (
-            <>
-              <input
-                type="text"
-                name="username"
-                value={tempData.username || profile.username || ""}
-                onChange={handleChange}
-              />
-            </>
+            <input
+              type="text"
+              name="username"
+              value={
+                tempData.username !== undefined
+                  ? tempData.username
+                  : profile.username || ""
+              }
+              onChange={handleChange}
+            />
           ) : (
             <h2 className={styles.fullNameContainer}>
               {profile.username || "No username available"}
@@ -132,11 +135,7 @@ const Profile = () => {
           ) : (
             <button
               className={styles.editProfileButton}
-              onClick={() => {
-                handleSaveClick("username");
-                handleSaveClick("bio");
-                handleSaveClick("profilePic");
-              }}
+              onClick={handleSaveClick}
             >
               Save Changes
             </button>
@@ -147,13 +146,13 @@ const Profile = () => {
           <strong className={styles.bioHeader}>About me: </strong>
           <div className={styles.bio}>
             {editMode ? (
-              <>
-                <textarea
-                  name="bio"
-                  value={tempData.bio || ""}
-                  onChange={handleChange}
-                />
-              </>
+              <textarea
+                name="bio"
+                value={
+                  tempData.bio !== undefined ? tempData.bio : profile.bio || ""
+                }
+                onChange={handleChange}
+              />
             ) : (
               <p>{profile.bio || "No bio available"}</p>
             )}
