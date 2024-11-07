@@ -117,6 +117,11 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
       return;
     }
 
+    setForm((prevForm) => ({
+      ...prevForm,
+      startTime: new Date(form.startTime).toISOString(),
+    }));
+
     try {
       const formData = new FormData();
       formData.append("groupName", form.groupName);
@@ -131,51 +136,20 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
             "Content-Type": "multipart/form-data",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+            "Access-Control-Allow-Headers":
+              "Origin, X-Requested-With, Content-Type, Accept, Authorization",
           },
         }
       );
+
+      console.log("Group created:", response.data);
 
       setGroups((prevGroups) => [...prevGroups, response.data]);
     } catch (error) {
       console.error("Error creating group:", error);
     }
-  };
-
-  createGroup();
-
-  const createGroup = async () => {
-    if (!form.groupName) {
-      alert("Please enter a group name");
-      return;
-    }
-
-    setForm((prevForm) => ({
-      ...prevForm,
-      startTime: new Date(form.startTime).toISOString(),
-    }));
-
-    const formData = new FormData();
-    formData.append("groupName", form.groupName);
-    formData.append("meetupPoint", form.meetupPoint);
-    formData.append("endLocation", form.endLocation);
-    formData.append("startTime", form.startTime);
-
-    const response = await axios.post(
-      `${backendUrl}/api/user/new-group`,
-      formData,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "multipart/form-data",
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "POST, PUT",
-          "Access-Control-Allow-Headers": "Content-Type, Authorization",
-        },
-      }
-    );
-
-    console.log("Group created:", response.data);
-    setGroups((prevGroups) => [...prevGroups, response.data]);
   };
 
   return (
