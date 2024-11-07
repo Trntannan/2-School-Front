@@ -16,14 +16,19 @@ const Home = () => {
   };
 
   return (
-    <div className={styles.landingPage}>
-      <div className="page-header">
-        <h1>2 School</h1>
-      </div>
-      {isSignup ? <Signup /> : <Login />}
-      <button className={styles.toggleBtn} onClick={handleToggle}>
-        {isSignup ? "Already registered? Login" : "Not registered yet? Sign up"}
-      </button>
+    <div className={styles.container}>
+      <main className={styles.main}>
+        <div className={styles.header}>
+          <h1>2 School</h1>
+        </div>
+
+        {isSignup ? <Signup /> : <Login />}
+        <button className={styles.toggleBtn} onClick={handleToggle}>
+          {isSignup
+            ? "Already registered? Login"
+            : "Not registered yet? Sign up"}
+        </button>
+      </main>
     </div>
   );
 };

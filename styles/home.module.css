@@ -7,11 +7,20 @@
   justify-content: center;
 }
 
-
-div.form-container {
+.header {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
 }
 
 .input {
@@ -30,6 +39,7 @@ div.form-container {
 }
 
 .toggleBtn {
+ width: 100%;
  border: none;
  background: none;
  font-size: 12px;
