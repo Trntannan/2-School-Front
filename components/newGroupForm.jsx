@@ -117,35 +117,37 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
       return;
     }
 
-    setForm((prevForm) => ({
-      ...prevForm,
-      startTime: new Date(form.startTime).toISOString(),
-    }));
-
     try {
-      const formData = new FormData();
-      formData.append("groupName", form.groupName);
-      formData.append("meetupPoint", form.meetupPoint);
-      formData.append("endLocation", form.endLocation);
-      formData.append("startTime", form.startTime);
+      const newGroup = {
+        name: form.groupName,
+        startTime: new Date(form.startTime).toISOString(),
+        routes: [
+          {
+            start: {
+              latitude: parseFloat(form.meetupPoint.split(",")[0]),
+              longitude: parseFloat(form.meetupPoint.split(",")[1]),
+            },
+            end: {
+              latitude: parseFloat(form.endLocation.split(",")[0]),
+              longitude: parseFloat(form.endLocation.split(",")[1]),
+            },
+            waypoints: [],
+          },
+        ],
+      };
 
       const response = await axios.post(
         `${backendUrl}/api/user/new-group`,
-        formData,
+        newGroup,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "multipart/form-data",
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
-            "Access-Control-Allow-Headers":
-              "Origin, X-Requested-With, Content-Type, Accept, Authorization",
+            "Content-Type": "application/json",
           },
         }
       );
 
       console.log("Group created:", response.data);
-
       setGroups((prevGroups) => [...prevGroups, response.data]);
     } catch (error) {
       console.error("Error creating group:", error);
