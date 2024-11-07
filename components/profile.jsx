@@ -13,6 +13,7 @@ const Profile = () => {
   const [isClient, setIsClient] = useState(false);
   const [showQrModal, setShowQrModal] = useState(false);
 
+  con;
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -48,15 +49,17 @@ const Profile = () => {
       const token = localStorage.getItem("token");
       let formData = new FormData();
 
-      // Only include fields that have been edited
-      for (let field in tempData) {
-        if (field === "profilePic" && tempData.profilePic) {
-          const fileInput = document.querySelector('input[name="profilePic"]');
-          if (fileInput.files.length > 0) {
-            formData.append("profilePic", fileInput.files[0]);
-          }
-        } else {
-          formData.append(field, tempData[field]);
+      if (tempData.username !== undefined) {
+        formData.append("username", tempData.username);
+      }
+      if (tempData.bio !== undefined) {
+        formData.append("bio", tempData.bio);
+      }
+
+      if (tempData.profilePic) {
+        const fileInput = document.querySelector('input[name="profilePic"]');
+        if (fileInput.files.length > 0) {
+          formData.append("profilePic", fileInput.files[0]);
         }
       }
 
@@ -71,7 +74,6 @@ const Profile = () => {
         }
       );
 
-      // Update only the fields that were edited
       setProfile((prevProfile) => ({
         ...prevProfile,
         ...response.data.profile,
