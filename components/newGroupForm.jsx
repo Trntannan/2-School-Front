@@ -149,6 +149,7 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
 
       console.log("Group created:", response.data);
       setGroups((prevGroups) => [...prevGroups, response.data]);
+      closeForm();
     } catch (error) {
       console.error("Error creating group:", error);
     }
@@ -205,6 +206,7 @@ NewGroupForm.propTypes = {
   map: PropTypes.object,
   mapsApi: PropTypes.object,
   setGroups: PropTypes.func.isRequired,
+  closeForm: PropTypes.func.isRequired,
 };
 
 export default NewGroupForm;

@@ -99,7 +99,12 @@ const Groups = () => {
             >
               X
             </button>
-            <NewGroupForm map={map} mapsApi={mapsApi} setGroups={setGroups} />
+            <NewGroupForm
+              map={map}
+              mapsApi={mapsApi}
+              setGroups={setGroups}
+              closeForm={() => setShowNewGroupForm(false)}
+            />
           </div>
         </div>
       )}
