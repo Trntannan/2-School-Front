@@ -131,7 +131,7 @@ const Profile = () => {
             </button>
           ) : (
             <button
-              className={styles.saveProfileButton}
+              className={styles.editProfileButton}
               onClick={() => {
                 handleSaveClick("username");
                 handleSaveClick("bio");
