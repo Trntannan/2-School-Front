@@ -1,9 +1,15 @@
-import React, { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faEnvelope, faComments, faHome, faCog } from '@fortawesome/free-solid-svg-icons';
-import styles from '../styles/BottomNavBar.module.css';
-import { useRouter } from 'next/router';
-import Requests from '../components/Requests.jsx'; 
+import React, { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faUser,
+  faEnvelope,
+  faComments,
+  faHome,
+  faCog,
+} from "@fortawesome/free-solid-svg-icons";
+import styles from "../styles/BottomNavBar.module.css";
+import { useRouter } from "next/router";
+import Requests from "../components/Requests.jsx";
 
 const BottomNavBar = ({ activePage, requests = [] }) => {
   const router = useRouter();
@@ -16,23 +22,29 @@ const BottomNavBar = ({ activePage, requests = [] }) => {
   };
 
   const navItems = {
-    home: { icon: faHome, label: 'Home', path: '/groups' },
-    profile: { icon: faUser, label: 'Profile', path: '/profile' },
-    requests: { icon: faEnvelope, label: 'Requests', onClick: handleRequestsClick },
-    chat: { icon: faComments, label: 'Chat', path: '/ChatPage' },
-    settings: { icon: faCog, label: 'Settings', path: '/settings' },
+    home: { icon: faHome, label: "Home", path: "/groups" },
+    profile: { icon: faUser, label: "Profile", path: "/profile" },
+    requests: {
+      icon: faEnvelope,
+      label: "Requests",
+      onClick: handleRequestsClick,
+    },
+    chat: { icon: faComments, label: "Chat", path: "/ChatPage" },
+    settings: { icon: faCog, label: "Settings", path: "/settings" },
   };
 
   const getNavBar = () => {
     switch (activePage) {
-      case 'home':
-        return ['profile', 'chat', 'settings'];
-      case 'profile':
-        return ['home', 'chat', 'settings'];
-      case 'chat':
-        return ['home', 'profile', 'settings'];
+      case "home":
+        return ["profile", "chat", "settings"];
+      case "profile":
+        return ["home", "chat", "settings"];
+      case "chat":
+        return ["home", "profile", "settings"];
+      case "settings":
+        return ["home", "profile", "chat"];
       default:
-        return ['home', 'chat', 'settings'];
+        return ["home", "chat", "settings"];
     }
   };
 
@@ -42,12 +54,16 @@ const BottomNavBar = ({ activePage, requests = [] }) => {
         {getNavBar().map((item, idx) => (
           <div
             key={idx}
-            className={`${styles.navitem} ${item === 'requests' ? styles.navitemRequests : ''}`}
-            onClick={navItems[item].onClick || (() => router.push(navItems[item].path))}
+            className={`${styles.navitem} ${
+              item === "requests" ? styles.navitemRequests : ""
+            }`}
+            onClick={
+              navItems[item].onClick || (() => router.push(navItems[item].path))
+            }
           >
             <FontAwesomeIcon icon={navItems[item].icon} />
             <span>{navItems[item].label}</span>
-            {item === 'requests' && numRequests > 0 && (
+            {item === "requests" && numRequests > 0 && (
               <span className={styles.indicator}>{numRequests}</span>
             )}
           </div>

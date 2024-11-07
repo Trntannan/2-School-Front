@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import styles from "../styles/settings.module.css";
+import BottomNavBar from "../components/BottomNavBar";
 
 require("dotenv").config();
 
@@ -35,8 +36,10 @@ const Settings = () => {
 
   return (
     <div className="page-container">
-      <div className="page-content">
+      <div className="page-header">
         <h1>Settings</h1>
+      </div>
+      <main className={styles.mainContent}>
         <button
           onClick={() => setShowLogoutModal(true)}
           className={styles.logoutBtn}
@@ -67,25 +70,26 @@ const Settings = () => {
         >
           Delete Account
         </button>
-        {showDeleteModal && (
-          <div className={styles.modalOverlay}>
-            <div className={styles.modalContent}>
-              <p>Are you sure you want to permanently DELETE your account?</p>
-              <div className={styles.buttonGroup}>
-                <button onClick={handleDelete} className={styles.confirmButton}>
-                  Yes
-                </button>
-                <button
-                  onClick={() => setShowDeleteModal(false)}
-                  className={styles.cancelButton}
-                >
-                  Cancel
-                </button>
-              </div>
+      </main>
+      {showDeleteModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <p>Are you sure you want to permanently DELETE your account?</p>
+            <div className={styles.buttonGroup}>
+              <button onClick={handleDelete} className={styles.confirmButton}>
+                Yes
+              </button>
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                className={styles.cancelButton}
+              >
+                Cancel
+              </button>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
+      <BottomNavBar activePage="settings" />
     </div>
   );
 };
