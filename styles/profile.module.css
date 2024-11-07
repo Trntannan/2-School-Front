@@ -161,6 +161,26 @@
   margin-bottom: 20px;
 }
 
+.profilePicSection, .fullNameContainer, .bioContainer {
+  position: relative;
+}
+
+.editIcon {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  display: none;
+  cursor: pointer;
+}
+
+.profilePicSection:hover .editIcon,
+.fullNameContainer:hover .editIcon,
+.bioContainer:hover .editIcon {
+  display: inline;
+}
+
+
 
 
 

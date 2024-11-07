@@ -13,7 +13,6 @@ const Profile = () => {
   const [isClient, setIsClient] = useState(false);
   const [showQrModal, setShowQrModal] = useState(false);
 
-  con;
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -44,17 +43,21 @@ const Profile = () => {
     setTempData((prevData) => ({ ...prevData, [name]: value }));
   };
 
+  const enterEditMode = () => {
+    setTempData({
+      username: profile.username || "",
+      bio: profile.bio || "",
+    });
+    setEditMode(true);
+  };
+
   const handleSaveClick = async () => {
     try {
       const token = localStorage.getItem("token");
       let formData = new FormData();
 
-      if (tempData.username !== undefined) {
-        formData.append("username", tempData.username);
-      }
-      if (tempData.bio !== undefined) {
-        formData.append("bio", tempData.bio);
-      }
+      formData.append("username", tempData.username);
+      formData.append("bio", tempData.bio);
 
       if (tempData.profilePic) {
         const fileInput = document.querySelector('input[name="profilePic"]');
@@ -112,11 +115,7 @@ const Profile = () => {
             <input
               type="text"
               name="username"
-              value={
-                tempData.username !== undefined
-                  ? tempData.username
-                  : profile.username || ""
-              }
+              value={tempData.username}
               onChange={handleChange}
             />
           ) : (
@@ -130,7 +129,7 @@ const Profile = () => {
           {!editMode ? (
             <button
               className={styles.editProfileButton}
-              onClick={() => setEditMode(true)}
+              onClick={enterEditMode}
             >
               Edit Profile
             </button>
@@ -150,9 +149,7 @@ const Profile = () => {
             {editMode ? (
               <textarea
                 name="bio"
-                value={
-                  tempData.bio !== undefined ? tempData.bio : profile.bio || ""
-                }
+                value={tempData.bio}
                 onChange={handleChange}
               />
             ) : (
