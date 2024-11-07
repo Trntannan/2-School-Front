@@ -78,7 +78,7 @@ const Groups = () => {
             <ul>
               {groups.map((group) => (
                 <li key={group._id}>
-                  <p>{group.groupName}</p>
+                  <p>{group.name}</p>
                   <button onClick={() => handleDelete(group._id)}>
                     Delete
                   </button>
