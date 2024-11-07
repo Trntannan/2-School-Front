@@ -6,22 +6,41 @@ const QRCode = () => {
   const [qrCode, setQrCode] = useState(null);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const userId = localStorage.getItem("token");
+  // using the userId used to create the Qr code to  link the Qr Code the user and store the Qr Code in the database
 
+  const userId = localStorage.getItem("token");
+
+  useEffect(() => {
     const generateQRCode = async () => {
       try {
         const qrUrl = `https://quickchart.io/qr?text=${userId}`;
         const qrResponse = await axios.get(qrUrl, { responseType: "blob" });
         const qrCodeUrl = URL.createObjectURL(qrResponse.data);
         setQrCode(qrCodeUrl);
+
+        // Store the QR Code in the database
+        const qrCodeData = {
+          userId: userId,
+          qrCode: qrCodeUrl,
+        };
+        try {
+          const response = await axios.post(
+            `${backendUrl}/api/user/qr-code`,
+            qrCodeData
+          );
+          console.log(response.data);
+        } catch (error) {
+          console.error("Error storing QR Code in database", error);
+        }
       } catch (error) {
         console.error("Error generating QR Code", error);
         setError("Failed to generate QR Code.");
       }
     };
 
-    generateQRCode();
+    if (!qrCode) {
+      generateQRCode();
+    }
   }, []);
 
   if (error) {
