@@ -5,13 +5,28 @@ import styles from "../styles/groups.module.css";
 const MapComponent = ({ groups, onMapReady }) => {
   const mapElementRef = useRef(null);
 
+  const colorPalette = [
+    "#FF0000",
+    "#00FF00",
+    "#0000FF",
+    "#FFA500",
+    "#800080",
+    "#008080",
+    "#FF69B4",
+  ];
+
   useEffect(() => {
     const loadGoogleMapsApi = () => {
-      const script = document.createElement("script");
-      script.src = `https://maps.googleapis.com/maps/api/js?AIzaSyDnZFGBT7fBegTCG1unMndZ4eEV5pFEzfI&libraries=places`;
-      script.async = true;
-      script.onload = initMap;
-      document.body.appendChild(script);
+      if (!window.google || !window.google.maps) {
+        const script = document.createElement("script");
+        script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyDnZFGBT7fBegTCG1unMndZ4eEV5pFEzfI&libraries=places`;
+        script.async = true;
+        script.defer = true;
+        script.onload = initMap;
+        document.body.appendChild(script);
+      } else {
+        initMap();
+      }
     };
 
     const initMap = () => {
@@ -41,27 +56,13 @@ const MapComponent = ({ groups, onMapReady }) => {
           const startMarker = new mapsApi.Marker({
             position: startLocation,
             map,
-            icon: {
-              path: mapsApi.SymbolPath.CIRCLE,
-              fillColor: color,
-              fillOpacity: 0.8,
-              scale: 10,
-              strokeColor: color,
-              strokeWeight: 2,
-            },
+            title: `${group.name} - Start Location`,
           });
 
           const endMarker = new mapsApi.Marker({
             position: endLocation,
             map,
-            icon: {
-              path: mapsApi.SymbolPath.CIRCLE,
-              fillColor: color,
-              fillOpacity: 0.6,
-              scale: 10,
-              strokeColor: color,
-              strokeWeight: 2,
-            },
+            title: `${group.name} - End Location`,
           });
 
           const infoWindow = new mapsApi.InfoWindow({
@@ -125,11 +126,7 @@ const MapComponent = ({ groups, onMapReady }) => {
       });
     };
 
-    if (window.google && window.google.maps) {
-      initMap();
-    } else {
-      loadGoogleMapsApi();
-    }
+    loadGoogleMapsApi();
   }, [groups]);
 
   return <div ref={mapElementRef} className={styles.mapContainer} />;
