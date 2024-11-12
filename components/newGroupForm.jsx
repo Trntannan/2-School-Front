@@ -4,7 +4,7 @@ import axios from "axios";
 
 const backendUrl = "https://two-school-backend.onrender.com" || 5000;
 
-const NewGroupForm = ({ map, mapsApi, setGroups }) => {
+const NewGroupForm = ({ map, mapsApi, setGroups, closeForm }) => {
   const [form, setForm] = useState({
     groupName: "",
     meetupPoint: "",
@@ -149,6 +149,8 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
 
       console.log("Group created:", response.data);
       setGroups((prevGroups) => [...prevGroups, response.data]);
+
+      // Call closeForm to hide the form
       closeForm();
     } catch (error) {
       console.error("Error creating group:", error);
@@ -191,12 +193,13 @@ const NewGroupForm = ({ map, mapsApi, setGroups }) => {
         onChange={(e) => setForm({ ...form, startTime: e.target.value })}
       />
       {routeInfo.distance && routeInfo.duration && (
-        <p>
-          Distance: {routeInfo.distance}, Duration: {routeInfo.duration}
-        </p>
+        <div>
+          <p>Distance: {routeInfo.distance}</p>
+          <p>Duration: {routeInfo.duration}</p>
+        </div>
       )}
-      <button className="login-btn" type="submit">
-        Create Group
+      <button type="submit" className="login-btn">
+        Submit
       </button>
     </form>
   );

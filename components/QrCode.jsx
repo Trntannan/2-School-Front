@@ -56,7 +56,7 @@ const QRCode = () => {
 
   return (
     <div className={styles.qrCodeContainer}>
-      <img src={qrCode} alt="QR Code" />
+      <img className={styles.qr} src={qrCode} alt="QR Code" />
     </div>
   );
 };

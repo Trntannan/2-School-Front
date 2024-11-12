@@ -98,6 +98,11 @@
   height: 200px;
 }
 
+.qr {
+  width: 100px;
+  height: 100px;
+}
+
 .qrModal {
   position: fixed;
   width: 100%;
