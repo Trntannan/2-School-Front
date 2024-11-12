@@ -8,7 +8,7 @@ const MapComponent = ({ groups, onMapReady }) => {
   useEffect(() => {
     const loadGoogleMapsApi = () => {
       const script = document.createElement("script");
-      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyDnZFGBT7fBegTCG1unMndZ4eEV5pFEzfI&libraries=places`;
+      script.src = `https://maps.googleapis.com/maps/api/js?AIzaSyDnZFGBT7fBegTCG1unMndZ4eEV5pFEzfI&libraries=places`;
       script.async = true;
       script.onload = initMap;
       document.body.appendChild(script);
@@ -24,10 +24,9 @@ const MapComponent = ({ groups, onMapReady }) => {
 
       if (onMapReady) onMapReady(map, mapsApi);
 
-      groups.forEach((group) => {
+      groups.forEach((group, index) => {
         if (group.routes && group.routes.length > 0) {
           const directionsService = new mapsApi.DirectionsService();
-
           const startLocation = new mapsApi.LatLng(
             group.routes[0].start.latitude,
             group.routes[0].start.longitude
@@ -36,6 +35,70 @@ const MapComponent = ({ groups, onMapReady }) => {
             group.routes[0].end.latitude,
             group.routes[0].end.longitude
           );
+
+          const color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+
+          const startMarker = new mapsApi.Marker({
+            position: startLocation,
+            map,
+            icon: {
+              path: mapsApi.SymbolPath.CIRCLE,
+              fillColor: color,
+              fillOpacity: 0.8,
+              scale: 10,
+              strokeColor: color,
+              strokeWeight: 2,
+            },
+          });
+
+          const endMarker = new mapsApi.Marker({
+            position: endLocation,
+            map,
+            icon: {
+              path: mapsApi.SymbolPath.CIRCLE,
+              fillColor: color,
+              fillOpacity: 0.6,
+              scale: 10,
+              strokeColor: color,
+              strokeWeight: 2,
+            },
+          });
+
+          const infoWindow = new mapsApi.InfoWindow({
+            content: `<div style="color: black;">
+                        <h4>${group.name}</h4>
+                        <p>Start Time: ${new Date(
+                          group.startTime
+                        ).toLocaleTimeString()}</p>
+                      </div>`,
+          });
+
+          startMarker.addListener("click", () => {
+            infoWindow.open(map, startMarker);
+            startMarker.setIcon({
+              ...startMarker.icon,
+              scale: 14,
+            });
+          });
+
+          endMarker.addListener("click", () => {
+            infoWindow.open(map, endMarker);
+            endMarker.setIcon({
+              ...endMarker.icon,
+              scale: 14,
+            });
+          });
+
+          infoWindow.addListener("closeclick", () => {
+            startMarker.setIcon({
+              ...startMarker.icon,
+              scale: 10,
+            });
+            endMarker.setIcon({
+              ...endMarker.icon,
+              scale: 10,
+            });
+          });
 
           directionsService.route(
             {
@@ -48,6 +111,11 @@ const MapComponent = ({ groups, onMapReady }) => {
               if (status === "OK") {
                 const directionsRenderer = new mapsApi.DirectionsRenderer({
                   map,
+                  directions: result,
+                  suppressMarkers: true,
+                  polylineOptions: {
+                    strokeColor: color,
+                  },
                 });
                 directionsRenderer.setDirections(result);
               }
