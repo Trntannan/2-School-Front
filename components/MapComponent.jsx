@@ -3,13 +3,23 @@ import PropTypes from "prop-types";
 import styles from "../styles/groups.module.css";
 
 const MapComponent = ({ groups, onMapReady }) => {
-  const mapRef = useRef(null);
+  const mapElementRef = useRef(null);
+
   useEffect(() => {
+    const loadGoogleMapsApi = () => {
+      const script = document.createElement("script");
+      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyDnZFGBT7fBegTCG1unMndZ4eEV5pFEzfI&libraries=places`;
+      script.async = true;
+      script.onload = initMap;
+      document.body.appendChild(script);
+    };
+
     const initMap = () => {
-      const map = new window.google.maps.Map(mapRef.current, {
+      const map = new window.google.maps.Map(mapElementRef.current, {
         center: { lat: -36.892057, lng: 174.618656 },
         zoom: 12,
       });
+
       const mapsApi = window.google.maps;
 
       if (onMapReady) onMapReady(map, mapsApi);
@@ -50,15 +60,11 @@ const MapComponent = ({ groups, onMapReady }) => {
     if (window.google && window.google.maps) {
       initMap();
     } else {
-      const script = document.createElement("script");
-      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyDnZFGBT7fBegTCG1unMndZ4eEV5pFEzfI&libraries=places`;
-      script.async = true;
-      script.onload = initMap;
-      document.body.appendChild(script);
+      loadGoogleMapsApi();
     }
   }, [groups]);
 
-  return <div ref={mapRef} className={styles.mapContainer}></div>;
+  return <div ref={mapElementRef} className={styles.mapContainer} />;
 };
 
 MapComponent.propTypes = {
