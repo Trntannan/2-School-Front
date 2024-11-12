@@ -11,18 +11,15 @@ const NewGroupForm = ({ map, mapsApi, setGroups, closeForm }) => {
     endLocation: "",
     startTime: "",
   });
-  const [routeInfo, setRouteInfo] = useState({ distance: "", duration: "" });
 
   const autocompleteRef = useRef(null);
   const searchBoxRef = useRef(null);
   const meetupMarker = useRef(null);
   const schoolMarker = useRef(null);
-  const directionsRenderer = useRef(null);
 
   useEffect(() => {
     if (mapsApi) {
       initAutocomplete();
-      directionsRenderer.current = new mapsApi.DirectionsRenderer({ map });
     }
   }, [mapsApi]);
 
@@ -80,26 +77,6 @@ const NewGroupForm = ({ map, mapsApi, setGroups, closeForm }) => {
     map.panTo(location);
   };
 
-  const calculateRoute = () => {
-    const directionsService = new mapsApi.DirectionsService();
-    directionsService.route(
-      {
-        origin: form.meetupPoint,
-        destination: form.endLocation,
-        travelMode: "WALKING",
-      },
-      (result, status) => {
-        if (status === "OK") {
-          directionsRenderer.current.setDirections(result);
-          const { distance, duration } = result.routes[0].legs[0];
-          setRouteInfo({ distance: distance.text, duration: duration.text });
-        } else {
-          console.error("Error calculating route:", status);
-        }
-      }
-    );
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -150,7 +127,6 @@ const NewGroupForm = ({ map, mapsApi, setGroups, closeForm }) => {
       console.log("Group created:", response.data);
       setGroups((prevGroups) => [...prevGroups, response.data]);
 
-      // Call closeForm to hide the form
       closeForm();
     } catch (error) {
       console.error("Error creating group:", error);
@@ -192,12 +168,6 @@ const NewGroupForm = ({ map, mapsApi, setGroups, closeForm }) => {
         className="form-group"
         onChange={(e) => setForm({ ...form, startTime: e.target.value })}
       />
-      {routeInfo.distance && routeInfo.duration && (
-        <div>
-          <p>Distance: {routeInfo.distance}</p>
-          <p>Duration: {routeInfo.duration}</p>
-        </div>
-      )}
       <button type="submit" className="login-btn">
         Submit
       </button>

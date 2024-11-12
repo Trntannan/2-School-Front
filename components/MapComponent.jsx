@@ -4,7 +4,6 @@ import styles from "../styles/groups.module.css";
 
 const MapComponent = ({ groups, onMapReady }) => {
   const mapRef = useRef(null);
-
   useEffect(() => {
     const initMap = () => {
       const map = new window.google.maps.Map(mapRef.current, {
@@ -14,6 +13,38 @@ const MapComponent = ({ groups, onMapReady }) => {
       const mapsApi = window.google.maps;
 
       if (onMapReady) onMapReady(map, mapsApi);
+
+      groups.forEach((group) => {
+        if (group.routes && group.routes.length > 0) {
+          const directionsService = new mapsApi.DirectionsService();
+
+          const startLocation = new mapsApi.LatLng(
+            group.routes[0].start.latitude,
+            group.routes[0].start.longitude
+          );
+          const endLocation = new mapsApi.LatLng(
+            group.routes[0].end.latitude,
+            group.routes[0].end.longitude
+          );
+
+          directionsService.route(
+            {
+              origin: startLocation,
+              destination: endLocation,
+              travelMode: mapsApi.TravelMode.WALKING,
+              unitSystem: mapsApi.UnitSystem.METRIC,
+            },
+            (result, status) => {
+              if (status === "OK") {
+                const directionsRenderer = new mapsApi.DirectionsRenderer({
+                  map,
+                });
+                directionsRenderer.setDirections(result);
+              }
+            }
+          );
+        }
+      });
     };
 
     if (window.google && window.google.maps) {
