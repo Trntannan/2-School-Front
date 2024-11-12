@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styles from "../styles/groups.module.css";
-import NewGroupForm from "../components/NewGroupForm";
+import NewGroupForm from "../components/newGroupForm";
 import BottomNavBar from "../components/BottomNavBar";
 import MapComponent from "../components/MapComponent";
 import axios from "axios";
