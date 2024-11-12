@@ -47,6 +47,7 @@ const Profile = () => {
     setTempData({
       username: profile.username || "",
       bio: profile.bio || "",
+      profilePic: null,
     });
     setEditMode(true);
   };
@@ -64,6 +65,8 @@ const Profile = () => {
         if (fileInput.files.length > 0) {
           formData.append("profilePic", fileInput.files[0]);
         }
+      } else if (profile.profilePic) {
+        formData.append("profilePic", profile.profilePic);
       }
 
       const response = await axios.put(
