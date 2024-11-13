@@ -40,7 +40,7 @@ const MapComponent = ({ groups, allGroups, onMapReady }) => {
       if (onMapReady) onMapReady(map, mapsApi);
 
       const renderGroupMarkers = (groupList, isUserGroup = false) => {
-        groupList.forEach((group, index) => {
+        groupList?.forEach((group, index) => {
           if (group.routes && group.routes.length > 0) {
             const color = isUserGroup
               ? colorPalette[index % colorPalette.length]

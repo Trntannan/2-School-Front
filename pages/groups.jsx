@@ -31,7 +31,7 @@ const Groups = () => {
 
   const fetchAllGroups = async () => {
     try {
-      const response = await axios.get(`${backendUrl}/api/user/get-all-groups`); // Replace with your API endpoint
+      const response = await axios.get(`${backendUrl}/api/user/all-groups`); // Replace with your API endpoint
       setAllGroups(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       console.error("Error fetching all groups:", error);
