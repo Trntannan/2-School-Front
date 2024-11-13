@@ -40,11 +40,20 @@ const Signup = () => {
       return;
     }
     try {
-      const response = await axios.post(`${backendUrl}/api/user/register`, {
-        username,
-        email,
-        password,
-      });
+      const response = await axios.post(
+        `${backendUrl}/api/user/register`,
+        {
+          username,
+          email,
+          password,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
+        }
+      );
       const token = response.data.token;
       localStorage.setItem("token", token);
       window.location.href = "/completeProfile";

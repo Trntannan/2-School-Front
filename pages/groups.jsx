@@ -9,8 +9,6 @@ const backendUrl = "https://two-school-backend.onrender.com" || 5000;
 
 const Groups = () => {
   const [groups, setGroups] = useState([]);
-  const [joinedGroups, setJoinedGroups] = useState([]);
-  const [allGroups, setAllGroups] = useState([]);
   const [showNewGroupForm, setShowNewGroupForm] = useState(false);
   const [map, setMap] = useState(null);
   const [mapsApi, setMapsApi] = useState(null);
@@ -25,30 +23,6 @@ const Groups = () => {
         },
       });
       setGroups(Array.isArray(response.data) ? response.data : []);
-    } catch (error) {
-      console.error("Error fetching groups:", error);
-    }
-  };
-
-  const fetchJoinedGroups = async () => {
-    const token = localStorage.getItem("token");
-    try {
-      const response = await axios.get(`${backendUrl}/api/user/get-joined`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setJoinedGroups(Array.isArray(response.data) ? response.data : []);
-    } catch (error) {
-      console.error("Error fetching joined groups:", error);
-    }
-  };
-
-  const fetchAllGroups = async () => {
-    try {
-      const response = await axios.get(`${backendUrl}/api/user/get-group`);
-      setAllGroups(response.data);
     } catch (error) {
       console.error("Error fetching groups:", error);
     }
@@ -69,13 +43,6 @@ const Groups = () => {
     } catch (error) {
       console.error("Error deleting group:", error);
     }
-  };
-
-  const handleStatusChange = async (groupId, status) => {
-    setGroupStatus((prevStatus) => ({
-      ...prevStatus,
-      [groupId]: status,
-    }));
   };
 
   const handleGroupClick = (group) => {
@@ -101,8 +68,6 @@ const Groups = () => {
 
   useEffect(() => {
     fetchGroups();
-    fetchJoinedGroups();
-    fetchAllGroups();
   }, []);
 
   return (
@@ -139,29 +104,9 @@ const Groups = () => {
                   >
                     {group.name}
                   </div>
-                  <div className={styles.statusSelector}>
-                    <label>
-                      <input
-                        type="radio"
-                        checked={groupStatus[group._id] === "active"}
-                        onChange={() => handleStatusChange(group._id, "active")}
-                      />
-                      Active
-                    </label>
-                    <label>
-                      <input
-                        type="radio"
-                        checked={groupStatus[group._id] === "inactive"}
-                        onChange={() =>
-                          handleStatusChange(group._id, "inactive")
-                        }
-                      />
-                      Inactive
-                    </label>
-                  </div>
                   <button
                     className={styles.deleteButton}
-                    onClick={() => handleDelete(group)}
+                    onClick={() => handleDelete(group._id)}
                   >
                     Delete
                   </button>
@@ -170,28 +115,6 @@ const Groups = () => {
             </ul>
           ) : (
             <p>No groups found.</p>
-          )}
-          <div className={styles.groupsHeader}>
-            <h2 className={styles.otherGroups}>Other Groups</h2>
-          </div>
-          {joinedGroups.length > 0 ? (
-            <ul>
-              {joinedGroups.map((group) => (
-                <li className={styles.groupItem} key={group._id}>
-                  <div
-                    className={styles.groupName}
-                    onClick={() => handleGroupClick(group)}
-                  >
-                    {group.name}
-                  </div>
-                  <div className={styles.statusSelector}>
-                    <span>Joined</span>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>No joined groups.</p>
           )}
         </div>
       </main>
