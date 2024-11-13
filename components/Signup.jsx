@@ -79,6 +79,7 @@ const Signup = () => {
             className="form-group"
             type="password"
             name="password"
+            autoComplete="on"
             placeholder="Password"
             value={form.password}
             onChange={handleChange}
@@ -88,6 +89,7 @@ const Signup = () => {
             className="form-group"
             type="password"
             name="confirmPassword"
+            autoComplete="on"
             placeholder="Confirm Password"
             value={form.confirmPassword}
             onChange={handleChange}

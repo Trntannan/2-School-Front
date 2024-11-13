@@ -46,6 +46,7 @@ const Login = () => {
           type="text"
           name="username"
           placeholder="Username"
+          autoComplete="on"
           value={form.username}
           onChange={handleChange}
           required
@@ -55,6 +56,7 @@ const Login = () => {
           type="password"
           name="password"
           placeholder="Password"
+          autoComplete="on"
           value={form.password}
           onChange={handleChange}
           required
