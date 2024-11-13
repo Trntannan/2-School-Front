@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import styles from "../styles/groups.module.css";
 
-const MapComponent = ({ groups, allGroups, onMapReady }) => {
+const MapComponent = ({ groups, onMapReady }) => {
   const mapElementRef = useRef(null);
 
   const colorPalette = [
@@ -39,63 +39,101 @@ const MapComponent = ({ groups, allGroups, onMapReady }) => {
 
       if (onMapReady) onMapReady(map, mapsApi);
 
-      const renderGroupMarkers = (groupList, isUserGroup = false) => {
-        groupList?.forEach((group, index) => {
-          if (group.routes && group.routes.length > 0) {
-            const color = isUserGroup
-              ? colorPalette[index % colorPalette.length]
-              : "#808080";
+      groups.forEach((group) => {
+        if (group.routes && group.routes.length > 0) {
+          const directionsService = new mapsApi.DirectionsService();
+          const startLocation = new mapsApi.LatLng(
+            group.routes[0].start.latitude,
+            group.routes[0].start.longitude
+          );
+          const endLocation = new mapsApi.LatLng(
+            group.routes[0].end.latitude,
+            group.routes[0].end.longitude
+          );
 
-            const startLocation = new mapsApi.LatLng(
-              group.routes[0].start.latitude,
-              group.routes[0].start.longitude
-            );
+          const color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
 
-            const endLocation = new mapsApi.LatLng(
-              group.routes[0].end.latitude,
-              group.routes[0].end.longitude
-            );
+          const startMarker = new mapsApi.Marker({
+            position: startLocation,
+            map,
+            title: `${group.name} - Start Location`,
+          });
 
-            const startMarker = new mapsApi.Marker({
-              position: startLocation,
-              map,
-              title: `${group.name} - Start Location`,
-              icon: {
-                path: mapsApi.SymbolPath.CIRCLE,
-                fillColor: color,
-                fillOpacity: 0.6,
-                scale: 8,
-              },
+          const endMarker = new mapsApi.Marker({
+            position: endLocation,
+            map,
+            title: `${group.name} - End Location`,
+          });
+
+          const infoWindow = new mapsApi.InfoWindow({
+            content: `<div style="color: black;">
+                        <h4>${group.name}</h4>
+                        <p>Start Time: ${new Date(
+                          group.startTime
+                        ).toLocaleTimeString()}</p>
+                      </div>`,
+          });
+
+          startMarker.addListener("click", () => {
+            infoWindow.open(map, startMarker);
+            startMarker.setIcon({
+              ...startMarker.icon,
+              scale: 14,
             });
+          });
 
-            const endMarker = new mapsApi.Marker({
-              position: endLocation,
-              map,
-              title: `${group.name} - End Location`,
-              icon: {
-                path: mapsApi.SymbolPath.CIRCLE,
-                fillColor: color,
-                fillOpacity: 0.6,
-                scale: 8,
-              },
+          endMarker.addListener("click", () => {
+            infoWindow.open(map, endMarker);
+            endMarker.setIcon({
+              ...endMarker.icon,
+              scale: 14,
             });
-          }
-        });
-      };
+          });
 
-      renderGroupMarkers(groups, true);
-      renderGroupMarkers(allGroups);
+          infoWindow.addListener("closeclick", () => {
+            startMarker.setIcon({
+              ...startMarker.icon,
+              scale: 10,
+            });
+            endMarker.setIcon({
+              ...endMarker.icon,
+              scale: 10,
+            });
+          });
+
+          directionsService.route(
+            {
+              origin: startLocation,
+              destination: endLocation,
+              travelMode: mapsApi.TravelMode.WALKING,
+              unitSystem: mapsApi.UnitSystem.METRIC,
+            },
+            (result, status) => {
+              if (status === "OK") {
+                const directionsRenderer = new mapsApi.DirectionsRenderer({
+                  map,
+                  directions: result,
+                  suppressMarkers: true,
+                  polylineOptions: {
+                    strokeColor: color,
+                  },
+                });
+                directionsRenderer.setDirections(result);
+              }
+            }
+          );
+        }
+      });
     };
 
     loadGoogleMapsApi();
-  }, [groups, allGroups]);
+  }, [groups]);
 
   return <div ref={mapElementRef} className={styles.mapContainer} />;
 };
 
 MapComponent.propTypes = {
   groups: PropTypes.array.isRequired,
-  allGroups: PropTypes.array,
   onMapReady: PropTypes.func,
 };
 
