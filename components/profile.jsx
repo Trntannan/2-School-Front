@@ -162,7 +162,7 @@ const Profile = () => {
         </div>
 
         <div
-          className={styles.qrCodeContainer}
+          className={styles.qrCodeModalContainer}
           onClick={() => setShowQrModal(true)}
         >
           <h4 className={styles.qrCodeHeader}>QR Code</h4>
