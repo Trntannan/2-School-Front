@@ -13,27 +13,27 @@ const Profile = () => {
   const [isClient, setIsClient] = useState(false);
   const [showQrModal, setShowQrModal] = useState(false);
 
+  // Fetch profile function
+  const fetchProfile = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(`${backendUrl}/api/user/get-profile`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setProfile({
+        ...response.data.profile,
+        username: response.data.username,
+      });
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+      setIsClient(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get(`${backendUrl}/api/user/get-profile`, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        setProfile({
-          ...response.data.profile,
-          username: response.data.username,
-        });
-      } catch (error) {
-        console.error("Error fetching profile:", error);
-        setIsClient(false);
-      }
-    };
-
     fetchProfile();
     setIsClient(true);
   }, []);
@@ -69,21 +69,14 @@ const Profile = () => {
         formData.append("profilePic", profile.profilePic);
       }
 
-      const response = await axios.put(
-        `${backendUrl}/api/user/update-profile`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      await axios.put(`${backendUrl}/api/user/update-profile`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
-      setProfile((prevProfile) => ({
-        ...prevProfile,
-        ...response.data.profile,
-      }));
+      await fetchProfile();
       setEditMode(false);
       setTempData({});
     } catch (error) {

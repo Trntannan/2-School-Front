@@ -36,15 +36,15 @@ const BottomNavBar = ({ activePage, requests = [] }) => {
   const getNavBar = () => {
     switch (activePage) {
       case "home":
-        return ["profile", "Requests", "settings"];
+        return ["profile", "chat", "settings"];
       case "profile":
-        return ["home", "Requests", "settings"];
+        return ["home", "chat", "settings"];
       case "chat":
         return ["home", "profile", "settings"];
       case "settings":
-        return ["home", "profile", "Requests"];
+        return ["home", "profile", "chat"];
       default:
-        return ["home", "Requests", "settings"];
+        return ["home", "chat", "settings"];
     }
   };
 

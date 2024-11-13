@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import styles from "../styles/groups.module.css";
 import NewGroupForm from "../components/newGroupForm";
 import BottomNavBar from "../components/BottomNavBar";
 import MapComponent from "../components/MapComponent";
-import axios from "axios";
 
 const backendUrl = "https://two-school-backend.onrender.com" || 5000;
 
 const Groups = () => {
   const [groups, setGroups] = useState([]);
+  const [allGroups, setAllGroups] = useState([]);
   const [showNewGroupForm, setShowNewGroupForm] = useState(false);
   const [map, setMap] = useState(null);
   const [mapsApi, setMapsApi] = useState(null);
@@ -25,6 +26,15 @@ const Groups = () => {
       setGroups(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       console.error("Error fetching groups:", error);
+    }
+  };
+
+  const fetchAllGroups = async () => {
+    try {
+      const response = await axios.get(`${backendUrl}/api/user/get-all-groups`); // Replace with your API endpoint
+      setAllGroups(Array.isArray(response.data) ? response.data : []);
+    } catch (error) {
+      console.error("Error fetching all groups:", error);
     }
   };
 
@@ -68,6 +78,7 @@ const Groups = () => {
 
   useEffect(() => {
     fetchGroups();
+    fetchAllGroups();
   }, []);
 
   return (
