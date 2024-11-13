@@ -34,6 +34,7 @@ const CompleteProfile = () => {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "multipart/form-data",
+            "Access-Control-Allow-Origin": "*",
           },
         }
       );
