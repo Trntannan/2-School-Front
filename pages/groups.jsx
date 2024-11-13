@@ -106,7 +106,7 @@ const Groups = () => {
                   </div>
                   <button
                     className={styles.deleteButton}
-                    onClick={() => handleDelete(group._id)}
+                    onClick={() => handleDelete(group.name)}
                   >
                     Delete
                   </button>
