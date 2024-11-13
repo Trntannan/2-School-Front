@@ -13,7 +13,7 @@ const QRCode = () => {
     const generateQRCode = async () => {
       const userId = localStorage.getItem("token");
       try {
-        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?data=https://two-school-front.onrender.com/${userId}`;
+        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?data=https://two-school-front.onrender.com`;
         const qrResponse = await axios.get(qrUrl, { responseType: "blob" });
         const qrCodeUrl = URL.createObjectURL(qrResponse.data);
         setQrCode(qrCodeUrl);
