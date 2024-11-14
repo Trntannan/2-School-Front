@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import PropTypes from "prop-types";
+import PropTypes, { string } from "prop-types";
 import styles from "../styles/groups.module.css";
 
 const MapComponent = ({ groups, onMapReady }) => {
@@ -66,7 +66,9 @@ const MapComponent = ({ groups, onMapReady }) => {
           });
 
           const infoWindow = new mapsApi.InfoWindow({
-            content: `<div style="color: black;">
+            content: `<div style="color: black;"><button class="${
+              styles.toJoin
+            }" data-group-id="${group._id}">Ask to join</button>
                         <h4>${group.name}</h4>
                         <p>Start Time: ${new Date(
                           group.startTime

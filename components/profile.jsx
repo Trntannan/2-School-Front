@@ -13,7 +13,6 @@ const Profile = () => {
   const [isClient, setIsClient] = useState(false);
   const [showQrModal, setShowQrModal] = useState(false);
 
-  // Fetch profile function
   const fetchProfile = async () => {
     try {
       const token = localStorage.getItem("token");
