@@ -31,18 +31,19 @@ const Groups = () => {
   //function to delete group using group name not groupId
   const handleDelete = async (group) => {
     const token = localStorage.getItem("token");
+    console.log(group);
     try {
       await axios.delete(`${backendUrl}/api/user/delete-group`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        data: { name: group.name },
+        data: { name: group },
       });
       fetchGroups();
     } catch (error) {
       console.error("Error deleting group:", error);
-    }
+    };
   };
 
   const handleGroupClick = (group) => {

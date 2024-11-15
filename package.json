@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "scripts": {
     "dev": "npm run open-browser && next dev -p 3000",
-    "open-browser": "start http://localhost:3000",
+    "open-browser": "open http://localhost:3000",
     "start": "next start",
     "build": "next build"
   },
