@@ -7,7 +7,7 @@ import axios from "axios";
 const backendUrl = "https://two-school-backend.onrender.com" || 5000;
 
 const Profile = () => {
-  const [profile, setProfile] = useState(null); // Initialize profile as null
+  const [profile, setProfile] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [tempData, setTempData] = useState({});
   const [isClient, setIsClient] = useState(false);
@@ -129,20 +129,18 @@ const Profile = () => {
       </div>
       <main className="main-content">
         <div className={styles.profilePicContainer}>
-          <div className={styles.profilePicSection}>
-            <img
-              src={
-                profile?.profilePic
-                  ? `data:image/jpeg;base64,${profile.profilePic}`
-                  : "https://randomuser.me/api/portraits/men/1.jpg"
-              }
-              alt="Profile"
-              className={styles.profilePic}
-            />
-            {editMode && (
-              <input type="file" name="profilePic" onChange={handleChange} />
-            )}
-          </div>
+          <img
+            src={
+              profile?.profilePic
+                ? `data:image/jpeg;base64,${profile.profilePic}`
+                : "https://randomuser.me/api/portraits/men/1.jpg"
+            }
+            alt="Profile"
+            className={styles.profilePic}
+          />
+          {editMode && (
+            <input type="file" name="profilePic" onChange={handleChange} />
+          )}
           {editMode ? (
             <input
               type="text"
@@ -151,30 +149,12 @@ const Profile = () => {
               onChange={handleChange}
             />
           ) : (
-            <h2 className={styles.fullNameContainer}>{profile.username}</h2>
-          )}
-        </div>
-
-        <div className={styles.editProfileButtonContainer}>
-          {!editMode ? (
-            <button
-              className={styles.editProfileButton}
-              onClick={enterEditMode}
-            >
-              Edit Profile
-            </button>
-          ) : (
-            <button
-              className={styles.editProfileButton}
-              onClick={handleSaveClick}
-            >
-              Save Changes
-            </button>
+            <h2 className={styles.userNameContainer}>{profile.username}</h2>
           )}
         </div>
 
         <div className={styles.bioContainer}>
-          <strong className={styles.bioHeader}>About me: </strong>
+          <h3 className={styles.bioHeader}>Bio: </h3>
           <div className={styles.bio}>
             {editMode ? (
               <textarea
@@ -187,6 +167,19 @@ const Profile = () => {
             )}
           </div>
         </div>
+
+        {!editMode ? (
+          <button className={styles.editProfileButton} onClick={enterEditMode}>
+            Edit Profile
+          </button>
+        ) : (
+          <button
+            className={styles.editProfileButton}
+            onClick={handleSaveClick}
+          >
+            Save Changes
+          </button>
+        )}
 
         <div
           className={styles.qrCodeModalContainer}

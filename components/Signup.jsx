@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 
 require("dotenv").config();
 
@@ -12,6 +13,9 @@ const Signup = () => {
     password: "",
     confirmPassword: "",
   });
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -67,7 +71,7 @@ const Signup = () => {
       <div>
         <form className="form-container" onSubmit={handleSubmit}>
           <input
-            className="form-group"
+            className="form-group mb-3"
             type="text"
             name="username"
             placeholder="Username"
@@ -76,7 +80,7 @@ const Signup = () => {
             required
           />
           <input
-            className="form-group"
+            className="form-group mb-3"
             type="text"
             name="email"
             placeholder="Email"
@@ -84,26 +88,52 @@ const Signup = () => {
             onChange={handleChange}
             required
           />
-          <input
-            className="form-group"
-            type="password"
-            name="password"
-            autoComplete="on"
-            placeholder="Password"
-            value={form.password}
-            onChange={handleChange}
-            required
-          />
-          <input
-            className="form-group"
-            type="password"
-            name="confirmPassword"
-            autoComplete="on"
-            placeholder="Confirm Password"
-            value={form.confirmPassword}
-            onChange={handleChange}
-            required
-          />
+          <div className="relative mb-3">
+            <input
+              className="form-group pr-10"
+              type={showPassword ? "text" : "password"}
+              name="password"
+              autoComplete="on"
+              placeholder="Password"
+              value={form.password}
+              onChange={handleChange}
+              required
+            />
+            <button
+              type="button"
+              className="absolute inset-y-0 right-2 flex items-center text-gray-500"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? (
+                <EyeSlashIcon className="h-5 w-5" />
+              ) : (
+                <EyeIcon className="h-5 w-5" />
+              )}
+            </button>
+          </div>
+          <div className="relative mb-3">
+            <input
+              className="form-group pr-10"
+              type={showConfirmPassword ? "text" : "password"}
+              name="confirmPassword"
+              autoComplete="on"
+              placeholder="Confirm Password"
+              value={form.confirmPassword}
+              onChange={handleChange}
+              required
+            />
+            <button
+              type="button"
+              className="absolute inset-y-0 right-2 flex items-center text-gray-500"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            >
+              {showConfirmPassword ? (
+                <EyeSlashIcon className="h-5 w-5" />
+              ) : (
+                <EyeIcon className="h-5 w-5" />
+              )}
+            </button>
+          </div>
           <button type="submit" className="login-btn">
             Sign up
           </button>

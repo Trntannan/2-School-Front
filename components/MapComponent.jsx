@@ -40,8 +40,6 @@ const MapComponent = ({ groups, onMapReady, user }) => {
       if (onMapReady) onMapReady(map, mapsApi);
 
       groups.forEach((group) => {
-        const isUserInGroup = group.members.includes(user._id);
-
         if (group.routes && group.routes.length > 0) {
           const directionsService = new mapsApi.DirectionsService();
           const startLocation = new mapsApi.LatLng(
@@ -75,11 +73,6 @@ const MapComponent = ({ groups, onMapReady, user }) => {
                         <p>Start Time: ${new Date(
                           group.startTime
                         ).toLocaleTimeString()}</p>
-                        ${
-                          !isUserInGroup
-                            ? `<button class="request-button" onClick={() => requestToJoin(group)}>Ask to Join</button>`
-                            : ""
-                        }
                       </div>`,
           });
 
@@ -109,14 +102,6 @@ const MapComponent = ({ groups, onMapReady, user }) => {
               scale: 10,
             });
           });
-
-          if (!isUserInGroup) {
-            const requestToJoinButton =
-              document.querySelector(".request-button");
-            requestToJoinButton.addEventListener("click", () => {
-              requestToJoin(group);
-            });
-          }
 
           directionsService.route(
             {

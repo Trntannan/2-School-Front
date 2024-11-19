@@ -1,191 +1,83 @@
 .completeProfMain {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
-  overflow-y:scroll; 
-  padding: 5px;
-  gap: 20px;
+  @apply flex flex-col items-center justify-center flex-1 overflow-y-scroll p-1 gap-5;
 }
 
 .completeProfFormContainer {
-  max-width: 600px;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 20px;
+  @apply max-w-[600px] m-0 flex flex-col justify-center p-5;
 }
 
 .completeProfForm {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 18px;
-  border-radius: 5px;
+  @apply flex justify-center mb-4 rounded-md;
 }
 
 .profilePicContainer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: relative;
-  margin-bottom: 20px;
+  @apply flex justify-between items-center mb-5 px-3;
 }
 
-.fullName {
-  font-size: 3rem;
-  display: flex;
-  user-select: none;
+.userNameContainer {
+  @apply text-6xl flex;
 }
-
-.profilePicSection {
-  position: relative;
-}  
 
 .profilePic {
-  border-radius: 50%;
-  width: 150px;
-  height: 150px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  object-fit: cover;
-  user-select: none;
+  @apply rounded-full w-[150px] h-[150px] shadow-md object-cover select-none;
 }
 
 .bio {
-  display: flex;
-  flex-direction: column;
-  width : 100%;
-  margin-top: 30px;
-  font-size: 2rem;
+  @apply flex flex-col w-full text-base;
 }
 
-.fullNameContainer,
 .bioContainer {
-  position: relative;
-}
-
-.fullNameContainer {
-  font-size: 3rem;
-}
-
-.bioContainer { 
-  align-self: center;
-  margin-bottom: 20px;
-  width: 60vw;
-  height: 30vh;
-}
-
-.bio {
-  font-size: 1rem;
+  @apply relative self-center mb-5 w-[60vw] h-[30vh];
 }
 
 .bioHeader {
-  font-size: 1.8rem;
+  @apply text-2xl mb-5;
 }
 
 .qrCodeModalContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  cursor: pointer;
-  user-select: none;
-  font-size: 1.3rem;
-  max-width: 35%;
+  @apply flex flex-col items-center cursor-pointer select-none text-lg max-w-[35%];
 }
 
 .qrCode {
-  width: 30%;
-  height: 200px;
+  @apply w-[30%] h-[200px];
 }
 
 .qr {
-  width: 100px;
-  height: 100px;
+  @apply w-[100px] h-[100px];
 }
 
 .qrModal {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  z-index: 1000;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);     
-  background: rgba(0, 0, 0, 0.4);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  align-self: center;
-
+  @apply fixed w-full h-full z-[1000] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black bg-opacity-40 flex justify-center items-center;
 }
 
 .qrModalContent {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 50%;
-  height: 50%;
-  background: var(--white-color);
-  border-radius: 10px;
-  
+  @apply flex items-center justify-center w-1/2 h-1/2 bg-white rounded-lg;
 }
 
 .qrCodeHeader {
-  font-size: 1.2rem;
-  align-self: center;
+  @apply text-lg self-center;
 }
 
 .profile_qr__Pdm3 {
-  width: 20%;
+  @apply w-[20%];
 }
 
 .editProfileButton {
-  cursor: pointer;
-  width: 60%;
-  height: 3vh;
-  font-size: large;
-  color: white;
-  background-color: blue;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, .5);
-  border: none;
-  border-radius: 4px;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  -ms-border-radius: 4px;
-  -o-border-radius: 4px;
+  @apply flex items-center justify-center self-center cursor-pointer w-[95%] h-[2.5vh] text-lg text-black bg-gray-300 shadow-md border-none rounded-md hover:bg-blue-700;
 }
 
-.editProfileButton:hover {
-  background-color: darkblue;
-}
-
-.editProfileButtonContainer {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-
-.profilePicSection, .fullNameContainer, .bioContainer {
-  position: relative;
+.profilePicSection,
+.fullNameContainer,
+.bioContainer {
+  @apply relative;
 }
 
 .editIcon {
-  position: absolute;
-  top: 50%;
-  right: 0;
-  transform: translateY(-50%);
-  display: none;
-  cursor: pointer;
+  @apply absolute top-1/2 right-0 transform -translate-y-1/2 hidden cursor-pointer;
 }
 
 .profilePicSection:hover .editIcon,
 .fullNameContainer:hover .editIcon,
 .bioContainer:hover .editIcon {
-  display: inline;
+  @apply inline;
 }
-
-
-
-
-

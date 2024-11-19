@@ -140,7 +140,7 @@ const NewGroupForm = ({ map, mapsApi, setGroups, closeForm }) => {
         name="groupName"
         id="groupName"
         value={form.groupName}
-        className="form-group"
+        className="form-group mb-3"
         placeholder="Group Name"
         onChange={(e) => setForm({ ...form, groupName: e.target.value })}
       />
@@ -149,7 +149,7 @@ const NewGroupForm = ({ map, mapsApi, setGroups, closeForm }) => {
         type="text"
         name="meetupPoint"
         id="meetupPoint"
-        className="form-group"
+        className="form-group mb-3"
         placeholder="Meetup Point"
       />
       <input
@@ -157,7 +157,7 @@ const NewGroupForm = ({ map, mapsApi, setGroups, closeForm }) => {
         type="text"
         name="endLocation"
         id="endLocation"
-        className="form-group"
+        className="form-group mb-3"
         placeholder="End Location"
       />
       <input
@@ -165,7 +165,7 @@ const NewGroupForm = ({ map, mapsApi, setGroups, closeForm }) => {
         name="startTime"
         id="startTime"
         value={form.startTime}
-        className="form-group"
+        className="form-group mb-3"
         onChange={(e) => setForm({ ...form, startTime: e.target.value })}
       />
       <button type="submit" className="login-btn">

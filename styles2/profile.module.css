@@ -1,0 +1,191 @@
+.completeProfMain {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  overflow-y:scroll; 
+  padding: 5px;
+  gap: 20px;
+}
+
+.completeProfFormContainer {
+  max-width: 600px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 20px;
+}
+
+.completeProfForm {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 18px;
+  border-radius: 5px;
+}
+
+.profilePicContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.fullName {
+  font-size: 3rem;
+  display: flex;
+  user-select: none;
+}
+
+.profilePicSection {
+  position: relative;
+}  
+
+.profilePic {
+  border-radius: 50%;
+  width: 150px;
+  height: 150px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  object-fit: cover;
+  user-select: none;
+}
+
+.bio {
+  display: flex;
+  flex-direction: column;
+  width : 100%;
+  margin-top: 30px;
+  font-size: 2rem;
+}
+
+.fullNameContainer,
+.bioContainer {
+  position: relative;
+}
+
+.fullNameContainer {
+  font-size: 3rem;
+}
+
+.bioContainer { 
+  align-self: center;
+  margin-bottom: 20px;
+  width: 60vw;
+  height: 30vh;
+}
+
+.bio {
+  font-size: 1rem;
+}
+
+.bioHeader {
+  font-size: 1.8rem;
+}
+
+.qrCodeModalContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  font-size: 1.3rem;
+  max-width: 35%;
+}
+
+.qrCode {
+  width: 30%;
+  height: 200px;
+}
+
+.qr {
+  width: 100px;
+  height: 100px;
+}
+
+.qrModal {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);     
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-self: center;
+
+}
+
+.qrModalContent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50%;
+  height: 50%;
+  background: var(--white-color);
+  border-radius: 10px;
+  
+}
+
+.qrCodeHeader {
+  font-size: 1.2rem;
+  align-self: center;
+}
+
+.profile_qr__Pdm3 {
+  width: 20%;
+}
+
+.editProfileButton {
+  cursor: pointer;
+  width: 60%;
+  height: 3vh;
+  font-size: large;
+  color: white;
+  background-color: blue;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, .5);
+  border: none;
+  border-radius: 4px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+}
+
+.editProfileButton:hover {
+  background-color: darkblue;
+}
+
+.editProfileButtonContainer {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.profilePicSection, .fullNameContainer, .bioContainer {
+  position: relative;
+}
+
+.editIcon {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  display: none;
+  cursor: pointer;
+}
+
+.profilePicSection:hover .editIcon,
+.fullNameContainer:hover .editIcon,
+.bioContainer:hover .editIcon {
+  display: inline;
+}
+
+
+
+
+

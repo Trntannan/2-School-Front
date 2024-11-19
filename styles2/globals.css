@@ -36,43 +36,34 @@ a {
   text-decoration: none;
 }
 
-.login-btn {
-  border-radius: 5px;
-  padding: 10px;
-  background-color: #0070f3;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
 .page-container {
-  @apply flex flex-col h-screen;
+  @apply flex flex-col h-full;
 }
 
 .page-header {
-  @apply fixed top-0 w-screen h-12 bg-stone-800 text-white flex justify-center items-center p-2 z-50 cursor-none select-none;
+  @apply fixed top-0 w-full bg-secondary-bg-color text-white flex justify-center items-center p-2 z-50 cursor-none select-none;
 }
 
 .main-content,
 .mainContent {
-  @apply flex flex-col flex-grow overflow-y-scroll mt-16 p-5;
+  @apply flex flex-col flex-grow overflow-y-scroll mt-16 mb-16 p-5 select-none;
 }
 
 .navbar {
-  @apply fixed bottom-0 w-screen bg-white border-t border-gray-300 flex justify-around py-2 z-50;
+  @apply fixed bottom-0 w-full bg-white border-t border-gray-300 flex justify-around py-2 z-50;
 }
 
 .form-container,
 .completeProfFormContainer {
-  @apply max-w-2xl mx-auto flex flex-col justify-center bg-white rounded border border-hidden;
+  @apply max-w-md mx-auto flex flex-col justify-center p-5 bg-white rounded border;
 }
 
 .form-group {
-  @apply rounded border border-gray-300 p-2;
+  @apply mb-2 rounded border border-gray-300 p-2;
 }
 
 .button {
-  @apply py-2 text-white border-none cursor-pointer rounded transition duration-300 ease-in-out;
+  @apply py-2 bg-primary-color text-white border-none cursor-pointer rounded transition duration-300 ease-in-out;
 }
 
 .button:hover {
