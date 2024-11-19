@@ -1,54 +1,47 @@
-Walk-to-School App
-About the App
-The Walk-to-School app is designed to create a safe and convenient way for children to walk to school together with other children who live nearby and attend the same school. By facilitating group walks, the app aims to relieve parents of the daily school run while fostering a sense of community and encouraging new friendships among children.
+2-School 
+What is it?
+2-School is designed to create a safe and convenient way for children to walk to school together with other children who live nearby and attend the same school. By facilitating group walks, 2-school aims to relieve parents of the daily school run while fostering a sense of community and encouraging new friendships among children.
 
 Key Features
- • User Registration: Users (parents) register and receive a unique QR code.
- • Group Creation: Users can create and join walking groups for their children.
- • Group Search and Map View: Users can search for existing groups and view them on a map.
- • QR Code Verification: Physical meetings and QR code scans ensure group membership and security.
+ â€¢ User Registration: Users (parents) register and receive a unique QR code.
+ â€¢ Group Creation: Users can create and join walking groups for their children.
+ â€¢ Group Search and Map View: Users can search for existing groups and view them on a map.
+ â€¢ QR Code Verification: Physical meetings and QR code scans ensure group membership and security.
 
 User Journey
 Registration and Login
- • Signup/Login Page: New users can sign up, and existing users can log in.
-        ? If the login is successful, the user is directed to the Home page.
-        ? If the login is unsuccessful but the email exists, the user can reset their password and           log in again.
+ â€¢ Signup/Login Page: New users can sign up, and existing users can log in.
+        ? If the login is successful, the user is directed to the Groups page.
+	? if the registers successfully they are redirected to a completeProfile form.
 Profile Completion
-	• Upon successful signup, users are directed to complete their profile.
-	• Once the profile is completed, users are redirected to the Home page.
-Home Page
-	• Create New Group: Users can create a new walking group.
+	â€¢ Once the profile is completed, users are redirected to the Home page.
+Groups Page
+	â€¢ Create New Group: Users can create a new walking group.
 		? Upon creation, the user is directed back to the Home page.
-	• Search for Groups: Users can search for existing groups.
-	• Open Map: Users can view groups on a map and select one for more details.
+	â€¢ Search for Groups: Users can search for existing groups.
+	â€¢ Open Map: Users can view groups on a map and select one for more details.
 		? Upon selecting a group, users can request to join.
 		? After requesting to join, the user is redirected to the Home page.
 Joining and Managing Groups
-	• View Group Details: Users can see information about a selected group.
-	• Request to Join: Users can send a request to join a group.
+	â€¢ View Group Details: Users can see information about a selected group.
+	â€¢ Request to Join: Users can send a request to join a group.
 		? Group owners can send the start location and time to the requester.
 		? Physical meetings and QR code scans by group owners ensure membership.
-	• Create Verified Groups: Users can create groups that will be verified through physical QR code scans by group members or school representatives.
+	â€¢ Create Verified Groups: Users can create groups that will be verified through physical QR code scans by group members or school representatives.
 
 Authorization Levels
 The app employs a tiered authorization system to ensure security and reliability:
 Level 1 (Silver)
-	• New Users: All new users start at Level 1.
-	• View Groups: Users can view groups within a certain radius, but no details (start location or time) are provided.
-	• Restricted Actions: Users cannot create their own groups at this level.
+	â€¢ New Users: All new users start at Level 1.
+	â€¢ View Groups: Users can view groups within a certain radius, but no details (start location or time) are provided.
+	â€¢ Restricted Actions: Users cannot create their own groups at this level.
 Level 2 (Gold)
-	• Become a Member: Users must physically meet a group owner and have their QR code scanned to join a group.
-	• Enhanced Visibility: Users can see basic details of existing groups on the map and via search.
-	• Create Groups: Users can now create groups, but they remain unverified until validated by a QR code scan from another verified member.
+	â€¢ Become a Member: Users must physically meet a group owner and have their QR code scanned to join a group.
+	â€¢ Enhanced Visibility: Users can see basic details of existing groups on the map and via search.
+	â€¢ Create Groups: Users can now create groups, but they remain unverified until validated by a QR code scan from another verified member.
 Level 3 (Platinum)
-	• Confirmed Users: Achieved through QR code validation from a verified school or teacher account.
-	• Verified Accounts: Accounts verified by the app's team ensure maximum trust and reliability.
-	• School Verification: Special accounts for schools or teachers, verified by the app team, can elevate a user's account to "school verified."
-
-Chat Functionality
-	• Open Chat Page: Users can open a chat page from the Home page.
-	• Existing Chats: View a list of ongoing chats.
-	• Search Members: Search through members of the groups the user is part of.
-	• Send Message: Send messages to group members.
+	â€¢ Confirmed Users: Achieved through QR code validation from a verified school or teacher account.
+	â€¢ Verified Accounts: Accounts verified by the app's team ensure maximum trust and reliability.
+	â€¢ School Verification: Special accounts for schools or teachers, verified by the app team, can elevate a user's account to "school verified.".
 Contact and Support
-For any questions, issues, or verification requests, please contact our support team at support@walktoschoolapp.com.
+For any questions, issues, or verification requests, please contact our support team at support@2school.com.
