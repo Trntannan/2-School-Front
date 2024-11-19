@@ -31,6 +31,7 @@ const Login = () => {
 
     if (!username || !password) {
       alert("Please fill in all fields");
+      setIsSubmitting(false);
       return;
     }
 
@@ -42,7 +43,8 @@ const Login = () => {
       localStorage.setItem("token", response.data.token);
       window.location.href = "/groups";
     } catch (error) {
-      setError("Invalid username or password");
+      setError(error.response?.data?.message || "Invalid username or password");
+      setIsSubmitting(false);
     }
   };
 
@@ -82,6 +84,7 @@ const Login = () => {
             )}
           </button>
         </div>
+        {error && <div className="text-red-500 mb-3">{error}</div>}
         <button type="submit" className="login-btn" disabled={isSubmitting}>
           {isSubmitting ? "Processing..." : "Login"}
         </button>
