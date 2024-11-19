@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
+import bcrypt from "bcryptjs";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
-
-require("dotenv").config();
 
 const backendUrl = "https://two-school-backend.onrender.com" || 5000;
 
@@ -25,10 +24,7 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { username, email, password, confirmPassword } = form;
-    if (!/^[a-zA-Z0-9._%+-]+@example\.com$/.test(email)) {
-      alert("Email must be in '@example.com' domain");
-      return;
-    }
+
     if (password !== confirmPassword) {
       alert("Passwords do not match");
       return;
@@ -43,13 +39,16 @@ const Signup = () => {
       );
       return;
     }
+
     try {
+      const hashedPassword = await bcrypt.hash(password, 10);
+
       const response = await axios.post(
         `${backendUrl}/api/user/register`,
         {
           username,
           email,
-          password,
+          password: hashedPassword,
         },
         {
           headers: {
@@ -58,6 +57,7 @@ const Signup = () => {
           },
         }
       );
+
       const token = response.data.token;
       localStorage.setItem("token", token);
       window.location.href = "/completeProfile";
