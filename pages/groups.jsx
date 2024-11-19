@@ -3,6 +3,8 @@ import axios from "axios";
 import styles from "../styles/groups.module.css";
 import NewGroupForm from "../components/newGroupForm";
 import MapComponent from "../components/MapComponent";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 
 const backendUrl = "https://two-school-backend.onrender.com" || 5000;
 
@@ -27,7 +29,37 @@ const Groups = () => {
     }
   };
 
-  const handleDelete = async (group) => {
+  useEffect(() => {
+    fetchGroups();
+  }, []);
+
+  const handleGroupClick = (group) => {
+    if (map && mapsApi) {
+      const infoWindow = new mapsApi.InfoWindow({
+        content: `<div style="color: black;">
+          <h4>${group.name}</h4>
+          <p>Start Time: ${new Date(group.startTime).toLocaleTimeString()}</p>
+        </div>`,
+      });
+
+      const startLocation = new mapsApi.LatLng(
+        group.routes[0].start.latitude,
+        group.routes[0].start.longitude
+      );
+      infoWindow.setPosition(startLocation);
+      infoWindow.open(map);
+    }
+  };
+
+  // handle edit group by opening newGroupForm if no changes don't update just refresh
+  const handleEditGroup = (group) => {
+    setShowNewGroupForm(true);
+    setGroups((prevGroups) =>
+      prevGroups.map((g) => (g._id === group._id ? group : g))
+    );
+  };
+
+  const handleDeleteGroup = async (groupId) => {
     const token = localStorage.getItem("token");
     try {
       await axios.delete(`${backendUrl}/api/user/delete-group`, {
@@ -35,38 +67,13 @@ const Groups = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        data: { groupId: group._id },
+        data: { groupId },
       });
       fetchGroups();
     } catch (error) {
       console.error("Error deleting group:", error);
     }
   };
-
-  const handleGroupClick = (group) => {
-    if (map && mapsApi) {
-      const infoWindow = new mapsApi.InfoWindow({
-        content: `<div style="color: black;">
-                    <h4>${group.name}</h4>
-                    <p>Start Time: ${new Date(
-                      group.startTime
-                    ).toLocaleTimeString()}</p>
-                  </div>`,
-      });
-
-      const startLocation = new mapsApi.LatLng(
-        group.routes[0].start.latitude,
-        group.routes[0].start.longitude
-      );
-
-      infoWindow.setPosition(startLocation);
-      infoWindow.open(map);
-    }
-  };
-
-  useEffect(() => {
-    fetchGroups();
-  }, []);
 
   return (
     <div className="page-container">
@@ -81,7 +88,7 @@ const Groups = () => {
         />
         <div className={styles.groupsList}>
           <div className={styles.groupsHeader}>
-            <h2 className={styles.userGroups}>Active Groups</h2>
+            <h2 className={styles.userGroups}>Your Groups</h2>
             <button
               className={styles.addGroupButton}
               onClick={() => setShowNewGroupForm(true)}
@@ -97,14 +104,21 @@ const Groups = () => {
                     className={styles.groupName}
                     onClick={() => handleGroupClick(group)}
                   >
+                    <span className={getIndicatorStyle(true)}></span>
                     {group.name}
                   </div>
-                  <button
-                    className={styles.deleteButton}
-                    onClick={() => handleDelete(group)}
-                  >
-                    Delete
-                  </button>
+                  <div className={styles.actionIcons}>
+                    <FontAwesomeIcon
+                      icon={faEdit}
+                      onClick={() => handleEditGroup(group._id)}
+                      className={styles.editIcon}
+                    />
+                    <FontAwesomeIcon
+                      icon={faTrash}
+                      onClick={() => handleDeleteGroup(group._id)}
+                      className={styles.trashIcon}
+                    />
+                  </div>
                 </li>
               ))}
             </ul>
@@ -125,7 +139,7 @@ const Groups = () => {
             <NewGroupForm
               map={map}
               mapsApi={mapsApi}
-              setGroups={setGroups}
+              setGroups={fetchGroups}
               closeForm={() => setShowNewGroupForm(false)}
             />
           </div>
