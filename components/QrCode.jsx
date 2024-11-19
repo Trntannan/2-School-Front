@@ -64,11 +64,7 @@ const QRCode = () => {
     );
   }
 
-  return (
-    <div className={styles.qrCodeContainer}>
-      <img className={styles.qr} src={qrCode} alt="QR Code" />
-    </div>
-  );
+  return <img className={styles.qr} src={qrCode} alt="QR Code" />;
 };
 
 export default QRCode;

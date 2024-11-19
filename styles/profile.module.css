@@ -1,49 +1,50 @@
-.completeProfMain {
-  @apply flex flex-col items-center justify-center flex-1 overflow-y-scroll p-1 gap-5;
-}
-
-.completeProfFormContainer {
-  @apply max-w-[600px] m-0 flex flex-col justify-center p-5;
-}
-
-.completeProfForm {
-  @apply flex justify-center mb-4 rounded-md;
-}
-
 .profilePicContainer {
   @apply flex justify-between items-center mb-5 px-3;
 }
 
-.userNameContainer {
-  @apply text-6xl flex;
+.profilePicContent {
+  @apply flex flex-col relative;
+}
+
+.userName {
+  @apply text-6xl flex relative;
 }
 
 .profilePic {
   @apply rounded-full w-[150px] h-[150px] shadow-md object-cover select-none;
 }
 
+.bioContainer {
+  @apply relative self-center mb-5 w-[60vw] h-screen;
+}
+
 .bio {
   @apply flex flex-col w-full text-base;
 }
 
-.bioContainer {
-  @apply relative self-center mb-5 w-[60vw] h-[30vh];
-}
-
 .bioHeader {
-  @apply text-2xl mb-5;
+  @apply text-5xl mb-5;
 }
 
-.qrCodeModalContainer {
-  @apply flex flex-col items-center cursor-pointer select-none text-lg max-w-[35%];
+.profileBottom {
+  @apply flex w-full items-center justify-between gap-2;
 }
 
-.qrCode {
-  @apply w-[30%] h-[200px];
+.qrCodeButton,
+.editProfileButton {
+  @apply flex items-center justify-center cursor-pointer text-lg shadow-md border-none rounded-md;
+}
+
+.editProfileButton {
+  @apply flex items-center justify-center cursor-pointer text-lg shadow-md border-none rounded-md text-black bg-neutral-300 hover:bg-neutral-500 hover:text-white w-[75%];
 }
 
 .qr {
-  @apply w-[100px] h-[100px];
+  @apply size-4/6;
+}
+
+.qrCodeButton {
+  @apply flex items-center justify-center cursor-pointer text-lg shadow-md border-none rounded-md text-white bg-blue-500 hover:bg-blue-700 w-[23%];
 }
 
 .qrModal {
@@ -51,33 +52,13 @@
 }
 
 .qrModalContent {
-  @apply flex items-center justify-center w-1/2 h-1/2 bg-white rounded-lg;
+  @apply flex items-center justify-center w-2/3 h-2/3 bg-white rounded-lg;
 }
 
-.qrCodeHeader {
-  @apply text-lg self-center;
+.usernameInput {
+  @apply w-2/5 text-6xl text-left bg-transparent border border-gray-300 rounded-md outline-none focus:ring-2 focus:ring-blue-500;
 }
 
-.profile_qr__Pdm3 {
-  @apply w-[20%];
-}
-
-.editProfileButton {
-  @apply flex items-center justify-center self-center cursor-pointer w-[95%] h-[2.5vh] text-lg text-black bg-gray-300 shadow-md border-none rounded-md hover:bg-blue-700;
-}
-
-.profilePicSection,
-.fullNameContainer,
-.bioContainer {
-  @apply relative;
-}
-
-.editIcon {
-  @apply absolute top-1/2 right-0 transform -translate-y-1/2 hidden cursor-pointer;
-}
-
-.profilePicSection:hover .editIcon,
-.fullNameContainer:hover .editIcon,
-.bioContainer:hover .editIcon {
-  @apply inline;
+.bioInput {
+  @apply w-full text-base bg-transparent border border-gray-300 rounded-md outline-none focus:ring-2 focus:ring-blue-500 p-2;
 }

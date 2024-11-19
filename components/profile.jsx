@@ -129,27 +129,30 @@ const Profile = () => {
       </div>
       <main className="main-content">
         <div className={styles.profilePicContainer}>
-          <img
-            src={
-              profile?.profilePic
-                ? `data:image/jpeg;base64,${profile.profilePic}`
-                : "https://randomuser.me/api/portraits/men/1.jpg"
-            }
-            alt="Profile"
-            className={styles.profilePic}
-          />
-          {editMode && (
-            <input type="file" name="profilePic" onChange={handleChange} />
-          )}
+          <div className={styles.profilePicContent}>
+            <img
+              src={
+                profile?.profilePic
+                  ? `data:image/jpeg;base64,${profile.profilePic}`
+                  : "https://randomuser.me/api/portraits/men/1.jpg"
+              }
+              alt="Profile"
+              className={styles.profilePic}
+            />
+            {editMode && (
+              <input type="file" name="profilePic" onChange={handleChange} />
+            )}
+          </div>
           {editMode ? (
             <input
               type="text"
               name="username"
               value={tempData.username}
               onChange={handleChange}
+              className={styles.usernameInput}
             />
           ) : (
-            <h2 className={styles.userNameContainer}>{profile.username}</h2>
+            <h2 className={styles.userName}>{profile.username}</h2>
           )}
         </div>
 
@@ -161,6 +164,7 @@ const Profile = () => {
                 name="bio"
                 value={tempData.bio}
                 onChange={handleChange}
+                className={styles.bioInput}
               />
             ) : (
               <p>{profile.bio}</p>
@@ -168,25 +172,28 @@ const Profile = () => {
           </div>
         </div>
 
-        {!editMode ? (
-          <button className={styles.editProfileButton} onClick={enterEditMode}>
-            Edit Profile
-          </button>
-        ) : (
+        <div className={styles.profileBottom}>
+          {!editMode ? (
+            <button
+              className={styles.editProfileButton}
+              onClick={enterEditMode}
+            >
+              Edit Profile
+            </button>
+          ) : (
+            <button
+              className={styles.editProfileButton}
+              onClick={handleSaveClick}
+            >
+              Save Changes
+            </button>
+          )}
           <button
-            className={styles.editProfileButton}
-            onClick={handleSaveClick}
+            className={styles.qrCodeButton}
+            onClick={() => setShowQrModal(true)}
           >
-            Save Changes
+            Verification
           </button>
-        )}
-
-        <div
-          className={styles.qrCodeModalContainer}
-          onClick={() => setShowQrModal(true)}
-        >
-          <h4 className={styles.qrCodeHeader}>QR Code</h4>
-          <QRCode userId={localStorage.getItem("userId")} />
         </div>
 
         {showQrModal && (

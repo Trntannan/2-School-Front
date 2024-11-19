@@ -55,7 +55,7 @@ a {
 
 .main-content,
 .mainContent {
-  @apply flex flex-col flex-grow overflow-y-scroll mt-16 p-5;
+  @apply flex flex-col flex-grow overflow-y-scroll my-16 p-5;
 }
 
 .navbar {
