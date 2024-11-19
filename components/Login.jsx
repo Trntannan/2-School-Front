@@ -14,6 +14,7 @@ const Login = () => {
   });
 
   const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,6 +23,10 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+
     const { username, password } = form;
 
     if (!username || !password) {
@@ -77,9 +82,8 @@ const Login = () => {
             )}
           </button>
         </div>
-        {error && <p className="text-red-500 text-sm">{error}</p>}
-        <button type="submit" className="login-btn">
-          Login
+        <button type="submit" className="login-btn" disabled={isSubmitting}>
+          {isSubmitting ? "Processing..." : "Login"}
         </button>
       </form>
     </div>

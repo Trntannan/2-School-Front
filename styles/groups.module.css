@@ -78,7 +78,18 @@
   @apply flex flex-row items-center justify-between text-lg;
 }
 
+.actionIcons {
+  @apply flex;
+}
+
 .editIcon,
 .trashIcon {
-  @apply mx-3;
+  @apply mx-3 inline-block;
+}
+
+@media (max-width: 450px) {
+  .editIcon,
+  .trashIcon {
+    @apply size-2 mx-1;
+  }
 }
