@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import styles from "../styles/groups.module.css";
 import NewGroupForm from "../components/newGroupForm";
-import BottomNavBar from "../components/BottomNavBar";
 import MapComponent from "../components/MapComponent";
 
 const backendUrl = "https://two-school-backend.onrender.com" || 5000;
@@ -36,7 +35,7 @@ const Groups = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        data: { name: group.name },
+        data: { groupId: group._id },
       });
       fetchGroups();
     } catch (error) {
@@ -71,9 +70,6 @@ const Groups = () => {
 
   return (
     <div className="page-container">
-      <div className="page-header">
-        <h1>Groups</h1>
-      </div>
       <main className={styles.mainContent}>
         <MapComponent
           groups={groups}
@@ -135,7 +131,6 @@ const Groups = () => {
           </div>
         </div>
       )}
-      <BottomNavBar activePage="home" />
     </div>
   );
 };

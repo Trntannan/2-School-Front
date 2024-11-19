@@ -45,12 +45,26 @@ a {
   cursor: pointer;
 }
 
+.complete-prof-btn {
+  padding: 10px;
+  background-color: var(--primary-color);
+  color: var(--white-color);
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.complete-prof-btn:hover {
+  background-color: var(--primary-hover-color);
+}
+
 .page-container {
   @apply flex flex-col h-screen;
 }
 
 .page-header {
-  @apply fixed top-0 w-screen h-12 bg-stone-800 text-white flex justify-center items-center p-2 z-50 cursor-none select-none;
+  @apply fixed top-0 w-screen h-12 text-3xl bg-stone-600 text-white flex justify-center items-center p-2 z-50 cursor-none select-none;
 }
 
 .main-content,
@@ -62,13 +76,16 @@ a {
   @apply fixed bottom-0 w-screen bg-white border-t border-gray-300 flex justify-around py-2 z-50;
 }
 
-.form-container,
-.completeProfFormContainer {
+.form-container {
   @apply max-w-2xl mx-auto flex flex-col justify-center bg-white rounded border border-hidden;
 }
 
 .form-group {
   @apply rounded border border-gray-300 p-2;
+}
+
+.form-label {
+  @apply my-3 text-lg;
 }
 
 .button {

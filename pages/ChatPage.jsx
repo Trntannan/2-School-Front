@@ -4,7 +4,6 @@ import ChatSidebar from "../components/ChatSidebar";
 import ChatWindow from "../components/ChatWindow";
 import MessageInput from "../components/MessageInput";
 import NewChatIcon from "../components/NewChatIcon";
-import BottomNavBar from "../components/BottomNavBar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 
@@ -83,7 +82,6 @@ const ChatPage = () => {
           selectConversation={selectConversation}
         />
       )}
-      <BottomNavBar activePage="chat" />
     </div>
   );
 };

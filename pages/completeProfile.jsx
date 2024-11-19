@@ -48,34 +48,30 @@ const CompleteProfile = () => {
 
   return (
     <div className="page-container">
-      <div className="page-header">
-        <h1>Complete Your Profile</h1>
-      </div>
-      <main className={styles.completeProfMain}>
-        <form
-          onSubmit={handleSubmit}
-          className={styles.completeProfFormContainer}
-        >
-          <div className={styles.completeProfForm}>
-            <label htmlFor="bio">
-              Tell us a little bit about yourself, This will be displayed on
-              your profile.
+      <main className="main-content justify-center">
+        <form onSubmit={handleSubmit} className="form-container">
+          <label className="form-label" htmlFor="bio">
+            Tell us a little bit about yourself, This will be displayed in your
+            profile.
+          </label>
+          <textarea
+            id="bio"
+            name="bio"
+            value={formData.bio}
+            onChange={handleChange}
+            className="form-group"
+            required
+          />
+          <div className="compProfPic mt-2 ">
+            <label className="form-label" htmlFor="profilePic">
+              Profile Picture:
             </label>
-            <textarea
-              id="bio"
-              name="bio"
-              value={formData.bio}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className={styles.completeProfForm}>
-            <label htmlFor="profilePic">Profile Picture:</label>
             <input
               id="profilePic"
               type="file"
               name="profilePic"
               onChange={handleChange}
+              className="form-group border-none cursor-pointer "
               accept="image/*"
             />
           </div>

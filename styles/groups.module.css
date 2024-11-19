@@ -1,139 +1,79 @@
 .mainContent {
-  display: flex;
-  justify-content: space-between;
-  flex: 1;
-  overflow-y:scroll;
-  margin-top: 60px; 
-  margin-bottom: 60px; 
-  padding: 20px;
-  gap: 8%;
+  @apply flex justify-between flex-1 overflow-y-scroll mt-16 mb-16 p-5 gap-8;
 }
 
 .mapContainer {
-  width: 60%;
-  height: 80%;
-  position: relative;
-  z-index: 1;
+  @apply w-3/5 h-4/5 relative z-10;
 }
 
 .groupsList {
-  width: 50%;
-  display: flex;
-  flex-direction: column;
+  @apply w-1/2 flex flex-col;
 }
 
 .userGroups {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-  font-size: 2.5rem;
+  @apply w-full flex flex-col items-start justify-start text-3xl font-bold;
 }
 
 .addGroupButton {
-  align-self: center;
-  background-color: white;
-  color: #0070f3;
-  font-size: xx-large;
-  /* margin-left: 10%; */
-  border: none;
+  @apply self-center bg-white text-blue-600 text-3xl border-none;
 }
 
 .addGroupButton:hover {
-  align-self: center;
-  background-color: white;
-  color: #004ba1;
-  font-size: xx-large;
+  @apply text-blue-800;
+}
+
+.groupName {
+  @apply text-lg font-extrabold cursor-pointer;
+}
+
+.groupName:hover {
+  @apply text-blue-600 text-xl;
 }
 
 .groupsHeader {
-  display: flex;
-  flex-direction: row;
-  margin-bottom: 20px;
-  width: 100%;
+  @apply flex flex-row mb-5 w-full;
 }
 
 .groupsList ul {
-  list-style: none;
-  padding: 0;
+  @apply list-none p-0;
 }
 
 .groupsList li {
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
+  @apply mb-2 flex justify-between items-center;
 }
 
 .groupItem span {
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  margin-right: 10px;
+  @apply inline-block w-2.5 h-2.5 rounded-full mr-2.5;
 }
 
 .green {
-  background-color: green;
+  @apply bg-green-500;
 }
 
 .grey {
-  background-color: grey;
+  @apply bg-gray-500;
 }
 
 .yellow {
-  background-color: yellow;
+  @apply bg-yellow-500;
 }
 
 .modalOverlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
+  @apply fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50;
 }
 
 .modalContent {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  position: relative;
-  max-width: 500px;
-  width: 70%;
-  -webkit-border-radius: 8px;
-  -moz-border-radius: 8px;
-  -ms-border-radius: 8px;
-  -o-border-radius: 8px;
+  @apply bg-white p-5 rounded-lg relative max-w-lg w-3/4;
 }
 
 .closeButton {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
+  @apply absolute top-2 right-2 bg-none border-none text-xl cursor-pointer;
 }
 
 .deleteButton {
-  background-color: red;
-  color: white;
-  border: none;
-  padding: 6px 10px;
-  border-radius: 5px;
-  cursor: pointer;
+  @apply bg-red-600 text-white py-1 px-2 rounded cursor-pointer;
 }
 
 .groupItem {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 1rem;
+  @apply flex flex-row items-center justify-between text-lg;
 }
