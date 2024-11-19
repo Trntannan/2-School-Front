@@ -15,6 +15,7 @@ const Signup = () => {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,6 +24,9 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     const { username, email, password, confirmPassword } = form;
 
     if (password !== confirmPassword) {
@@ -63,6 +67,7 @@ const Signup = () => {
       window.location.href = "/completeProfile";
     } catch (err) {
       alert(err.response?.data?.message || "Error registering user");
+      setIsSubmitting(false);
     }
   };
 
@@ -134,8 +139,8 @@ const Signup = () => {
               )}
             </button>
           </div>
-          <button type="submit" className="login-btn">
-            Sign up
+          <button type="submit" className="login-btn" disabled={isSubmitting}>
+            {isSubmitting ? "Processing..." : "Sign up"}
           </button>
         </form>
       </div>
