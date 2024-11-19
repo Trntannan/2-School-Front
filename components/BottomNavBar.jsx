@@ -36,15 +36,15 @@ const BottomNavBar = ({ activePage, requests = [] }) => {
   const getNavBar = () => {
     switch (activePage) {
       case "home":
-        return ["profile", "chat", "settings"];
-      case "profile":
-        return ["home", "chat", "settings"];
+        return ["profile", "requests", "settings"];
+      case "Profile":
+        return ["home", "requests", "settings"];
       case "chat":
         return ["home", "profile", "settings"];
       case "settings":
-        return ["home", "profile", "chat"];
+        return ["home", "profile", "requests"];
       default:
-        return ["home", "chat", "settings"];
+        return ["home", "profile", "settings"];
     }
   };
 
@@ -64,7 +64,11 @@ const BottomNavBar = ({ activePage, requests = [] }) => {
             <FontAwesomeIcon icon={navItems[item].icon} />
             <span>{navItems[item].label}</span>
             {item === "requests" && numRequests > 0 && (
-              <span className={styles.indicator}>{numRequests}</span>
+              <span
+                className={`${styles.pingIndicator} animate-ping absolute top-[-5px] right-[-10px] bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center`}
+              >
+                {numRequests}
+              </span>
             )}
           </div>
         ))}

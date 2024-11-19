@@ -12,6 +12,8 @@ const Groups = () => {
   const [showNewGroupForm, setShowNewGroupForm] = useState(false);
   const [map, setMap] = useState(null);
   const [mapsApi, setMapsApi] = useState(null);
+  const [requests, setRequests] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const fetchGroups = async () => {
     const token = localStorage.getItem("token");
@@ -28,7 +30,62 @@ const Groups = () => {
     }
   };
 
-  //function to delete group using group name not groupId
+  const fetchRequests = async () => {
+    const token = localStorage.getItem("token");
+    setLoading(true);
+    try {
+      const response = await axios.get(`${backendUrl}/api/user/get-requests`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setRequests(response.data || []);
+    } catch (error) {
+      console.error("Error fetching requests:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAcceptRequest = async (requestId) => {
+    const token = localStorage.getItem("token");
+    try {
+      await axios.post(
+        `${backendUrl}/api/groups/accept-request`,
+        { requestId },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      fetchRequests();
+    } catch (error) {
+      console.error("Error accepting request:", error);
+    }
+  };
+
+  const handleRefuseRequest = async (requestId) => {
+    const token = localStorage.getItem("token");
+    try {
+      await axios.post(
+        `${backendUrl}/api/groups/refuse-request`,
+        { requestId },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      fetchRequests();
+    } catch (error) {
+      console.error("Error refusing request:", error);
+    }
+  };
+
   const handleDelete = async (group) => {
     const token = localStorage.getItem("token");
     try {
@@ -68,6 +125,7 @@ const Groups = () => {
 
   useEffect(() => {
     fetchGroups();
+    fetchRequests();
   }, []);
 
   return (
@@ -106,7 +164,7 @@ const Groups = () => {
                   </div>
                   <button
                     className={styles.deleteButton}
-                    onClick={() => handleDelete(group.name)}
+                    onClick={() => handleDelete(group)}
                   >
                     Delete
                   </button>
@@ -115,6 +173,41 @@ const Groups = () => {
             </ul>
           ) : (
             <p>No groups found.</p>
+          )}
+        </div>
+        <div className={styles.requestsList}>
+          <h2>Join Requests</h2>
+          {loading ? (
+            <p>Loading requests...</p>
+          ) : (
+            <ul>
+              {requests.length > 0 ? (
+                requests.map((request) => (
+                  <li className={styles.requestItem} key={request._id}>
+                    <div className={styles.requestDetails}>
+                      <h3>{request.name}</h3>
+                      <p>{request.message || "No message"}</p>
+                    </div>
+                    <div className={styles.requestActions}>
+                      <button
+                        className={styles.acceptButton}
+                        onClick={() => handleAcceptRequest(request._id)}
+                      >
+                        Accept
+                      </button>
+                      <button
+                        className={styles.refuseButton}
+                        onClick={() => handleRefuseRequest(request._id)}
+                      >
+                        Refuse
+                      </button>
+                    </div>
+                  </li>
+                ))
+              ) : (
+                <p>No join requests found.</p>
+              )}
+            </ul>
           )}
         </div>
       </main>

@@ -127,3 +127,7 @@ a {
 .login-btn:hover {
   background-color: #005bb5;
 }
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

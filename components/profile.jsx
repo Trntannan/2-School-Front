@@ -7,7 +7,7 @@ import axios from "axios";
 const backendUrl = "https://two-school-backend.onrender.com" || 5000;
 
 const Profile = () => {
-  const [profile, setProfile] = useState({});
+  const [profile, setProfile] = useState(null); // Initialize profile as null
   const [editMode, setEditMode] = useState(false);
   const [tempData, setTempData] = useState({});
   const [isClient, setIsClient] = useState(false);
@@ -28,7 +28,6 @@ const Profile = () => {
       });
     } catch (error) {
       console.error("Error fetching profile:", error);
-      setIsClient(false);
     }
   };
 
@@ -44,8 +43,8 @@ const Profile = () => {
 
   const enterEditMode = () => {
     setTempData({
-      username: profile.username || "",
-      bio: profile.bio || "",
+      username: profile?.username || "",
+      bio: profile?.bio || "",
       profilePic: null,
     });
     setEditMode(true);
@@ -83,7 +82,45 @@ const Profile = () => {
     }
   };
 
-  if (!isClient) return null;
+  if (!isClient || !profile) {
+    return (
+      <div className="page-container">
+        <div className="page-header">
+          <h1>Profile</h1>
+        </div>
+        <main className="main-content flex items-center justify-center">
+          <button
+            type="button"
+            className="inline-flex items-center px-4 py-2 font-semibold leading-6 text-sm shadow rounded-md text-white bg-indigo-500 hover:bg-indigo-400 transition ease-in-out duration-150 cursor-not-allowed"
+            disabled
+          >
+            <svg
+              className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              ></circle>
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+              ></path>
+            </svg>
+            Processing...
+          </button>
+        </main>
+        <BottomNavBar activePage="Profile" />
+      </div>
+    );
+  }
 
   return (
     <div className="page-container">
@@ -114,9 +151,7 @@ const Profile = () => {
               onChange={handleChange}
             />
           ) : (
-            <h2 className={styles.fullNameContainer}>
-              {profile.username || "No username available"}
-            </h2>
+            <h2 className={styles.fullNameContainer}>{profile.username}</h2>
           )}
         </div>
 
@@ -148,7 +183,7 @@ const Profile = () => {
                 onChange={handleChange}
               />
             ) : (
-              <p>{profile.bio || "No bio available"}</p>
+              <p>{profile.bio}</p>
             )}
           </div>
         </div>
