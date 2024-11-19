@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import styles from "../styles/groups.module.css";
 import NewGroupForm from "../components/newGroupForm";
+import editGroupForm from "../components/editGroupForm";
 import MapComponent from "../components/MapComponent";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
@@ -11,6 +12,7 @@ const backendUrl = "https://two-school-backend.onrender.com" || 5000;
 const Groups = () => {
   const [groups, setGroups] = useState([]);
   const [showNewGroupForm, setShowNewGroupForm] = useState(false);
+  const [showEditGroupForm, setShowEditGroupForm] = useState(false);
   const [map, setMap] = useState(null);
   const [mapsApi, setMapsApi] = useState(null);
 
@@ -51,9 +53,8 @@ const Groups = () => {
     }
   };
 
-  // handle edit group by opening newGroupForm if no changes don't update just refresh
   const handleEditGroup = (group) => {
-    setShowNewGroupForm(true);
+    setShowEditGroupForm(true);
     setGroups((prevGroups) =>
       prevGroups.map((g) => (g._id === group._id ? group : g))
     );
@@ -74,6 +75,11 @@ const Groups = () => {
       console.error("Error deleting group:", error);
     }
   };
+
+  const getIndicatorStyle = (isActive) =>
+    `${
+      isActive ? "bg-green-500" : "bg-white"
+    } h-4 w-4 rounded-full border border-gray-300 inline-block`;
 
   return (
     <div className="page-container">
@@ -104,10 +110,11 @@ const Groups = () => {
                     className={styles.groupName}
                     onClick={() => handleGroupClick(group)}
                   >
-                    <span className={getIndicatorStyle(true)}></span>
                     {group.name}
                   </div>
+
                   <div className={styles.actionIcons}>
+                    <span className={getIndicatorStyle(group.isActive)}></span>
                     <FontAwesomeIcon
                       icon={faEdit}
                       onClick={() => handleEditGroup(group._id)}

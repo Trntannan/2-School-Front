@@ -77,3 +77,8 @@
 .groupItem {
   @apply flex flex-row items-center justify-between text-lg;
 }
+
+.editIcon,
+.trashIcon {
+  @apply mx-3;
+}

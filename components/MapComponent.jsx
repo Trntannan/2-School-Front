@@ -1,31 +1,23 @@
-import React, { useEffect, useRef, useState } from "react";
-import PropTypes from "prop-types";
+import React, { useEffect, useRef } from "react";
+import PropTypes, { string } from "prop-types";
 import styles from "../styles/groups.module.css";
-import axios from "axios";
 
 const backendUrl = "https://two-school-backend.onrender.com" || 5000;
 
-const MapComponent = ({ groups: userGroups, onMapReady }) => {
+const MapComponent = ({ groups, onMapReady, user }) => {
   const mapElementRef = useRef(null);
-  const [allGroups, setAllGroups] = useState([]);
 
-  const fetchAllGroups = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get(`${backendUrl}/api/user/all-groups`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setAllGroups(Array.isArray(response.data) ? response.data : []);
-    } catch (error) {
-      console.error("Error fetching all groups:", error);
-    }
-  };
+  const colorPalette = [
+    "#FF0000",
+    "#00FF00",
+    "#0000FF",
+    "#FFA500",
+    "#800080",
+    "#008080",
+    "#FF69B4",
+  ];
 
   useEffect(() => {
-    fetchAllGroups();
     const loadGoogleMapsApi = () => {
       if (!window.google || !window.google.maps) {
         const script = document.createElement("script");
@@ -49,10 +41,7 @@ const MapComponent = ({ groups: userGroups, onMapReady }) => {
 
       if (onMapReady) onMapReady(map, mapsApi);
 
-      // Combine user and all groups for display
-      const combinedGroups = [...userGroups, ...allGroups];
-
-      combinedGroups.forEach((group) => {
+      groups.forEach((group) => {
         if (group.routes && group.routes.length > 0) {
           const directionsService = new mapsApi.DirectionsService();
           const startLocation = new mapsApi.LatLng(
@@ -142,7 +131,7 @@ const MapComponent = ({ groups: userGroups, onMapReady }) => {
     };
 
     loadGoogleMapsApi();
-  }, [userGroups, allGroups]);
+  }, [groups]);
 
   return <div ref={mapElementRef} className={styles.mapContainer} />;
 };
