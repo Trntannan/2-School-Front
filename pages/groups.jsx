@@ -2,17 +2,15 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import styles from "../styles/groups.module.css";
 import NewGroupForm from "../components/newGroupForm";
-import editGroupForm from "../components/editGroupForm";
 import MapComponent from "../components/MapComponent";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 const backendUrl = "https://two-school-backend.onrender.com" || 5000;
 
 const Groups = () => {
   const [groups, setGroups] = useState([]);
   const [showNewGroupForm, setShowNewGroupForm] = useState(false);
-  const [showEditGroupForm, setShowEditGroupForm] = useState(false);
   const [map, setMap] = useState(null);
   const [mapsApi, setMapsApi] = useState(null);
 
@@ -53,13 +51,6 @@ const Groups = () => {
     }
   };
 
-  const handleEditGroup = (group) => {
-    setShowEditGroupForm(true);
-    setGroups((prevGroups) =>
-      prevGroups.map((g) => (g._id === group._id ? group : g))
-    );
-  };
-
   const handleDeleteGroup = async (groupId) => {
     const token = localStorage.getItem("token");
     try {
@@ -68,7 +59,6 @@ const Groups = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        data: { groupId },
       });
       fetchGroups();
     } catch (error) {
@@ -76,10 +66,10 @@ const Groups = () => {
     }
   };
 
-  const getIndicatorStyle = (isActive) =>
-    `${
-      isActive ? "bg-green-500" : "bg-white"
-    } h-4 w-4 rounded-full border border-gray-300 inline-block`;
+  // const getIndicatorStyle = (isActive) =>
+  //   `${
+  //     isActive ? "bg-green-500" : "bg-white"
+  //   } h-4 w-4 rounded-full border border-gray-300 inline-block`;
 
   return (
     <div className="page-container">
@@ -114,12 +104,12 @@ const Groups = () => {
                   </div>
 
                   <div className={styles.actionIcons}>
-                    <span className={getIndicatorStyle(group.isActive)}></span>
-                    <FontAwesomeIcon
+                    {/* <span className={getIndicatorStyle(group.isActive)}></span> */}
+                    {/* <FontAwesomeIcon
                       icon={faEdit}
                       onClick={() => handleEditGroup(group._id)}
                       className={styles.editIcon}
-                    />
+                    /> */}
                     <FontAwesomeIcon
                       icon={faTrash}
                       onClick={() => handleDeleteGroup(group._id)}

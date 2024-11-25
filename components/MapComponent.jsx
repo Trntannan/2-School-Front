@@ -1,21 +1,37 @@
-import React, { useEffect, useRef } from "react";
-import PropTypes, { string } from "prop-types";
+import React, { useEffect, useRef, useState } from "react";
+import PropTypes from "prop-types";
 import styles from "../styles/groups.module.css";
+import axios from "axios";
 
 const backendUrl = "https://two-school-backend.onrender.com" || 5000;
 
 const MapComponent = ({ groups, onMapReady, user }) => {
   const mapElementRef = useRef(null);
+  const [allGroups, setAllGroups] = useState([]);
 
-  const colorPalette = [
-    "#FF0000",
-    "#00FF00",
-    "#0000FF",
-    "#FFA500",
-    "#800080",
-    "#008080",
-    "#FF69B4",
-  ];
+  const fetchAllGroups = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(`${backendUrl}/api/user/all-groups`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.data) {
+        const filteredGroups = response.data.filter(
+          (group) => !groups.some((g) => g._id === group._id)
+        );
+        setAllGroups(filteredGroups);
+      }
+    } catch (error) {
+      console.error("Error fetching all groups:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchAllGroups();
+  }, [groups]);
 
   useEffect(() => {
     const loadGoogleMapsApi = () => {
@@ -38,10 +54,9 @@ const MapComponent = ({ groups, onMapReady, user }) => {
       });
 
       const mapsApi = window.google.maps;
-
       if (onMapReady) onMapReady(map, mapsApi);
 
-      groups.forEach((group) => {
+      [...groups, ...allGroups].forEach((group) => {
         if (group.routes && group.routes.length > 0) {
           const directionsService = new mapsApi.DirectionsService();
           const startLocation = new mapsApi.LatLng(
@@ -131,7 +146,7 @@ const MapComponent = ({ groups, onMapReady, user }) => {
     };
 
     loadGoogleMapsApi();
-  }, [groups]);
+  }, [allGroups, groups]);
 
   return <div ref={mapElementRef} className={styles.mapContainer} />;
 };
