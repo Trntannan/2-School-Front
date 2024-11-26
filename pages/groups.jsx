@@ -11,7 +11,7 @@ const backendUrl = "https://two-school-backend.onrender.com" || 5000;
 const Groups = () => {
   const [groups, setGroups] = useState([]);
   const [showNewGroupForm, setShowNewGroupForm] = useState(false);
-  const [selectedGroup, setSelectedGroup] = useState(null); // Track the selected group
+  const [selectedGroup, setSelectedGroup] = useState(null);
   const [isClient, setIsClient] = useState(false);
 
   const fetchGroups = async () => {
@@ -35,7 +35,7 @@ const Groups = () => {
   }, []);
 
   const handleGroupClick = (group) => {
-    setSelectedGroup(group); // Set the selected group to display its markers and routes
+    setSelectedGroup(group);
   };
 
   const handleDeleteGroup = async (groupId) => {
@@ -53,49 +53,49 @@ const Groups = () => {
     }
   };
 
-  if (!isClient || groups.length === 0) {
-    return (
-      <div className="page-container">
-        <main className="main-content flex items-center justify-center">
-          <button
-            type="button"
-            className="inline-flex items-center px-4 py-2 font-semibold leading-6 text-sm shadow rounded-md text-white bg-indigo-500 hover:bg-indigo-400 transition ease-in-out duration-150 cursor-not-allowed"
-            disabled
-          >
-            <svg
-              className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              ></circle>
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-              ></path>
-            </svg>
-            Processing...
-          </button>
-        </main>
-      </div>
-    );
-  }
+  // if (!isClient || groups.length === 0) {
+  //   return (
+  //     <div className="page-container">
+  //       <main className="main-content flex items-center justify-center">
+  //         <button
+  //           type="button"
+  //           className="inline-flex items-center px-4 py-2 font-semibold leading-6 text-sm shadow rounded-md text-white bg-indigo-500 hover:bg-indigo-400 transition ease-in-out duration-150 cursor-not-allowed"
+  //           disabled
+  //         >
+  //           <svg
+  //             className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+  //             xmlns="http://www.w3.org/2000/svg"
+  //             fill="none"
+  //             viewBox="0 0 24 24"
+  //           >
+  //             <circle
+  //               className="opacity-25"
+  //               cx="12"
+  //               cy="12"
+  //               r="10"
+  //               stroke="currentColor"
+  //               strokeWidth="4"
+  //             ></circle>
+  //             <path
+  //               className="opacity-75"
+  //               fill="currentColor"
+  //               d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+  //             ></path>
+  //           </svg>
+  //           Processing...
+  //         </button>
+  //       </main>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="page-container">
       <main className={styles.mainContent}>
         <MapComponent
           groups={groups}
-          selectedGroup={selectedGroup} // Pass the selected group to the map
-          onMapClick={() => setSelectedGroup(null)} // Reset selected group on map click
+          selectedGroup={selectedGroup}
+          onMapClick={() => setSelectedGroup(null)}
         />
         <div className={styles.groupsList}>
           <div className={styles.groupsHeader}>
