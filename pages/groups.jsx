@@ -51,16 +51,15 @@ const Groups = () => {
     }
   };
 
-  // handle delete group by name
+  // handle delete group using group._id
   const handleDeleteGroup = async (groupId) => {
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`${backendUrl}/api/user/delete-group`, {
+      await axios.delete(`${backendUrl}/api/user/delete-group/${groupId}`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        data: { groupId },
       });
       fetchGroups();
     } catch (error) {
