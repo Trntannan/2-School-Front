@@ -82,15 +82,22 @@ const MapComponent = ({ groups, onMapReady, user }) => {
             title: `${group.name} - End Location`,
           });
 
-          const infoWindow = new mapsApi.InfoWindow({
-            content: `<div style="color: black;"><button class="${
-              styles.toJoin
-            }" data-group-id="${group._id}">Request to join</button>
+          const isUserGroup = groups.some((g) => g._id === group._id);
+          const infoWindowContent = `
+                    <div style="color: black;">
+                        ${
+                          !isUserGroup
+                            ? `<button class="${styles.toJoin}" data-group-id="${group._id}">Request to join</button>`
+                            : ""
+                        }
                         <h4>${group.name}</h4>
                         <p>Start Time: ${new Date(
                           group.startTime
                         ).toLocaleTimeString()}</p>
-                      </div>`,
+                    </div>`;
+
+          const infoWindow = new mapsApi.InfoWindow({
+            content: infoWindowContent,
           });
 
           startMarker.addListener("click", () => {
