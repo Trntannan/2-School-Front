@@ -19,10 +19,7 @@ const MapComponent = ({ groups, onMapReady, user }) => {
       });
 
       if (response.data) {
-        const filteredGroups = response.data.filter(
-          (group) => !groups.some((g) => g._id === group._id)
-        );
-        setAllGroups(filteredGroups);
+        setAllGroups(response.data);
       }
     } catch (error) {
       console.error("Error fetching all groups:", error);
