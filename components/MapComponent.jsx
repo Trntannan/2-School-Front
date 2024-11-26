@@ -5,7 +5,7 @@ import axios from "axios";
 
 const backendUrl = "https://two-school-backend.onrender.com" || 5000;
 
-const MapComponent = ({ groups, onMapReady, user }) => {
+const MapComponent = ({ groups, selectedGroup, onMapClick }) => {
   const mapElementRef = useRef(null);
   const [allGroups, setAllGroups] = useState([]);
 
@@ -44,120 +44,119 @@ const MapComponent = ({ groups, onMapReady, user }) => {
       }
     };
 
+    const generateUniqueColors = (count) => {
+      const colors = [];
+      for (let i = 0; i < count; i++) {
+        const hue = (i * 360) / count; // Evenly spaced hues
+        colors.push(`hsl(${hue}, 70%, 50%)`); // Adjust saturation and lightness
+      }
+      return colors;
+    };
+
     const initMap = () => {
-      const map = new window.google.maps.Map(mapElementRef.current, {
+      const mapOptions = {
         center: { lat: -36.892057, lng: 174.618656 },
         zoom: 14,
+      };
+      const map = new window.google.maps.Map(mapElementRef.current, mapOptions);
+
+      const groupColors = generateUniqueColors(allGroups.length);
+
+      if (!selectedGroup) {
+        // Render all groups if no selectedGroup
+        allGroups.forEach((group, index) => {
+          const groupColor = groupColors[index];
+          renderGroupOnMap(group, groupColor, map);
+        });
+      } else {
+        // Render only the selectedGroup
+        renderGroupOnMap(selectedGroup, "#FF0000", map, true); // Highlight selectedGroup in red
+      }
+
+      map.addListener("click", () => {
+        onMapClick();
+      });
+    };
+
+    const renderGroupOnMap = (group, color, map, isSelected = false) => {
+      const startLocation = new window.google.maps.LatLng(
+        group.routes[0].start.latitude,
+        group.routes[0].start.longitude
+      );
+      const endLocation = new window.google.maps.LatLng(
+        group.routes[0].end.latitude,
+        group.routes[0].end.longitude
+      );
+
+      const startMarker = new window.google.maps.Marker({
+        position: startLocation,
+        map,
+        title: `${group.name} - Start Location`,
       });
 
-      const mapsApi = window.google.maps;
-      if (onMapReady) onMapReady(map, mapsApi);
+      const endMarker = new window.google.maps.Marker({
+        position: endLocation,
+        map,
+        title: `${group.name} - End Location`,
+      });
 
-      [...groups, ...allGroups].forEach((group) => {
-        if (group.routes && group.routes.length > 0) {
-          const directionsService = new mapsApi.DirectionsService();
-          const startLocation = new mapsApi.LatLng(
-            group.routes[0].start.latitude,
-            group.routes[0].start.longitude
-          );
-          const endLocation = new mapsApi.LatLng(
-            group.routes[0].end.latitude,
-            group.routes[0].end.longitude
-          );
+      const infoWindowContent = `
+        <div style="color: black;">
+          <h4>${group.name}</h4>
+          <p>Start Time: ${new Date(group.startTime).toLocaleTimeString()}</p>
+          ${
+            !isSelected
+              ? "<button>Ask to join</button>"
+              : "" /* Optional button for non-selected groups */
+          }
+        </div>
+      `;
+      const infoWindow = new window.google.maps.InfoWindow({
+        content: infoWindowContent,
+      });
 
-          const color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+      startMarker.addListener("click", () => infoWindow.open(map, startMarker));
+      endMarker.addListener("click", () => infoWindow.open(map, endMarker));
 
-          const startMarker = new mapsApi.Marker({
-            position: startLocation,
-            map,
-            title: `${group.name} - Start Location`,
-          });
-
-          const endMarker = new mapsApi.Marker({
-            position: endLocation,
-            map,
-            title: `${group.name} - End Location`,
-          });
-
-          const isUserGroup = groups.some((g) => g._id === group._id);
-          const infoWindowContent = `
-                    <div style="color: black;">
-                        ${
-                          !isUserGroup
-                            ? `<button class="${styles.toJoin}" data-group-id="${group._id}">Request to join</button>`
-                            : ""
-                        }
-                        <h4>${group.name}</h4>
-                        <p>Start Time: ${new Date(
-                          group.startTime
-                        ).toLocaleTimeString()}</p>
-                    </div>`;
-
-          const infoWindow = new mapsApi.InfoWindow({
-            content: infoWindowContent,
-          });
-
-          startMarker.addListener("click", () => {
-            infoWindow.open(map, startMarker);
-            startMarker.setIcon({
-              ...startMarker.icon,
-              scale: 14,
-            });
-          });
-
-          endMarker.addListener("click", () => {
-            infoWindow.open(map, endMarker);
-            endMarker.setIcon({
-              ...endMarker.icon,
-              scale: 14,
-            });
-          });
-
-          infoWindow.addListener("closeclick", () => {
-            startMarker.setIcon({
-              ...startMarker.icon,
-              scale: 10,
-            });
-            endMarker.setIcon({
-              ...endMarker.icon,
-              scale: 10,
-            });
-          });
-
-          directionsService.route(
-            {
-              origin: startLocation,
-              destination: endLocation,
-              travelMode: mapsApi.TravelMode.WALKING,
-              unitSystem: mapsApi.UnitSystem.METRIC,
-            },
-            (result, status) => {
-              if (status === "OK") {
-                const directionsRenderer = new mapsApi.DirectionsRenderer({
-                  map,
-                  directions: result,
-                  suppressMarkers: true,
-                  polylineOptions: {
-                    strokeColor: color,
-                  },
-                });
-                directionsRenderer.setDirections(result);
-              }
-            }
-          );
+      const directionsService = new window.google.maps.DirectionsService();
+      directionsService.route(
+        {
+          origin: startLocation,
+          destination: endLocation,
+          travelMode: window.google.maps.TravelMode.WALKING,
+        },
+        (result, status) => {
+          if (status === "OK") {
+            const directionsRenderer =
+              new window.google.maps.DirectionsRenderer({
+                map,
+                suppressMarkers: true,
+                polylineOptions: {
+                  strokeColor: color,
+                  strokeOpacity: isSelected ? 1.0 : 0.7,
+                  strokeWeight: isSelected ? 8 : 6,
+                },
+              });
+            directionsRenderer.setDirections(result);
+          }
         }
+      );
+
+      map.addListener("click", () => {
+        infoWindow.close();
       });
     };
 
     loadGoogleMapsApi();
-  }, [allGroups, groups]);
+  }, [selectedGroup, allGroups, onMapClick]);
 
   return <div ref={mapElementRef} className={styles.mapContainer} />;
 };
 
 MapComponent.propTypes = {
   groups: PropTypes.array.isRequired,
-  onMapReady: PropTypes.func,
+  selectedGroup: PropTypes.object,
+  onMapClick: PropTypes.func.isRequired,
 };
 
 export default MapComponent;

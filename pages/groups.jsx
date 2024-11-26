@@ -11,8 +11,7 @@ const backendUrl = "https://two-school-backend.onrender.com" || 5000;
 const Groups = () => {
   const [groups, setGroups] = useState([]);
   const [showNewGroupForm, setShowNewGroupForm] = useState(false);
-  const [map, setMap] = useState(null);
-  const [mapsApi, setMapsApi] = useState(null);
+  const [selectedGroup, setSelectedGroup] = useState(null); // Track the selected group
   const [isClient, setIsClient] = useState(false);
 
   const fetchGroups = async () => {
@@ -36,30 +35,14 @@ const Groups = () => {
   }, []);
 
   const handleGroupClick = (group) => {
-    if (map && mapsApi) {
-      const infoWindow = new mapsApi.InfoWindow({
-        content: `<div style="color: black;">
-          <h4>${group.name}</h4>
-          <p>Start Time: ${new Date(group.startTime).toLocaleTimeString()}</p>
-        </div>`,
-      });
-
-      const startLocation = new mapsApi.LatLng(
-        group.routes[0].start.latitude,
-        group.routes[0].start.longitude
-      );
-      infoWindow.setPosition(startLocation);
-      infoWindow.open(map);
-    }
+    setSelectedGroup(group); // Set the selected group to display its markers and routes
   };
 
-  // handle delete group using group._id
   const handleDeleteGroup = async (groupId) => {
+    const token = localStorage.getItem("token");
     try {
-      const token = localStorage.getItem("token");
       await axios.delete(`${backendUrl}/api/user/delete-group`, {
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         data: { groupId },
@@ -111,11 +94,8 @@ const Groups = () => {
       <main className={styles.mainContent}>
         <MapComponent
           groups={groups}
-          className={styles.mapContainer}
-          onMapReady={(mapInstance, mapsApiInstance) => {
-            setMap(mapInstance);
-            setMapsApi(mapsApiInstance);
-          }}
+          selectedGroup={selectedGroup} // Pass the selected group to the map
+          onMapClick={() => setSelectedGroup(null)} // Reset selected group on map click
         />
         <div className={styles.groupsList}>
           <div className={styles.groupsHeader}>
@@ -139,12 +119,6 @@ const Groups = () => {
                   </div>
 
                   <div className={styles.actionIcons}>
-                    {/* <span className={getIndicatorStyle(group.isActive)}></span> */}
-                    {/* <FontAwesomeIcon
-                      icon={faEdit}
-                      onClick={() => handleEditGroup(group._id)}
-                      className={styles.editIcon}
-                    /> */}
                     <FontAwesomeIcon
                       icon={faTrash}
                       onClick={() => handleDeleteGroup(group._id)}
@@ -169,8 +143,6 @@ const Groups = () => {
               X
             </button>
             <NewGroupForm
-              map={map}
-              mapsApi={mapsApi}
               setGroups={fetchGroups}
               closeForm={() => setShowNewGroupForm(false)}
             />
