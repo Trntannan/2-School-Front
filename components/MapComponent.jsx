@@ -50,7 +50,7 @@ const MapComponent = ({ groups, onMapReady, user }) => {
     const initMap = () => {
       const map = new window.google.maps.Map(mapElementRef.current, {
         center: { lat: -36.892057, lng: 174.618656 },
-        zoom: 12,
+        zoom: 14,
       });
 
       const mapsApi = window.google.maps;
@@ -85,7 +85,7 @@ const MapComponent = ({ groups, onMapReady, user }) => {
           const infoWindow = new mapsApi.InfoWindow({
             content: `<div style="color: black;"><button class="${
               styles.toJoin
-            }" data-group-id="${group._id}">Ask to join</button>
+            }" data-group-id="${group._id}">Request to join</button>
                         <h4>${group.name}</h4>
                         <p>Start Time: ${new Date(
                           group.startTime
