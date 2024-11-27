@@ -9,7 +9,7 @@ const NewGroupForm = ({ map, mapsApi, setGroups, closeForm }) => {
     groupName: "",
     meetupPoint: "",
     endLocation: "",
-    startTime: "",
+    startTime: "", // Store time as a string in HH:MM format
   });
 
   const autocompleteRef = useRef(null);
@@ -18,10 +18,10 @@ const NewGroupForm = ({ map, mapsApi, setGroups, closeForm }) => {
   const schoolMarker = useRef(null);
 
   useEffect(() => {
-    if (mapsApi) {
+    if (mapsApi && map) {
       initAutocomplete();
     }
-  }, [mapsApi]);
+  }, [mapsApi, map]);
 
   const initAutocomplete = () => {
     const autocomplete = new mapsApi.places.Autocomplete(
@@ -97,7 +97,7 @@ const NewGroupForm = ({ map, mapsApi, setGroups, closeForm }) => {
     try {
       const newGroup = {
         name: form.groupName,
-        startTime: new Date(form.startTime).toISOString(),
+        startTime: new Date(`1970-01-01T${form.startTime}:00`).toISOString(),
         routes: [
           {
             start: {
@@ -161,7 +161,7 @@ const NewGroupForm = ({ map, mapsApi, setGroups, closeForm }) => {
         placeholder="End Location"
       />
       <input
-        type="datetime-local"
+        type="time" // Updated to only accept time
         name="startTime"
         id="startTime"
         value={form.startTime}

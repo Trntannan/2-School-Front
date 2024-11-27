@@ -5,84 +5,71 @@ import axios from "axios";
 
 const backendUrl = "https://two-school-backend.onrender.com" || 5000;
 
-const MapComponent = ({
-  setSelectedGroup,
-  onMapReady,
-  selectedGroup,
-  onMapClick,
-}) => {
+const MapComponent = ({ groups, selectedGroup, onMapClick, onMapReady }) => {
   const mapElementRef = useRef(null);
   const [allGroups, setAllGroups] = useState([]);
 
   const fetchAllGroups = async () => {
+    const token = localStorage.getItem("token");
     try {
-      const token = localStorage.getItem("token");
       const response = await axios.get(`${backendUrl}/api/user/all-groups`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      if (response.data && response.data.length > 0) {
+      if (response.data) {
         setAllGroups(response.data);
-      } else {
-        setAllGroups([]);
-        console.log("No groups found.");
       }
     } catch (error) {
-      console.error("Error fetching all groups:", error);
+      console.error("Error fetching groups:", error);
     }
   };
 
   useEffect(() => {
-    fetchAllGroups();
-  }, []);
+    if (groups && groups.length) {
+      setAllGroups(groups);
+    } else {
+      fetchAllGroups();
+    }
+  }, [groups]);
 
   useEffect(() => {
-    const loadGoogleMapsApi = () => {
-      if (!window.google || !window.google.maps) {
-        const script = document.createElement("script");
-        script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyDnZFGBT7fBegTCG1unMndZ4eEV5pFEzfI&libraries=places`;
-        script.async = true;
-        script.defer = true;
-        script.onload = initMap;
-        document.body.appendChild(script);
-      } else {
-        initMap();
-      }
-    };
-
-    const generateUniqueColors = (count) => {
-      const colors = [];
-      for (let i = 0; i < count; i++) {
-        const hue = (i * 360) / count;
-        colors.push(`hsl(${hue}, 70%, 50%)`);
-      }
-      return colors;
-    };
-
     const initMap = () => {
-      const map = new window.google.maps.Map(mapElementRef.current, {
+      const mapOptions = {
         center: { lat: -36.892057, lng: 174.618656 },
         zoom: 14,
-      });
+      };
+      const map = new window.google.maps.Map(mapElementRef.current, mapOptions);
 
       const mapsApi = window.google.maps;
-      if (onMapReady) onMapReady(map, mapsApi);
+      if (onMapReady) {
+        onMapReady(map, mapsApi);
+      }
+
+      const generateUniqueColors = (count) => {
+        const colors = [];
+        for (let i = 0; i < count; i++) {
+          const hue = (i * 360) / count; // Evenly spaced hues
+          colors.push(`hsl(${hue}, 70%, 50%)`); // Adjust saturation and lightness
+        }
+        return colors;
+      };
 
       const groupColors = generateUniqueColors(allGroups.length);
 
       if (!selectedGroup) {
+        // Render all groups if no selectedGroup
         allGroups.forEach((group, index) => {
           const groupColor = groupColors[index];
           renderGroupOnMap(group, groupColor, map);
         });
       } else {
-        renderGroupOnMap(selectedGroup, "#FF0000", map, true);
+        // Render only the selectedGroup
+        renderGroupOnMap(selectedGroup, "#FF0000", map, true); // Highlight selectedGroup in red
       }
 
       map.addListener("click", () => {
-        setSelectedGroup(null);
         onMapClick();
       });
     };
@@ -120,13 +107,8 @@ const MapComponent = ({
         content: infoWindowContent,
       });
 
-      startMarker.addListener("click", () => {
-        infoWindow.open(map, startMarker);
-      });
-
-      endMarker.addListener("click", () => {
-        infoWindow.open(map, endMarker);
-      });
+      startMarker.addListener("click", () => infoWindow.open(map, startMarker));
+      endMarker.addListener("click", () => infoWindow.open(map, endMarker));
 
       const directionsService = new window.google.maps.DirectionsService();
       directionsService.route(
@@ -157,16 +139,30 @@ const MapComponent = ({
       });
     };
 
+    const loadGoogleMapsApi = () => {
+      if (!window.google || !window.google.maps) {
+        const script = document.createElement("script");
+        script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyDnZFGBT7fBegTCG1unMndZ4eEV5pFEzfI&libraries=places`;
+        script.async = true;
+        script.defer = true;
+        script.onload = initMap;
+        document.body.appendChild(script);
+      } else {
+        initMap();
+      }
+    };
+
     loadGoogleMapsApi();
-  }, [allGroups, selectedGroup]);
+  }, [onMapReady]);
 
   return <div ref={mapElementRef} className={styles.mapContainer} />;
 };
 
 MapComponent.propTypes = {
   groups: PropTypes.array.isRequired,
-  onMapReady: PropTypes.func,
+  selectedGroup: PropTypes.object,
   onMapClick: PropTypes.func.isRequired,
+  onMapReady: PropTypes.func, // Add prop types for onMapReady
 };
 
 export default MapComponent;
