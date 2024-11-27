@@ -11,9 +11,30 @@ import styles from "../styles/BottomNavBar.module.css";
 import { useRouter } from "next/router";
 import Requests from "../components/Requests.jsx";
 
-const BottomNavBar = ({ activePage, requests = [] }) => {
+const BottomNavBar = ({ activePage = [] }) => {
   const router = useRouter();
   const [showRequests, setShowRequests] = useState(false);
+
+  const requests = [
+    {
+      id: 1,
+      name: "John Doe",
+      profilePic: "https://picsum.photos/200/300",
+      bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet nulla auctor, vestibulum magna sed, convallis ex.",
+    },
+    {
+      id: 2,
+      name: "Jane Smith",
+      profilePic: "https://picsum.photos/200/301",
+      bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet nulla auctor, vestibulum magna sed, convallis ex. Phasellus malesuada massa sed purus convallis, sed bibendum ex viverra.",
+    },
+    {
+      id: 3,
+      name: "Bob Johnson",
+      profilePic: "https://picsum.photos/200/302",
+      bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet nulla auctor, vestibulum magna sed, convallis ex. Phasellus malesuada massa sed purus convallis, sed bibendum ex viverra. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.",
+    },
+  ];
 
   const numRequests = requests.length;
 
@@ -64,11 +85,7 @@ const BottomNavBar = ({ activePage, requests = [] }) => {
             <FontAwesomeIcon icon={navItems[item].icon} />
             <span>{navItems[item].label}</span>
             {item === "requests" && numRequests > 0 && (
-              <span
-                className={`${styles.pingIndicator} animate-ping absolute top-[-5px] right-[-10px] bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center`}
-              >
-                {numRequests}
-              </span>
+              <span className={`${styles.indicator} `}>{numRequests}</span>
             )}
           </div>
         ))}
