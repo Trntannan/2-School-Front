@@ -1,35 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "../styles/Requests.module.css";
+import { on } from "events";
 
-const Requests = ({ requests, onAccept, onRefuse }) => {
+const Requests = ({ requests }) => {
   const [bioExpanded, setBioExpanded] = React.useState({});
-
-  // const requests = [
-  //   {
-  //     id: 1,
-  //     name: "John Doe",
-  //     profilePic: "https://picsum.photos/200/300",
-  //     bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet nulla auctor, vestibulum magna sed, convallis ex.",
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Jane Smith",
-  //     profilePic: "https://picsum.photos/200/301",
-  //     bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet nulla auctor, vestibulum magna sed, convallis ex. Phasellus malesuada massa sed purus convallis, sed bibendum ex viverra.",
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "Bob Johnson",
-  //     profilePic: "https://picsum.photos/200/302",
-  //     bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet nulla auctor, vestibulum magna sed, convallis ex. Phasellus malesuada massa sed purus convallis, sed bibendum ex viverra. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.",
-  //   },
-  // ];
+  const [requestStatus, setRequestStatus] = useState({});
 
   const handleBioToggle = (index) => {
     setBioExpanded((prevBioExpanded) => ({
       ...prevBioExpanded,
       [index]: !prevBioExpanded[index],
     }));
+  };
+
+  const onAccept = (id) => {
+    setRequestStatus((prevStatus) => ({ ...prevStatus, [id]: "accepted" }));
+  };
+
+  const onRefuse = (id) => {
+    setRequestStatus((prevStatus) => ({ ...prevStatus, [id]: "refused" }));
   };
 
   return (
@@ -54,29 +43,55 @@ const Requests = ({ requests, onAccept, onRefuse }) => {
                     {request.bio.substring(0, 50)}...
                   </span>
                 )}
-                <button
-                  className={styles.bioToggle}
-                  onClick={() => handleBioToggle(index)}
-                >
-                  Read more
-                </button>
               </div>
             </div>
           </div>
-          <div className={styles.actions}>
-            <button
-              className={styles.accept}
-              onClick={() => onAccept(request.id)}
-            >
-              ACCEPT
-            </button>
-            <button
-              className={styles.refuse}
-              onClick={() => onRefuse(request.id)}
-            >
-              REFUSE
-            </button>
-          </div>
+          {requestStatus[request.id] === "accepted" ? (
+            <main className="request-main flex items-center justify-center m-0">
+              <button
+                type="button"
+                className="inline-flex items-center px-4 py-2 font-semibold leading-6 text-sm shadow rounded-md text-white bg-indigo-500 hover:bg-indigo-400 transition ease-in-out duration-150 cursor-default"
+                disabled
+              >
+                <svg
+                  className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  ></path>
+                </svg>
+                Processing...
+              </button>
+            </main>
+          ) : requestStatus[request.id] === "refused" ? null : (
+            <div>
+              <button
+                className={styles.accept}
+                onClick={() => onAccept(request.id)}
+              >
+                Accept
+              </button>
+              <button
+                className={styles.refuse}
+                onClick={() => onRefuse(request.id)}
+              >
+                Refuse
+              </button>
+            </div>
+          )}
         </div>
       ))}
     </div>

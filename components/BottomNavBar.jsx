@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUser,
@@ -69,6 +69,28 @@ const BottomNavBar = ({ activePage = [] }) => {
     }
   };
 
+  const requestsRef = React.createRef();
+
+  useEffect(() => {
+    const handleDocumentClick = (event) => {
+      if (requestsRef.current && !requestsRef.current.contains(event.target)) {
+        setShowRequests(null);
+      }
+    };
+
+    document.body.addEventListener("click", handleDocumentClick);
+
+    return () => {
+      document.body.removeEventListener("click", handleDocumentClick);
+    };
+  }, [setShowRequests]);
+
+  useEffect(() => {
+    if (showRequests) {
+      setShowRequests(false);
+    }
+  }, [activePage]);
+
   return (
     <>
       <div className={styles.navbar}>
@@ -91,17 +113,19 @@ const BottomNavBar = ({ activePage = [] }) => {
         ))}
       </div>
       {showRequests && (
-        <Requests
-          requests={requests}
-          onAccept={(id) => {
-            console.log(`Accepted request with ID: ${id}`);
-            setShowRequests(false);
-          }}
-          onRefuse={(id) => {
-            console.log(`Refused request with ID: ${id}`);
-            setShowRequests(false);
-          }}
-        />
+        <div ref={requestsRef}>
+          <Requests
+            requests={requests}
+            onAccept={(id) => {
+              console.log(`Accepted request with ID: ${id}`);
+              setShowRequests(false);
+            }}
+            onRefuse={(id) => {
+              console.log(`Refused request with ID: ${id}`);
+              setShowRequests(false);
+            }}
+          />
+        </div>
       )}
     </>
   );
