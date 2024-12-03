@@ -140,12 +140,24 @@ const MapComponent = ({
         infoWindow.open(map, endMarker);
       });
 
+      //click listener for Ask to join button
+      // const button = infoWindow.getContent().querySelector("button");
+      // if (button) {
+      //   button.addEventListener("click", () => {
+      //     requestJoin(group._id);
+      //   });
+      // }
+
       const directionsService = new window.google.maps.DirectionsService();
       directionsService.route(
         {
           origin: startLocation,
           destination: endLocation,
           travelMode: window.google.maps.TravelMode.WALKING,
+          avoidHighways: true,
+          avoidTolls: true,
+          avoidFerries: true,
+          unitSystem: window.google.maps.UnitSystem.METRIC,
         },
         (result, status) => {
           if (status === "OK") {
@@ -168,6 +180,24 @@ const MapComponent = ({
         infoWindow.close();
       });
     };
+
+    // const requestJoin = async (groupId) => {
+    //   try {
+    //     const token = localStorage.getItem("token");
+    //     const response = await axios.post(
+    //       `${backendUrl}/api/user/join-group`,
+    //       { groupId },
+    //       {
+    //         headers: {
+    //           Authorization: `Bearer ${token}`,
+    //         },
+    //       }
+    //     );
+    //     console.log("Join group request sent successfully:", response.data);
+    //   } catch (error) {
+    //     console.error("Error sending join group request:", error);
+    //   }
+    // };
 
     loadGoogleMapsApi();
   }, [allGroups, selectedGroup]);

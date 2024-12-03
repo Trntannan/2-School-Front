@@ -61,7 +61,6 @@ const Groups = () => {
     };
   }, [setSelectedGroup]);
 
-  // handle delete group using group._id
   const handleDeleteGroup = async (groupId) => {
     const token = localStorage.getItem("token");
     try {
