@@ -27,9 +27,14 @@ const Groups = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      setGroups(response.data || []);
+
+      if (response.data && response.data.length > 0) {
+        setGroups(response.data);
+      } else {
+        setGroups([]);
+      }
     } catch (error) {
-      console.error("Error fetching groups:", error);
+      console.error("Failed to fetch groups", error);
     }
   };
 
@@ -73,7 +78,7 @@ const Groups = () => {
     }
   };
 
-  if (!isClient || groups.length === 0) {
+  if (!isClient) {
     return (
       <div className="page-container">
         <main className="main-content flex items-center justify-center">

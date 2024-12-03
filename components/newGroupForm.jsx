@@ -71,7 +71,7 @@ const NewGroupForm = ({ map, mapsApi, setGroups, closeForm }) => {
     marker.current = new mapsApi.Marker({
       position: location,
       map,
-      label: field === "meetupPoint" ? "M" : "S",
+      label: field === "meetupPoint" ? "Start" : "End",
     });
 
     map.panTo(location);

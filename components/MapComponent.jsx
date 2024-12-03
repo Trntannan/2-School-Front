@@ -78,7 +78,7 @@ const MapComponent = ({
           renderGroupOnMap(group, groupColor, map);
         });
       } else {
-        renderGroupOnMap(selectedGroup, "#FF0000", map, true);
+        renderGroupOnMap(selectedGroup, "#119902", map, true);
       }
 
       map.addListener("click", () => {
@@ -101,12 +101,24 @@ const MapComponent = ({
         position: startLocation,
         map,
         title: `${group.name} - Start Location`,
+        label: {
+          text: "Start",
+          color: "#ffffff",
+          fontSize: "11px",
+          backgroundColor: "#ff0000",
+        },
       });
 
       const endMarker = new window.google.maps.Marker({
         position: endLocation,
         map,
         title: `${group.name} - End Location`,
+        label: {
+          text: "End",
+          color: "#ffffff",
+          fontSize: "11px",
+          backgroundColor: "#ff0000",
+        },
       });
 
       const infoWindowContent = `
