@@ -79,6 +79,7 @@ const NewGroupForm = ({ map, mapsApi, setGroups, closeForm }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    document.body.style.cursor = "wait";
 
     if (!form.meetupPoint || !form.endLocation) {
       alert("Please enter both meetup point and end location");
@@ -126,7 +127,7 @@ const NewGroupForm = ({ map, mapsApi, setGroups, closeForm }) => {
 
       console.log("Group created:", response.data);
       setGroups((prevGroups) => [...prevGroups, response.data]);
-
+      document.body.style.cursor = "default";
       closeForm();
     } catch (error) {
       console.error("Error creating group:", error);

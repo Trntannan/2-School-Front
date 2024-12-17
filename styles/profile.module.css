@@ -44,7 +44,7 @@
 }
 
 .qr {
-  @apply w-4/6 h-4/6;
+  @apply w-[200px] h-[200px];
 }
 
 .qrCodeButton {
@@ -56,7 +56,7 @@
 }
 
 .qrModalContent {
-  @apply flex items-center justify-center w-2/3 h-2/3 bg-white rounded-lg;
+  @apply flex items-center justify-center w-[250px] h-[250px] bg-white rounded-lg;
 }
 
 .usernameInput {

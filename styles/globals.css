@@ -43,6 +43,8 @@ a {
   color: white;
   border: none;
   cursor: pointer;
+  width: 70%;
+  align-self: center;
 }
 
 .complete-prof-btn {
