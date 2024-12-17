@@ -9,7 +9,7 @@ const NewGroupForm = ({ map, mapsApi, setGroups, closeForm }) => {
     groupName: "",
     meetupPoint: "",
     endLocation: "",
-    startTime: "", // Store time as a string in HH:MM format
+    startTime: "",
   });
 
   const autocompleteRef = useRef(null);
@@ -135,6 +135,9 @@ const NewGroupForm = ({ map, mapsApi, setGroups, closeForm }) => {
 
   return (
     <form className="form-container" onSubmit={handleSubmit}>
+      <button onClick={closeForm} className="close-button" type="button">
+        ×
+      </button>
       <input
         type="text"
         name="groupName"
@@ -161,11 +164,12 @@ const NewGroupForm = ({ map, mapsApi, setGroups, closeForm }) => {
         placeholder="End Location"
       />
       <input
-        type="time" // Updated to only accept time
+        type="time"
         name="startTime"
         id="startTime"
         value={form.startTime}
         className="form-group mb-3"
+        style={{ width: "50%", alignSelf: "center" }}
         onChange={(e) => setForm({ ...form, startTime: e.target.value })}
       />
       <button type="submit" className="login-btn">

@@ -1,4 +1,25 @@
 .landingPage {
+  @apply w-screen h-screen flex flex-col items-center justify-center;
+}
+
+.header {
+  @apply flex flex-col items-center justify-center mb-12;
+}
+
+.container {
+  @apply w-screen h-screen flex flex-col items-center justify-center;
+}
+
+.input {
+  @apply m-2.5;
+}
+
+.button {
+  @apply m-2.5 w-1/2;
+  background-color: var(--primary-color);
+}
+
+/* .landingPage {
   width: 100%;
   height: 100vh;
   display: flex;
@@ -31,7 +52,7 @@
 .button {
   margin: 10px;
   width: 50%;
-}
+} */
 
 .option {
   display: flex;

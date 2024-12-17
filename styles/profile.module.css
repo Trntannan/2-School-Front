@@ -39,8 +39,12 @@
   @apply flex items-center justify-center cursor-pointer text-lg shadow-md border-none rounded-md text-black bg-neutral-300 hover:bg-neutral-500 hover:text-white w-[75%];
 }
 
+.iconSize {
+  @apply w-4 h-4;
+}
+
 .qr {
-  @apply size-4/6;
+  @apply w-4/6 h-4/6;
 }
 
 .qrCodeButton {

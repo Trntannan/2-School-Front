@@ -49,8 +49,13 @@ const Login = () => {
   };
 
   return (
-    <div>
-      <form className="form-container" onSubmit={handleSubmit}>
+    <div className={`${isSubmitting ? "cursor-not-allowed" : ""}`}>
+      <form
+        className={`form-container ${
+          isSubmitting ? "pointer-events-none" : ""
+        }`}
+        onSubmit={handleSubmit}
+      >
         <input
           className="form-group mb-3"
           type="text"

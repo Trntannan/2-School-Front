@@ -72,8 +72,8 @@ const Signup = () => {
   };
 
   return (
-    <div>
-      <div>
+    <div className={`${isSubmitting ? "cursor-not-allowed" : ""}`}>
+      <div className={`${isSubmitting ? "pointer-events-none" : ""}`}>
         <form className="form-container" onSubmit={handleSubmit}>
           <input
             className="form-group mb-3"
@@ -86,7 +86,7 @@ const Signup = () => {
           />
           <input
             className="form-group mb-3"
-            type="text"
+            type="email"
             name="email"
             placeholder="Email"
             value={form.email}

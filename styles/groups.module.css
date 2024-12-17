@@ -15,12 +15,22 @@
 }
 
 .addGroupButton {
+  @apply self-center text-3xl border-none;
+  background-color: var(--white-color);
+  color: var(--primary-color);
+}
+
+.addGroupButton:hover {
+  color: var(--primary-hover-color);
+}
+
+/* .addGroupButton {
   @apply self-center bg-white text-blue-600 text-3xl border-none;
 }
 
 .addGroupButton:hover {
   @apply text-blue-800;
-}
+} */
 
 .groupName {
   @apply text-lg font-extrabold cursor-pointer;
@@ -63,7 +73,7 @@
 }
 
 .modalContent {
-  @apply bg-white p-5 rounded-lg relative max-w-lg w-3/4;
+  @apply bg-white rounded-lg relative max-w-lg w-3/4 pt-10 px-5 pb-5;
 }
 
 .closeButton {

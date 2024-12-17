@@ -11,6 +11,7 @@ const Profile = () => {
   const [tempData, setTempData] = useState({});
   const [isClient, setIsClient] = useState(false);
   const [showQrModal, setShowQrModal] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const fetchProfile = async () => {
     try {
@@ -50,6 +51,9 @@ const Profile = () => {
   };
 
   const handleSaveClick = async () => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+
     try {
       const token = localStorage.getItem("token");
       let formData = new FormData();
@@ -78,6 +82,8 @@ const Profile = () => {
       setTempData({});
     } catch (error) {
       console.error("Error updating profile:", error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -118,8 +124,12 @@ const Profile = () => {
   }
 
   return (
-    <div className="page-container">
-      <main className="main-content">
+    <div
+      className={`page-container ${isSubmitting ? "cursor-not-allowed" : ""}`}
+    >
+      <main
+        className={`main-content ${isSubmitting ? "pointer-events-none" : ""}`}
+      >
         <div className={styles.profilePicContainer}>
           <div className={styles.profilePicContent}>
             <img
@@ -164,7 +174,11 @@ const Profile = () => {
           </div>
         </div>
 
-        <div className={styles.profileBottom}>
+        <div
+          className={`${styles.profileBottom} ${
+            isSubmitting ? "cursor-not-allowed" : ""
+          }`}
+        >
           {!editMode ? (
             <button
               className={styles.editProfileButton}
@@ -176,7 +190,7 @@ const Profile = () => {
                 viewBox="0 0 24 24"
                 strokeWidth="1.5"
                 stroke="currentColor"
-                class="size-4 mr-1"
+                className={`w-4 h-4 mr-1`}
               >
                 <path
                   strokeLinecap="round"
@@ -188,10 +202,41 @@ const Profile = () => {
             </button>
           ) : (
             <button
-              className={styles.editProfileButton}
+              className={`${styles.editProfileButton} ${
+                isSubmitting
+                  ? "cursor-not-allowed opacity-75 pointer-events-none"
+                  : ""
+              }`}
               onClick={handleSaveClick}
+              disabled={isSubmitting}
             >
-              Save Changes
+              {isSubmitting ? (
+                <div className="flex items-center">
+                  <svg
+                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                    ></path>
+                  </svg>
+                  Processing...
+                </div>
+              ) : (
+                "Save Changes"
+              )}
             </button>
           )}
           <button

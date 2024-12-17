@@ -9,16 +9,17 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 const backendUrl = "https://two-school-backend.onrender.com" || 5000;
 
 const Groups = () => {
-  const [groups, setGroups] = useState([]);
+  const [userGroups, setUserGroups] = useState([]);
   const [showNewGroupForm, setShowNewGroupForm] = useState(false);
-  const [map, setMap] = useState(null);
-  const [mapsApi, setMapsApi] = useState(null);
+  const [mapInstance, setMapInstance] = useState(null);
+  const [mapsApiInstance, setMapsApiInstance] = useState(null);
   const [isClient, setIsClient] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState(null);
 
-  const groupsRef = React.useRef(null);
+  const groupsListRef = React.useRef(null);
 
-  const fetchGroups = async () => {
+  const fetchUserGroups = async () => {
+    setIsClient(false);
     const token = localStorage.getItem("token");
     try {
       const response = await axios.get(`${backendUrl}/api/user/get-group`, {
@@ -28,29 +29,32 @@ const Groups = () => {
         },
       });
 
-      if (response.data && response.data.length > 0) {
-        setGroups(response.data);
+      if (response.data) {
+        setUserGroups(response.data);
       } else {
-        setGroups([]);
+        setUserGroups([]);
       }
+      setIsClient(true);
     } catch (error) {
       console.error("Failed to fetch groups", error);
+      setIsClient(true);
     }
   };
 
   useEffect(() => {
-    fetchGroups();
-    setIsClient(true);
+    fetchUserGroups();
   }, []);
 
   const handleGroupClick = (group) => {
     setSelectedGroup(group);
-    console.log("Selected group:", group);
   };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (groupsRef.current && !groupsRef.current.contains(event.target)) {
+      if (
+        groupsListRef.current &&
+        !groupsListRef.current.contains(event.target)
+      ) {
         setSelectedGroup(null);
       }
     };
@@ -62,6 +66,7 @@ const Groups = () => {
   }, [setSelectedGroup]);
 
   const handleDeleteGroup = async (groupId) => {
+    setIsClient(false);
     const token = localStorage.getItem("token");
     try {
       await axios.delete(`${backendUrl}/api/user/delete-group`, {
@@ -71,9 +76,11 @@ const Groups = () => {
         },
         data: { groupId },
       });
-      fetchGroups();
+      fetchUserGroups();
+      setIsClient(true);
     } catch (error) {
       console.error("Error deleting group:", error);
+      setIsClient(true);
     }
   };
 
@@ -117,12 +124,12 @@ const Groups = () => {
     <div className="page-container">
       <main className={styles.mainContent}>
         <MapComponent
-          groups={groups}
+          groups={userGroups}
           className={styles.mapContainer}
           setSelectedGroup={setSelectedGroup}
           onMapReady={(mapInstance, mapsApiInstance) => {
-            setMap(mapInstance);
-            setMapsApi(mapsApiInstance);
+            setMapInstance(mapInstance);
+            setMapsApiInstance(mapsApiInstance);
           }}
           selectedGroup={selectedGroup}
           onMapClick={() => setSelectedGroup(null)}
@@ -137,9 +144,9 @@ const Groups = () => {
               +
             </button>
           </div>
-          {groups.length > 0 ? (
+          {userGroups.length > 0 ? (
             <ul>
-              {groups.map((group) => (
+              {userGroups.map((group) => (
                 <li className={styles.groupItem} key={group._id}>
                   <div
                     className={styles.groupName}
@@ -166,16 +173,10 @@ const Groups = () => {
       {showNewGroupForm && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
-            <button
-              className={styles.closeButton}
-              onClick={() => setShowNewGroupForm(false)}
-            >
-              X
-            </button>
             <NewGroupForm
-              map={map}
-              mapsApi={mapsApi}
-              setGroups={fetchGroups}
+              map={mapInstance}
+              mapsApi={mapsApiInstance}
+              setGroups={fetchUserGroups}
               closeForm={() => setShowNewGroupForm(false)}
             />
           </div>
