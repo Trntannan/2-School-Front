@@ -4,9 +4,9 @@ import Login from "../components/Login";
 import Signup from "../components/Signup";
 
 //initialize server whn page loads
-export const getServerSideProps = async () => {
-  return { props: { server: true } };
-};
+// export const getServerSideProps = async () => {
+//   return { props: { server: true } };
+// };
 
 const Home = () => {
   const [isSignup, setIsSignup] = useState(false);

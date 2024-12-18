@@ -9,6 +9,7 @@ const backendUrl = "https://two-school-backend.onrender.com" || 5000;
 const Settings = () => {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteConfirmation, setDeleteConfirmation] = useState("");
 
   const handleLogout = async () => {
     localStorage.removeItem("token");
@@ -16,6 +17,10 @@ const Settings = () => {
   };
 
   const handleDelete = async () => {
+    if (deleteConfirmation !== "Delete my account") {
+      return;
+    }
+
     const token = localStorage.getItem("token");
 
     try {
@@ -70,13 +75,40 @@ const Settings = () => {
         {showDeleteModal && (
           <div className={styles.modalOverlay}>
             <div className={styles.modalContent}>
-              <p>Are you sure you want to permanently DELETE your account?</p>
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                className={styles.closeButton}
+              >
+                ×
+              </button>
+              <p className={styles.deleteWarning}>
+                To permanently delete your account enter <br />
+                "Delete my account" <br /> in the field below.
+              </p>
+              <input
+                type="text"
+                value={deleteConfirmation}
+                onChange={(e) => setDeleteConfirmation(e.target.value)}
+                placeholder="'Delete my account'"
+                className={styles.deleteConfirmationInput}
+              />
               <div className={styles.buttonGroup}>
-                <button onClick={handleDelete} className={styles.confirmButton}>
-                  Yes
+                <button
+                  onClick={handleDelete}
+                  className={`${styles.confirmButton} ${
+                    deleteConfirmation !== "Delete my account"
+                      ? styles.disabled
+                      : ""
+                  }`}
+                  disabled={deleteConfirmation !== "Delete my account"}
+                >
+                  Confirm Delete
                 </button>
                 <button
-                  onClick={() => setShowDeleteModal(false)}
+                  onClick={() => {
+                    setShowDeleteModal(false);
+                    setDeleteConfirmation("");
+                  }}
                   className={styles.cancelButton}
                 >
                   Cancel

@@ -39,6 +39,37 @@ const MapComponent = ({
   }, []);
 
   useEffect(() => {
+    window.handleJoinRequest = async (groupId) => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          console.error("No token found");
+          return;
+        }
+
+        const response = await axios.post(
+          `${backendUrl}/api/user/join-request`,
+          { groupId: groupId.toString() },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          alert("Join request sent successfully!");
+        }
+      } catch (error) {
+        console.error(
+          "Error sending join request:",
+          error.response?.data?.message || error.message
+        );
+        alert("Failed to send join request. Please try again.");
+      }
+    };
+
     const loadGoogleMapsApi = () => {
       if (!window.google || !window.google.maps) {
         const script = document.createElement("script");
@@ -89,12 +120,12 @@ const MapComponent = ({
 
     const renderGroupOnMap = (group, color, map, isSelected = false) => {
       const startLocation = new window.google.maps.LatLng(
-        group.routes[0].start.latitude,
-        group.routes[0].start.longitude
+        parseFloat(group.routes[0].start.latitude),
+        parseFloat(group.routes[0].start.longitude)
       );
       const endLocation = new window.google.maps.LatLng(
-        group.routes[0].end.latitude,
-        group.routes[0].end.longitude
+        parseFloat(group.routes[0].end.latitude),
+        parseFloat(group.routes[0].end.longitude)
       );
 
       const startMarker = new window.google.maps.Marker({
@@ -102,10 +133,18 @@ const MapComponent = ({
         map,
         title: `${group.name} - Start Location`,
         label: {
-          text: "Start",
-          color: "#ffffff",
-          fontSize: "11px",
-          backgroundColor: "#ff0000",
+          text: group.name,
+          color: "#1a0d00",
+          fontSize: "14px",
+          fontWeight: "bold",
+        },
+        icon: {
+          path: window.google.maps.SymbolPath.CIRCLE,
+          fillColor: color,
+          fillOpacity: 1,
+          strokeWeight: 2,
+          strokeColor: "#1a0d00",
+          scale: 35,
         },
       });
 
@@ -115,9 +154,17 @@ const MapComponent = ({
         title: `${group.name} - End Location`,
         label: {
           text: "End",
-          color: "#ffffff",
-          fontSize: "11px",
-          backgroundColor: "#ff0000",
+          color: "#1a0d00",
+          fontSize: "14px",
+          fontWeight: "bold",
+        },
+        icon: {
+          path: window.google.maps.SymbolPath.CIRCLE,
+          fillColor: color,
+          fillOpacity: 1,
+          strokeWeight: 2,
+          strokeColor: "#1a0d00",
+          scale: 18,
         },
       });
 
@@ -125,7 +172,11 @@ const MapComponent = ({
         <div style="color: black;">
           <h4>${group.name}</h4>
           <p>Start Time: ${new Date(group.startTime).toLocaleTimeString()}</p>
-          ${!isSelected ? "<button>Ask to join</button>" : ""}
+          ${
+            !isSelected
+              ? `<button id="join-${group._id}" onclick="window.handleJoinRequest(${group._id})">Ask to join</button>`
+              : ""
+          }
         </div>
       `;
       const infoWindow = new window.google.maps.InfoWindow({
@@ -139,14 +190,6 @@ const MapComponent = ({
       endMarker.addListener("click", () => {
         infoWindow.open(map, endMarker);
       });
-
-      //click listener for Ask to join button
-      // const button = infoWindow.getContent().querySelector("button");
-      // if (button) {
-      //   button.addEventListener("click", () => {
-      //     requestJoin(group._id);
-      //   });
-      // }
 
       const directionsService = new window.google.maps.DirectionsService();
       directionsService.route(
@@ -180,24 +223,6 @@ const MapComponent = ({
         infoWindow.close();
       });
     };
-
-    // const requestJoin = async (groupId) => {
-    //   try {
-    //     const token = localStorage.getItem("token");
-    //     const response = await axios.post(
-    //       `${backendUrl}/api/user/join-group`,
-    //       { groupId },
-    //       {
-    //         headers: {
-    //           Authorization: `Bearer ${token}`,
-    //         },
-    //       }
-    //     );
-    //     console.log("Join group request sent successfully:", response.data);
-    //   } catch (error) {
-    //     console.error("Error sending join group request:", error);
-    //   }
-    // };
 
     loadGoogleMapsApi();
   }, [allGroups, selectedGroup]);
