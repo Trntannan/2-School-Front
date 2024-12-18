@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import styles from "../styles/groups.module.css";
 import axios from "axios";
+import mongoose from "mongoose";
 
 const backendUrl = "https://two-school-backend.onrender.com" || 5000;
 
@@ -49,7 +50,7 @@ const MapComponent = ({
 
         const response = await axios.post(
           `${backendUrl}/api/user/join-request`,
-          { groupId: groupId.toString() },
+          { groupId: groupId },
           {
             headers: {
               Authorization: `Bearer ${token}`,
