@@ -121,7 +121,6 @@ const MapComponent = ({
         position: userLocation,
         map,
         title: "Your Location",
-        // label is username
         label: {
           text: localStorage.getItem("username"),
           color: "white",
