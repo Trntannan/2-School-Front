@@ -50,7 +50,7 @@ const MapComponent = ({
 
         const response = await axios.post(
           `${backendUrl}/api/user/join-request`,
-          { groupId: groupId },
+          { groupId },
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -175,7 +175,7 @@ const MapComponent = ({
           <p>Start Time: ${new Date(group.startTime).toLocaleTimeString()}</p>
           ${
             !isSelected
-              ? `<button id="join-${group._id}" onclick="window.handleJoinRequest(${group._id})">Ask to join</button>`
+              ? `<button id="join-${group._id}" onclick="window.handleJoinRequest('${group._id}')">Ask to join</button>`
               : ""
           }
         </div>

@@ -16,23 +16,33 @@ const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [emailError, setEmailError] = useState("");
+  const [usernameError, setUsernameError] = useState({
+    message: "",
+    suggestion: "",
+  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
+    // Clear errors when user types
+    if (name === "email") setEmailError("");
+    if (name === "username") setUsernameError({ message: "", suggestion: "" });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (isSubmitting) return;
     setIsSubmitting(true);
+
     const { username, email, password, confirmPassword } = form;
 
     if (password !== confirmPassword) {
       alert("Passwords do not match");
+      setIsSubmitting(false);
       return;
     }
+
     if (
       !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.])[A-Za-z\d@$!%*?&.]{8,}$/.test(
         password
@@ -41,12 +51,12 @@ const Signup = () => {
       alert(
         "Password must be at least 8 characters and include uppercase, number, and special character"
       );
+      setIsSubmitting(false);
       return;
     }
 
     try {
       const hashedPassword = await bcrypt.hash(password, 10);
-
       const response = await axios.post(
         `${backendUrl}/api/user/register`,
         {
@@ -66,7 +76,18 @@ const Signup = () => {
       localStorage.setItem("token", token);
       window.location.href = "/completeProfile";
     } catch (err) {
-      alert(err.response?.data?.message || "Error registering user");
+      const errorData = err.response?.data;
+
+      if (errorData?.field === "email") {
+        setEmailError(errorData.message);
+      } else if (errorData?.field === "username") {
+        setUsernameError({
+          message: errorData.message,
+          suggestion: errorData.suggestion,
+        });
+      } else {
+        alert(errorData?.message || "Error registering user");
+      }
       setIsSubmitting(false);
     }
   };
@@ -75,24 +96,41 @@ const Signup = () => {
     <div className={`${isSubmitting ? "cursor-not-allowed" : ""}`}>
       <div className={`${isSubmitting ? "pointer-events-none" : ""}`}>
         <form className="form-container" onSubmit={handleSubmit}>
-          <input
-            className="form-group mb-3"
-            type="text"
-            name="username"
-            placeholder="Username"
-            value={form.username}
-            onChange={handleChange}
-            required
-          />
-          <input
-            className="form-group mb-3"
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={form.email}
-            onChange={handleChange}
-            required
-          />
+          <div className="form-group mb-3">
+            <input
+              className={`w-full ${
+                usernameError.message ? "border-red-500" : ""
+              }`}
+              type="text"
+              name="username"
+              placeholder="Username"
+              value={form.username}
+              onChange={handleChange}
+              required
+            />
+            {usernameError.message && (
+              <div className="text-red-500 text-sm mb-2">
+                {usernameError.message}
+                <div>Alternatively try: {usernameError.suggestion}</div>
+              </div>
+            )}
+          </div>
+
+          <div className="form-group mb-3">
+            <input
+              className={`w-full ${emailError ? "border-red-500" : ""}`}
+              type="email"
+              name="email"
+              placeholder="Email"
+              value={form.email}
+              onChange={handleChange}
+              required
+            />
+            {emailError && (
+              <div className="text-red-500 text-sm mb-2">{emailError}</div>
+            )}
+          </div>
+
           <div className="relative mb-3">
             <input
               className="form-group pr-10"
@@ -116,6 +154,7 @@ const Signup = () => {
               )}
             </button>
           </div>
+
           <div className="relative mb-3">
             <input
               className="form-group pr-10"
@@ -139,6 +178,7 @@ const Signup = () => {
               )}
             </button>
           </div>
+
           <button type="submit" className="login-btn" disabled={isSubmitting}>
             {isSubmitting ? "Processing..." : "Sign up"}
           </button>
