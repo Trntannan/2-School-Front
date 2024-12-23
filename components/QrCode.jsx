@@ -53,19 +53,6 @@ const QRCode = () => {
       GOLD: "#FFD700",
       PLATINUM: "#E5E4E2",
     };
-
-    return (
-      <div
-        style={{
-          backgroundColor: tierColors[userTier],
-          padding: "5px 10px",
-          borderRadius: "5px",
-          marginBottom: "10px",
-        }}
-      >
-        {userTier}
-      </div>
-    );
   };
 
   if (error) return <p>{error}</p>;
@@ -104,7 +91,7 @@ const QRCode = () => {
 
   return (
     <div className={styles.qrContainer}>
-      {userTier && renderTierBadge()}
+      {renderTierBadge()}
       <img className={styles.qr} src={qrCode} alt="QR Code" />
     </div>
   );

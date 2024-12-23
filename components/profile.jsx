@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styles from "../styles/profile.module.css";
 import QRCode from "./QrCode";
 import axios from "axios";
+import jwt from "jsonwebtoken";
 
 const backendUrl = "https://two-school-backend.onrender.com" || 5000;
 
@@ -12,6 +13,24 @@ const Profile = () => {
   const [isClient, setIsClient] = useState(false);
   const [showQrModal, setShowQrModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [userTier, setUserTier] = useState(null);
+
+  const tierColors = {
+    BRONZE: "#CD7F32",
+    SILVER: "#C0C0C0",
+    GOLD: "#FFD700",
+    PLATINUM: "#E5E4E2",
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decoded = jwt.decode(token);
+      setUserTier(decoded.tier);
+    }
+    fetchProfile();
+    setIsClient(true);
+  }, []);
 
   const fetchProfile = async () => {
     try {
@@ -249,7 +268,10 @@ const Profile = () => {
 
         {showQrModal && (
           <div className={styles.qrModal} onClick={() => setShowQrModal(false)}>
-            <div className={styles.qrModalContent}>
+            <div
+              className={styles.qrModalContent}
+              style={{ backgroundColor: tierColors[userTier] }}
+            >
               <QRCode userId={localStorage.getItem("userId")} />
             </div>
           </div>

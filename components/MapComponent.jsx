@@ -117,7 +117,7 @@ const MapComponent = ({
         zoom: 20,
       });
 
-      new window.google.maps.Marker({
+      const userMarker = new window.google.maps.Marker({
         position: userLocation,
         map,
         title: "Your Location",
@@ -142,14 +142,22 @@ const MapComponent = ({
       if (onMapReady) onMapReady(map, mapsApi);
 
       const groupColors = generateUniqueColors(allGroups.length);
+      const markers = [];
 
       if (!selectedGroup) {
         allGroups.forEach((group, index) => {
           const groupColor = groupColors[index];
-          renderGroupOnMap(group, groupColor, map);
+          const groupMarkers = renderGroupOnMap(group, groupColor, map);
+          markers.push(...groupMarkers);
         });
       } else {
-        renderGroupOnMap(selectedGroup, "#119902", map, true);
+        const selectedMarkers = renderGroupOnMap(
+          selectedGroup,
+          "#119902",
+          map,
+          true
+        );
+        markers.push(...selectedMarkers);
       }
 
       map.addListener("click", () => {
@@ -242,11 +250,19 @@ const MapComponent = ({
             });
 
             startMarker.addListener("click", () => {
+              if (currentInfoWindow) {
+                currentInfoWindow.close();
+              }
               infoWindow.open(map, startMarker);
+              currentInfoWindow = infoWindow;
             });
 
             endMarker.addListener("click", () => {
+              if (currentInfoWindow) {
+                currentInfoWindow.close();
+              }
               infoWindow.open(map, endMarker);
+              currentInfoWindow = infoWindow;
             });
 
             const directionsRenderer =
@@ -269,6 +285,8 @@ const MapComponent = ({
           currentInfoWindow.close();
         }
       });
+
+      return [startMarker, endMarker]; // Return markers for clustering
     };
 
     loadGoogleMapsApi();
