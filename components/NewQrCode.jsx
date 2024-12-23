@@ -5,7 +5,12 @@ import axios from "axios";
 
 const backendUrl = "https://two-school-backend.onrender.com" || 5000;
 
-const MapComponent = ({ groups, onMapReady, userId }) => {
+const MapComponent = ({
+  setSelectedGroup,
+  onMapReady,
+  selectedGroup,
+  onMapClick,
+}) => {
   const mapElementRef = useRef(null);
   const [allGroups, setAllGroups] = useState([]);
 
@@ -18,11 +23,11 @@ const MapComponent = ({ groups, onMapReady, userId }) => {
         },
       });
 
-      if (response.data) {
-        const filteredGroups = response.data.filter(
-          (group) => !groups.some((g) => g._id === group._id)
-        );
-        setAllGroups(filteredGroups);
+      if (response.data && response.data.length > 0) {
+        setAllGroups(response.data);
+      } else {
+        setAllGroups([]);
+        console.log("No groups found.");
       }
     } catch (error) {
       console.error("Error fetching all groups:", error);
@@ -31,9 +36,38 @@ const MapComponent = ({ groups, onMapReady, userId }) => {
 
   useEffect(() => {
     fetchAllGroups();
-  }, [groups]);
+  }, []);
 
   useEffect(() => {
+    window.handleJoinRequest = async (groupId) => {
+      console.log("Sending join request for group:", groupId);
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          console.error("No token found");
+          return;
+        }
+
+        const response = await axios.post(
+          `${backendUrl}/api/user/join-request`,
+          { groupId },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          alert("Join request sent successfully!");
+        }
+      } catch (error) {
+        console.error("Error sending join request:", error);
+        alert("Failed to send join request. Please try again.");
+      }
+    };
+
     const loadGoogleMapsApi = () => {
       if (!window.google || !window.google.maps) {
         const script = document.createElement("script");
@@ -47,43 +81,149 @@ const MapComponent = ({ groups, onMapReady, userId }) => {
       }
     };
 
+    const generateUniqueColors = (count) => {
+      const colors = [];
+      for (let i = 0; i < count; i++) {
+        const hue = (i * 360) / count;
+        colors.push(`hsl(${hue}, 70%, 50%)`);
+      }
+      return colors;
+    };
+
     const initMap = () => {
       const map = new window.google.maps.Map(mapElementRef.current, {
         center: { lat: -36.892057, lng: 174.618656 },
-        zoom: 12,
+        zoom: 14,
       });
 
       const mapsApi = window.google.maps;
       if (onMapReady) onMapReady(map, mapsApi);
 
-      [...groups, ...allGroups].forEach((group) => {
-        if (group.routes && group.routes.length > 0) {
-          const startLocation = new mapsApi.LatLng(
-            group.routes[0].start.latitude,
-            group.routes[0].start.longitude
-          );
-          const endLocation = new mapsApi.LatLng(
-            group.routes[0].end.latitude,
-            group.routes[0].end.longitude
-          );
+      const groupColors = generateUniqueColors(allGroups.length);
 
-          new mapsApi.Marker({
-            position: startLocation,
-            map,
-            title: `${group.name} - Start Location`,
-          });
+      if (!selectedGroup) {
+        allGroups.forEach((group, index) => {
+          const groupColor = groupColors[index];
+          renderGroupOnMap(group, groupColor, map);
+        });
+      } else {
+        renderGroupOnMap(selectedGroup, "#119902", map, true);
+      }
 
-          new mapsApi.Marker({
-            position: endLocation,
-            map,
-            title: `${group.name} - End Location`,
-          });
+      map.addListener("click", () => {
+        setSelectedGroup(null);
+        onMapClick();
+      });
+    };
+
+    const renderGroupOnMap = (group, color, map, isSelected = false) => {
+      const startLocation = new window.google.maps.LatLng(
+        parseFloat(group.routes[0].start.latitude),
+        parseFloat(group.routes[0].start.longitude)
+      );
+      const endLocation = new window.google.maps.LatLng(
+        parseFloat(group.routes[0].end.latitude),
+        parseFloat(group.routes[0].end.longitude)
+      );
+
+      const startMarker = new window.google.maps.Marker({
+        position: startLocation,
+        map,
+        title: `${group.name} - Start Location`,
+        label: {
+          text: group.name,
+          color: "#1a0d00",
+          fontSize: "14px",
+          fontWeight: "bold",
+        },
+        icon: {
+          path: window.google.maps.SymbolPath.CIRCLE,
+          fillColor: color,
+          fillOpacity: 1,
+          strokeWeight: 2,
+          strokeColor: "#1a0d00",
+          scale: 35,
+        },
+      });
+
+      const endMarker = new window.google.maps.Marker({
+        position: endLocation,
+        map,
+        title: `${group.name} - End Location`,
+        label: {
+          text: "End",
+          color: "#1a0d00",
+          fontSize: "14px",
+          fontWeight: "bold",
+        },
+        icon: {
+          path: window.google.maps.SymbolPath.CIRCLE,
+          fillColor: color,
+          fillOpacity: 1,
+          strokeWeight: 2,
+          strokeColor: "#1a0d00",
+          scale: 18,
+        },
+      });
+
+      const infoWindowContent = `
+        <div style="color: black;">
+          <h4>${group.name}</h4>
+          <p>Start Time: ${new Date(group.startTime).toLocaleTimeString()}</p>
+          ${
+            !isSelected
+              ? `<button id="join-${group._id}" onclick="window.handleJoinRequest('${group._id}')">Ask to join</button>`
+              : ""
+          }
+        </div>
+      `;
+      const infoWindow = new window.google.maps.InfoWindow({
+        content: infoWindowContent,
+      });
+
+      startMarker.addListener("click", () => {
+        infoWindow.open(map, startMarker);
+      });
+
+      endMarker.addListener("click", () => {
+        infoWindow.open(map, endMarker);
+      });
+
+      const directionsService = new window.google.maps.DirectionsService();
+      directionsService.route(
+        {
+          origin: startLocation,
+          destination: endLocation,
+          travelMode: window.google.maps.TravelMode.WALKING,
+          avoidHighways: true,
+          avoidTolls: true,
+          avoidFerries: true,
+          unitSystem: window.google.maps.UnitSystem.METRIC,
+        },
+        (result, status) => {
+          if (status === "OK") {
+            const directionsRenderer =
+              new window.google.maps.DirectionsRenderer({
+                map,
+                suppressMarkers: true,
+                polylineOptions: {
+                  strokeColor: color,
+                  strokeOpacity: isSelected ? 1.0 : 0.7,
+                  strokeWeight: isSelected ? 8 : 6,
+                },
+              });
+            directionsRenderer.setDirections(result);
+          }
         }
+      );
+
+      map.addListener("click", () => {
+        infoWindow.close();
       });
     };
 
     loadGoogleMapsApi();
-  }, [allGroups, groups]);
+  }, [allGroups, selectedGroup]);
 
   return <div ref={mapElementRef} className={styles.mapContainer} />;
 };
@@ -91,6 +231,7 @@ const MapComponent = ({ groups, onMapReady, userId }) => {
 MapComponent.propTypes = {
   groups: PropTypes.array.isRequired,
   onMapReady: PropTypes.func,
+  onMapClick: PropTypes.func.isRequired,
 };
 
 export default MapComponent;

@@ -36,10 +36,19 @@ const Login = () => {
     }
 
     try {
-      const response = await axios.post(`${backendUrl}/api/user/login`, {
-        username,
-        password,
-      });
+      const response = await axios.post(
+        `${backendUrl}/api/user/login`,
+        {
+          username,
+          password,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
+        }
+      );
       localStorage.setItem("token", response.data.token);
       window.location.href = "/groups";
     } catch (error) {

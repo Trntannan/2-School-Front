@@ -13,6 +13,26 @@ const MapComponent = ({
 }) => {
   const mapElementRef = useRef(null);
   const [allGroups, setAllGroups] = useState([]);
+  const [userLocation, setUserLocation] = useState({
+    lat: -36.892057,
+    lng: 174.618656,
+  });
+
+  const getUserLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUserLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+        },
+        (error) => {
+          console.log("Error getting location:", error);
+        }
+      );
+    }
+  };
 
   const fetchAllGroups = async () => {
     try {
@@ -35,6 +55,7 @@ const MapComponent = ({
   };
 
   useEffect(() => {
+    getUserLocation();
     fetchAllGroups();
   }, []);
 
@@ -92,8 +113,23 @@ const MapComponent = ({
 
     const initMap = () => {
       const map = new window.google.maps.Map(mapElementRef.current, {
-        center: { lat: -36.892057, lng: 174.618656 },
+        center: userLocation,
         zoom: 14,
+      });
+
+      // Add user location marker
+      new window.google.maps.Marker({
+        position: userLocation,
+        map,
+        title: "Your Location",
+        icon: {
+          path: window.google.maps.SymbolPath.CIRCLE,
+          fillColor: "#4285F4",
+          fillOpacity: 1,
+          strokeWeight: 2,
+          strokeColor: "#ffffff",
+          scale: 12,
+        },
       });
 
       const mapsApi = window.google.maps;
@@ -223,7 +259,7 @@ const MapComponent = ({
     };
 
     loadGoogleMapsApi();
-  }, [allGroups, selectedGroup]);
+  }, [allGroups, selectedGroup, userLocation]);
 
   return <div ref={mapElementRef} className={styles.mapContainer} />;
 };
