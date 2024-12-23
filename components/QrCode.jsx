@@ -5,20 +5,24 @@ import styles from "../styles/profile.module.css";
 
 const backendUrl = "https://two-school-backend.onrender.com" || 5000;
 
-const QRCode = ({ userTier }) => {
+const QRCode = () => {
   const [qrCode, setQrCode] = useState(null);
   const [error, setError] = useState(null);
+  const [userTier, setUserTier] = useState(null);
 
   useEffect(() => {
     const generateQRCode = async () => {
       try {
         const token = localStorage.getItem("token");
-        const decode = jwt.decode(token);
-        const userId = decode.id;
+        const decoded = jwt.decode(token);
+        const { id: userId, username, tier } = decoded;
+        console.log(userId, username, tier);
+        setUserTier(tier);
 
         const qrData = {
           userId,
-          tier: userTier,
+          username,
+          tier,
         };
 
         const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(
@@ -40,7 +44,7 @@ const QRCode = ({ userTier }) => {
 
     const refreshInterval = setInterval(generateQRCode, 300000);
     return () => clearInterval(refreshInterval);
-  }, [userTier]);
+  }, []);
 
   const renderTierBadge = () => {
     const tierColors = {
@@ -100,7 +104,7 @@ const QRCode = ({ userTier }) => {
 
   return (
     <div className={styles.qrContainer}>
-      {renderTierBadge()}
+      {userTier && renderTierBadge()}
       <img className={styles.qr} src={qrCode} alt="QR Code" />
     </div>
   );
