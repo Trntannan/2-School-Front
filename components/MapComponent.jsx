@@ -114,21 +114,28 @@ const MapComponent = ({
     const initMap = () => {
       const map = new window.google.maps.Map(mapElementRef.current, {
         center: userLocation,
-        zoom: 14,
+        zoom: 12,
       });
 
-      // Add user location marker
       new window.google.maps.Marker({
         position: userLocation,
         map,
         title: "Your Location",
+        // label is username
+        label: {
+          text: localStorage.getItem("username"),
+          color: "white",
+          fontSize: "16px",
+          fontWeight: "bold",
+          textAlign: "center",
+        },
         icon: {
           path: window.google.maps.SymbolPath.CIRCLE,
           fillColor: "#4285F4",
           fillOpacity: 1,
           strokeWeight: 2,
           strokeColor: "#ffffff",
-          scale: 12,
+          scale: 16,
         },
       });
 
@@ -178,7 +185,7 @@ const MapComponent = ({
           fillOpacity: 1,
           strokeWeight: 2,
           strokeColor: "#1a0d00",
-          scale: 35,
+          scale: 16,
         },
       });
 
@@ -198,7 +205,7 @@ const MapComponent = ({
           fillOpacity: 1,
           strokeWeight: 2,
           strokeColor: "#1a0d00",
-          scale: 18,
+          scale: 14,
         },
       });
 
