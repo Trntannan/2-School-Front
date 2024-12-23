@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import styles from "../styles/groups.module.css";
 import axios from "axios";
-import mongoose from "mongoose";
 
 const backendUrl = "https://two-school-backend.onrender.com" || 5000;
 
@@ -41,6 +40,7 @@ const MapComponent = ({
 
   useEffect(() => {
     window.handleJoinRequest = async (groupId) => {
+      console.log("Sending join request for group:", groupId);
       try {
         const token = localStorage.getItem("token");
         if (!token) {
@@ -63,10 +63,7 @@ const MapComponent = ({
           alert("Join request sent successfully!");
         }
       } catch (error) {
-        console.error(
-          "Error sending join request:",
-          error.response?.data?.message || error.message
-        );
+        console.error("Error sending join request:", error);
         alert("Failed to send join request. Please try again.");
       }
     };
