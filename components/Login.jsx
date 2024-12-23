@@ -36,23 +36,15 @@ const Login = () => {
     }
 
     try {
-      const response = await axios.post(
-        `${backendUrl}/api/user/login`,
-        {
-          username,
-          password,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-          },
-        }
-      );
+      const response = await axios.post(`${backendUrl}/api/user/login`, {
+        username,
+        password,
+      });
       localStorage.setItem("token", response.data.token);
       window.location.href = "/groups";
     } catch (error) {
-      setError(error.response?.data?.message || "Invalid username or password");
+      console.error("Login error:", error.response?.data || error);
+      setError(error.response?.data?.message || "Server error occurred");
       setIsSubmitting(false);
     }
   };
