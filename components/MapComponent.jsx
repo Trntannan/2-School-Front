@@ -71,7 +71,7 @@ const MapComponent = ({
 
         const response = await axios.post(
           `${backendUrl}/api/user/join-request`,
-          { groupId },
+          { groupId: groupId },
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -114,7 +114,7 @@ const MapComponent = ({
     const initMap = () => {
       const map = new window.google.maps.Map(mapElementRef.current, {
         center: userLocation,
-        zoom: 12,
+        zoom: 20,
       });
 
       new window.google.maps.Marker({
@@ -122,7 +122,7 @@ const MapComponent = ({
         map,
         title: "Your Location",
         label: {
-          text: localStorage.getItem("username"),
+          text: "User",
           color: "white",
           fontSize: "16px",
           fontWeight: "bold",
@@ -133,8 +133,8 @@ const MapComponent = ({
           fillColor: "#4285F4",
           fillOpacity: 1,
           strokeWeight: 2,
-          strokeColor: "#ffffff",
-          scale: 16,
+          strokeColor: "#1a0d00",
+          scale: 35,
         },
       });
 
@@ -175,7 +175,27 @@ const MapComponent = ({
         label: {
           text: group.name,
           color: "#1a0d00",
-          fontSize: "14px",
+          fontSize: "10px",
+          fontWeight: "bold",
+        },
+        icon: {
+          path: window.google.maps.SymbolPath.CIRCLE,
+          fillColor: color,
+          fillOpacity: 1,
+          strokeWeight: 2,
+          strokeColor: "#1a0d00",
+          scale: 30,
+        },
+      });
+
+      const endMarker = new window.google.maps.Marker({
+        position: endLocation,
+        map,
+        title: `${group.name} - End Location`,
+        label: {
+          text: "End",
+          color: "#1a0d00",
+          fontSize: "10px",
           fontWeight: "bold",
         },
         icon: {
@@ -188,48 +208,7 @@ const MapComponent = ({
         },
       });
 
-      const endMarker = new window.google.maps.Marker({
-        position: endLocation,
-        map,
-        title: `${group.name} - End Location`,
-        label: {
-          text: "End",
-          color: "#1a0d00",
-          fontSize: "14px",
-          fontWeight: "bold",
-        },
-        icon: {
-          path: window.google.maps.SymbolPath.CIRCLE,
-          fillColor: color,
-          fillOpacity: 1,
-          strokeWeight: 2,
-          strokeColor: "#1a0d00",
-          scale: 14,
-        },
-      });
-
-      const infoWindowContent = `
-        <div style="color: black;">
-          <h4>${group.name}</h4>
-          <p>Start Time: ${new Date(group.startTime).toLocaleTimeString()}</p>
-          ${
-            !isSelected
-              ? `<button id="join-${group._id}" onclick="window.handleJoinRequest('${group._id}')">Ask to join</button>`
-              : ""
-          }
-        </div>
-      `;
-      const infoWindow = new window.google.maps.InfoWindow({
-        content: infoWindowContent,
-      });
-
-      startMarker.addListener("click", () => {
-        infoWindow.open(map, startMarker);
-      });
-
-      endMarker.addListener("click", () => {
-        infoWindow.open(map, endMarker);
-      });
+      let currentInfoWindow = null;
 
       const directionsService = new window.google.maps.DirectionsService();
       directionsService.route(
@@ -244,6 +223,32 @@ const MapComponent = ({
         },
         (result, status) => {
           if (status === "OK") {
+            const duration = result.routes[0].legs[0].duration.text;
+
+            const infoWindow = new window.google.maps.InfoWindow({
+              content: `<div style="color: black;">
+                <h4>${group.name}</h4>
+                <p>Start Time: ${new Date(
+                  group.startTime
+                ).toLocaleTimeString()}</p>
+                <p>Estimated Walking Time: ${duration}</p>
+                ${
+                  !isSelected
+                    ? `<button onclick="handleJoinRequest('${group._id}')"}>
+                    Ask to join
+                  </button>`
+                    : ""
+                }</div>`,
+            });
+
+            startMarker.addListener("click", () => {
+              infoWindow.open(map, startMarker);
+            });
+
+            endMarker.addListener("click", () => {
+              infoWindow.open(map, endMarker);
+            });
+
             const directionsRenderer =
               new window.google.maps.DirectionsRenderer({
                 map,
@@ -260,7 +265,9 @@ const MapComponent = ({
       );
 
       map.addListener("click", () => {
-        infoWindow.close();
+        if (currentInfoWindow) {
+          currentInfoWindow.close();
+        }
       });
     };
 

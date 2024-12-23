@@ -1,20 +1,24 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import jwt from "jsonwebtoken";
 import styles from "../styles/profile.module.css";
+
+const backendUrl = "https://two-school-backend.onrender.com" || 5000;
 
 const QRCode = ({ userTier }) => {
   const [qrCode, setQrCode] = useState(null);
   const [error, setError] = useState(null);
-  const [verificationStatus, setVerificationStatus] = useState(null);
 
   useEffect(() => {
     const generateQRCode = async () => {
-      const token = localStorage.getItem("token");
       try {
+        const token = localStorage.getItem("token");
+        const decode = jwt.decode(token);
+        const userId = decode.id;
+
         const qrData = {
-          token,
+          userId,
           tier: userTier,
-          timestamp: Date.now(),
         };
 
         const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(
@@ -24,12 +28,6 @@ const QRCode = ({ userTier }) => {
         const qrCodeUrl = URL.createObjectURL(qrResponse.data);
 
         setQrCode(qrCodeUrl);
-
-        await axios.post(
-          `${backendUrl}/api/users/update-qr`,
-          { qrData },
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
       } catch (error) {
         console.error("Error generating QR Code", error);
         setError("Failed to generate QR Code.");
@@ -40,7 +38,6 @@ const QRCode = ({ userTier }) => {
       generateQRCode();
     }
 
-    // Refresh QR code every 5 minutes for security
     const refreshInterval = setInterval(generateQRCode, 300000);
     return () => clearInterval(refreshInterval);
   }, [userTier]);
@@ -62,7 +59,7 @@ const QRCode = ({ userTier }) => {
           marginBottom: "10px",
         }}
       >
-        {userTier} Tier
+        {userTier}
       </div>
     );
   };
@@ -105,9 +102,6 @@ const QRCode = ({ userTier }) => {
     <div className={styles.qrContainer}>
       {renderTierBadge()}
       <img className={styles.qr} src={qrCode} alt="QR Code" />
-      {verificationStatus && (
-        <div className={styles.verificationStatus}>{verificationStatus}</div>
-      )}
     </div>
   );
 };

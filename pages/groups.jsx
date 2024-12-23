@@ -47,6 +47,10 @@ const Groups = () => {
 
   const handleGroupClick = (group) => {
     setSelectedGroup(group);
+    if (mapInstance) {
+      mapInstance.setCenter({ lat: group.lat, lng: group.lng });
+      mapInstance.setZoom(15);
+    }
   };
 
   useEffect(() => {
