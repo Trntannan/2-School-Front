@@ -72,25 +72,20 @@
     @apply flex-wrap sm:flex-wrap sm:gap-1;
   }
 
-  .qrCodeButton,
   .editProfileButton {
-    @apply w-[48%];
-  }
-
-  .editProfileButton {
-    @apply bg-neutral-300 text-black hover:bg-neutral-500 hover:text-white;
+    @apply w-3/5 bg-neutral-300 text-black hover:bg-neutral-500 hover:text-white;
   }
 
   .qrCodeButton {
-    @apply bg-blue-500 text-white hover:bg-blue-700;
+    @apply w-2/6 bg-blue-500 text-white hover:bg-blue-700;
   }
 
   .profilePicContainer {
-    @apply flex-col sm:flex-col sm:items-center;
+    @apply flex-row sm:flex-col sm:items-center;
   }
 
   .bioContainer {
-    @apply w-[80vw];
+    @apply w-full h-2/3;
   }
 
   .usernameInput {

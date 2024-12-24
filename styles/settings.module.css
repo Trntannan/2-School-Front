@@ -52,14 +52,15 @@
 
 .modalContent {
   background: #fff;
-  padding: 20px;
-  width: 45vw;
+  padding-bottom: 10px;
+  width: 70vw;
   text-align: center;
   border-radius: 5px;
 }
 
 .buttonGroup {
   margin-top: 10px;
+  width: 100%;
 }
 
 .confirmButton {
