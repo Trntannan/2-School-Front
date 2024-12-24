@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+import bcrypt from "bcryptjs";
 
 require("dotenv").config();
 
-const backendUrl = "https://two-school-backend.onrender.com" || 5000;
+const backendUrl = "https://two-school-backend.onrender.com";
 
 const Login = () => {
   const [error, setError] = useState(null);
@@ -40,6 +41,7 @@ const Login = () => {
         username,
         password,
       });
+
       localStorage.setItem("token", response.data.token);
       window.location.href = "/groups";
     } catch (error) {

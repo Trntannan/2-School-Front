@@ -2,8 +2,9 @@ import React, { useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import styles from "../styles/groups.module.css";
 import axios from "axios";
+import { MarkerClusterer } from "@googlemaps/markerclusterer";
 
-const backendUrl = "https://two-school-backend.onrender.com" || 5000;
+const backendUrl = "https://two-school-backend.onrender.com";
 
 const MapComponent = ({
   setSelectedGroup,
@@ -71,7 +72,7 @@ const MapComponent = ({
 
         const response = await axios.post(
           `${backendUrl}/api/user/join-request`,
-          { groupId: groupId },
+          { groupId },
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -143,13 +144,40 @@ const MapComponent = ({
 
       const groupColors = generateUniqueColors(allGroups.length);
       const markers = [];
+      const bounds = new window.google.maps.LatLngBounds();
 
       if (!selectedGroup) {
         allGroups.forEach((group, index) => {
           const groupColor = groupColors[index];
           const groupMarkers = renderGroupOnMap(group, groupColor, map);
-          markers.push(...groupMarkers);
+          markers.push(groupMarkers[0]);
+          bounds.extend(groupMarkers[0].getPosition());
         });
+
+        const markerClusterer = new MarkerClusterer({
+          map,
+          markers,
+          onClusterClick: (cluster) => {
+            const clusteredMarkers = cluster.getMarkers();
+            const bounds = new window.google.maps.LatLngBounds();
+            clusteredMarkers.forEach((marker) =>
+              bounds.extend(marker.getPosition())
+            );
+            map.fitBounds(bounds);
+          },
+          gridSize: 30,
+          minimumClusterSize: 2,
+          styles: [
+            {
+              url: "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m1.png",
+              width: 47,
+              height: 47,
+              textColor: "#fff",
+            },
+          ],
+        });
+
+        map.fitBounds(bounds, { padding: 50 });
       } else {
         const selectedMarkers = renderGroupOnMap(
           selectedGroup,
@@ -157,7 +185,7 @@ const MapComponent = ({
           map,
           true
         );
-        markers.push(...selectedMarkers);
+        markers.push(selectedMarkers[0]);
       }
 
       map.addListener("click", () => {
@@ -167,6 +195,8 @@ const MapComponent = ({
     };
 
     const renderGroupOnMap = (group, color, map, isSelected = false) => {
+      console.log("Rendering group with ID:", group._id);
+
       const startLocation = new window.google.maps.LatLng(
         parseFloat(group.routes[0].start.latitude),
         parseFloat(group.routes[0].start.longitude)
@@ -175,6 +205,8 @@ const MapComponent = ({
         parseFloat(group.routes[0].end.latitude),
         parseFloat(group.routes[0].end.longitude)
       );
+
+      let currentInfoWindow = null;
 
       const startMarker = new window.google.maps.Marker({
         position: startLocation,
@@ -198,7 +230,7 @@ const MapComponent = ({
 
       const endMarker = new window.google.maps.Marker({
         position: endLocation,
-        map,
+        map: null,
         title: `${group.name} - End Location`,
         label: {
           text: "End",
@@ -212,11 +244,9 @@ const MapComponent = ({
           fillOpacity: 1,
           strokeWeight: 2,
           strokeColor: "#1a0d00",
-          scale: 16,
+          scale: 10,
         },
       });
-
-      let currentInfoWindow = null;
 
       const directionsService = new window.google.maps.DirectionsService();
       directionsService.route(
@@ -242,7 +272,7 @@ const MapComponent = ({
                 <p>Estimated Walking Time: ${duration}</p>
                 ${
                   !isSelected
-                    ? `<button onclick="handleJoinRequest('${group._id}')"}>
+                    ? `<button data-group-id="${group._id}" onclick="handleJoinRequest(this.dataset.groupId)">
                     Ask to join
                   </button>`
                     : ""
@@ -255,14 +285,7 @@ const MapComponent = ({
               }
               infoWindow.open(map, startMarker);
               currentInfoWindow = infoWindow;
-            });
-
-            endMarker.addListener("click", () => {
-              if (currentInfoWindow) {
-                currentInfoWindow.close();
-              }
-              infoWindow.open(map, endMarker);
-              currentInfoWindow = infoWindow;
+              endMarker.setMap(map);
             });
 
             const directionsRenderer =
@@ -276,6 +299,26 @@ const MapComponent = ({
                 },
               });
             directionsRenderer.setDirections(result);
+
+            const path = result.routes[0].overview_path;
+            const clickablePolyline = new window.google.maps.Polyline({
+              path: path,
+              strokeColor: color,
+              strokeOpacity: 0,
+              strokeWeight: 8,
+              clickable: true,
+              map: map,
+              cursor: "pointer",
+            });
+
+            clickablePolyline.addListener("click", () => {
+              if (currentInfoWindow) {
+                currentInfoWindow.close();
+              }
+              infoWindow.open(map, startMarker);
+              currentInfoWindow = infoWindow;
+              endMarker.setMap(map);
+            });
           }
         }
       );
@@ -284,9 +327,10 @@ const MapComponent = ({
         if (currentInfoWindow) {
           currentInfoWindow.close();
         }
+        endMarker.setMap(null);
       });
 
-      return [startMarker, endMarker]; // Return markers for clustering
+      return [startMarker, endMarker];
     };
 
     loadGoogleMapsApi();

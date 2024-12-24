@@ -3,7 +3,7 @@ import axios from "axios";
 import bcrypt from "bcryptjs";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 
-const backendUrl = "https://two-school-backend.onrender.com" || 5000;
+const backendUrl = "https://two-school-backend.onrender.com";
 
 const Signup = () => {
   const [form, setForm] = useState({
@@ -25,7 +25,6 @@ const Signup = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
-    // Clear errors when user types
     if (name === "email") setEmailError("");
     if (name === "username") setUsernameError({ message: "", suggestion: "" });
   };
@@ -57,20 +56,11 @@ const Signup = () => {
 
     try {
       const hashedPassword = await bcrypt.hash(password, 10);
-      const response = await axios.post(
-        `${backendUrl}/api/user/register`,
-        {
-          username,
-          email,
-          password: hashedPassword,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-          },
-        }
-      );
+      const response = await axios.post(`${backendUrl}/api/user/register`, {
+        username,
+        email,
+        password: hashedPassword,
+      });
 
       const token = response.data.token;
       localStorage.setItem("token", token);
