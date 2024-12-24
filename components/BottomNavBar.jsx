@@ -9,32 +9,44 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import styles from "../styles/BottomNavBar.module.css";
 import { useRouter } from "next/router";
+import axios from "axios";
 import Requests from "../components/Requests.jsx";
+
+const backendUrl = "https://two-school-backend.onrender.com";
 
 const BottomNavBar = ({ activePage = [] }) => {
   const router = useRouter();
   const [showRequests, setShowRequests] = useState(false);
+  const [requests, setRequests] = useState([]);
 
-  const requests = [
-    {
-      id: 1,
-      name: "John Doe",
-      profilePic: "https://picsum.photos/200/300",
-      bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet nulla auctor, vestibulum magna sed, convallis ex.",
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      profilePic: "https://picsum.photos/200/301",
-      bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet nulla auctor, vestibulum magna sed, convallis ex. Phasellus malesuada massa sed purus convallis, sed bibendum ex viverra.",
-    },
-    {
-      id: 3,
-      name: "Bob Johnson",
-      profilePic: "https://picsum.photos/200/302",
-      bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet nulla auctor, vestibulum magna sed, convallis ex. Phasellus malesuada massa sed purus convallis, sed bibendum ex viverra. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.",
-    },
-  ];
+  useEffect(() => {
+    const fetchRequests = async () => {
+      try {
+        const response = await axios.get(
+          `${backendUrl}/api/user/get-requests`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+          setRequests(data);
+        }
+      } catch (error) {
+        console.error("Error fetching requests:", error);
+      }
+    };
+
+    fetchRequests();
+
+    // const interval = setInterval(fetchRequests, 30000);
+
+    // return () => clearInterval(interval);
+  }, []);
 
   const numRequests = requests.length;
 

@@ -1,28 +1,26 @@
 import React from "react";
 import Requests from "./Requests";
 
-const regularRequests = [
-  // your regular requests here
-];
+const regularRequests = [];
 
 const mockRequests = [
   {
     id: 1,
     name: "John Doe",
     profilePic: "https://picsum.photos/200/300",
-    bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet nulla auctor, vestibulum magna sed, convallis ex.",
+    bio: "Change these to english.",
   },
   {
     id: 2,
     name: "Jane Smith",
     profilePic: "https://picsum.photos/200/301",
-    bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet nulla auctor, vestibulum magna sed, convallis ex. Phasellus malesuada massa sed purus convallis, sed bibendum ex viverra.",
+    bio: "Change these to english.",
   },
   {
     id: 3,
     name: "Bob Johnson",
     profilePic: "https://picsum.photos/200/302",
-    bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet nulla auctor, vestibulum magna sed, convallis ex. Phasellus malesuada massa sed purus convallis, sed bibendum ex viverra. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.",
+    bio: "More to be changed to english.",
   },
 ];
 

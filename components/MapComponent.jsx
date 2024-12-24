@@ -295,7 +295,7 @@ const MapComponent = ({
                 polylineOptions: {
                   strokeColor: color,
                   strokeOpacity: isSelected ? 1.0 : 0.7,
-                  strokeWeight: isSelected ? 8 : 6,
+                  strokeWeight: isSelected ? 10 : 8,
                 },
               });
             directionsRenderer.setDirections(result);
@@ -305,7 +305,7 @@ const MapComponent = ({
               path: path,
               strokeColor: color,
               strokeOpacity: 0,
-              strokeWeight: 8,
+              strokeWeight: 10,
               clickable: true,
               map: map,
               cursor: "pointer",
@@ -326,6 +326,7 @@ const MapComponent = ({
       map.addListener("click", () => {
         if (currentInfoWindow) {
           currentInfoWindow.close();
+          currentInfoWindow = null;
         }
         endMarker.setMap(null);
       });

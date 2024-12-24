@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import styles from "../styles/Requests.module.css";
-import { on } from "events";
 
 const Requests = ({ requests }) => {
   const [bioExpanded, setBioExpanded] = React.useState({});
