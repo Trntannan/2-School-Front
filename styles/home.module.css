@@ -75,3 +75,50 @@
 .option:hover {
   cursor: pointer;
 }
+
+.explanationContainer {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.explanationContent {
+  margin: 2rem 0;
+  text-align: left;
+}
+
+.getStartedBtn {
+  background-color: #4caf50;
+  color: white;
+  padding: 15px 30px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.getStartedBtn:hover {
+  background-color: #45a049;
+}
+
+.betaNotice {
+  margin-top: 2rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+}
+
+.welcomeParagraph {
+  margin-bottom: 2rem;
+}
+
+.benefitsList {
+  margin-top: 2rem;
+}
+
+.welcomeHeading {
+  font-size: 2.5rem;
+  font-weight: bold;
+}

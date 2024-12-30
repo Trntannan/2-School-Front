@@ -115,7 +115,7 @@ const MapComponent = ({
     const initMap = () => {
       const map = new window.google.maps.Map(mapElementRef.current, {
         center: userLocation,
-        zoom: 20,
+        zoom: 13,
       });
 
       const userMarker = new window.google.maps.Marker({
@@ -123,7 +123,7 @@ const MapComponent = ({
         map,
         title: "Your Location",
         label: {
-          text: "User",
+          text: "You",
           color: "white",
           fontSize: "16px",
           fontWeight: "bold",
@@ -135,7 +135,7 @@ const MapComponent = ({
           fillOpacity: 1,
           strokeWeight: 2,
           strokeColor: "#1a0d00",
-          scale: 35,
+          scale: 20,
         },
       });
 
@@ -153,40 +153,21 @@ const MapComponent = ({
           markers.push(groupMarkers[0]);
           bounds.extend(groupMarkers[0].getPosition());
         });
-
-        const markerClusterer = new MarkerClusterer({
-          map,
-          markers,
-          onClusterClick: (cluster) => {
-            const clusteredMarkers = cluster.getMarkers();
-            const bounds = new window.google.maps.LatLngBounds();
-            clusteredMarkers.forEach((marker) =>
-              bounds.extend(marker.getPosition())
-            );
-            map.fitBounds(bounds);
-          },
-          gridSize: 30,
-          minimumClusterSize: 2,
-          styles: [
-            {
-              url: "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m1.png",
-              width: 47,
-              height: 47,
-              textColor: "#fff",
-            },
-          ],
-        });
-
-        map.fitBounds(bounds, { padding: 50 });
       } else {
-        const selectedMarkers = renderGroupOnMap(
+        const groupColor = groupColors[0];
+        const groupMarkers = renderGroupOnMap(
           selectedGroup,
-          "#119902",
+          groupColor,
           map,
           true
         );
-        markers.push(selectedMarkers[0]);
+        markers.push(groupMarkers[0]);
+        bounds.extend(groupMarkers[0].getPosition());
       }
+
+      const markerCluster = new MarkerClusterer({ map, markers });
+
+      map.fitBounds(bounds);
 
       map.addListener("click", () => {
         setSelectedGroup(null);
@@ -213,9 +194,9 @@ const MapComponent = ({
         map,
         title: `${group.name} - Start Location`,
         label: {
-          text: group.name,
-          color: "#1a0d00",
-          fontSize: "10px",
+          text: group.name.charAt(0),
+          color: "white",
+          fontSize: "14px",
           fontWeight: "bold",
         },
         icon: {
@@ -223,8 +204,8 @@ const MapComponent = ({
           fillColor: color,
           fillOpacity: 1,
           strokeWeight: 2,
-          strokeColor: "#1a0d00",
-          scale: 30,
+          strokeColor: "white",
+          scale: 20,
         },
       });
 
@@ -234,8 +215,8 @@ const MapComponent = ({
         title: `${group.name} - End Location`,
         label: {
           text: "End",
-          color: "#1a0d00",
-          fontSize: "10px",
+          color: "white",
+          fontSize: "12px",
           fontWeight: "bold",
         },
         icon: {
@@ -243,8 +224,8 @@ const MapComponent = ({
           fillColor: color,
           fillOpacity: 1,
           strokeWeight: 2,
-          strokeColor: "#1a0d00",
-          scale: 10,
+          strokeColor: "white",
+          scale: 12,
         },
       });
 
