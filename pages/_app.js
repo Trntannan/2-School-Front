@@ -22,10 +22,10 @@ function MyApp({ Component, pageProps }) {
 
   const getTierImage = (tier) => {
     const tierImages = {
-      BRONZE: "../media/Tiers/bronze.png",
-      SILVER: "../media/Tiers/silver.png",
-      GOLD: "../media/Tiers/gold.png",
-      DIAMOND: "../media/Tiers/diamond.png",
+      BRONZE: "/media/Tiers/bronze.png",
+      SILVER: "/media/Tiers/silver.png",
+      GOLD: "/media/Tiers/gold.png",
+      DIAMOND: "/media/Tiers/diamond.png",
     };
     return tierImages[tier];
   };
@@ -45,12 +45,12 @@ function MyApp({ Component, pageProps }) {
         <div>
           <PageHeader title={pageTitles[router.pathname]} />
           {userTier && (
-            <div className="fixed right-4 top-4 z-50">
+            <div className="fixed right-3  z-50">
               <Image
                 src={getTierImage(userTier)}
                 alt={`${userTier}`}
-                width={32}
-                height={32}
+                width={55}
+                height={47}
               />
             </div>
           )}
