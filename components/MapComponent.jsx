@@ -21,6 +21,8 @@ const MapComponent = ({
     lng: 174.618656,
   });
 
+  let currentInfoWindow = null;
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -92,6 +94,9 @@ const MapComponent = ({
         );
 
         if (response.status === 200) {
+          if (currentInfoWindow) {
+            currentInfoWindow.close();
+          }
           alert("Join request sent successfully!");
         }
       } catch (error) {
@@ -194,8 +199,6 @@ const MapComponent = ({
         parseFloat(group.routes[0].end.latitude),
         parseFloat(group.routes[0].end.longitude)
       );
-
-      let currentInfoWindow = null;
 
       const startMarker = new window.google.maps.Marker({
         position: startLocation,
