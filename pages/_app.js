@@ -5,6 +5,8 @@ import PageHeader from "../components/pageHeader";
 import BottomNavBar from "../components/BottomNavBar";
 import Image from "next/image";
 
+const backendUrl = "https://two-school-backend.onrender.com" || 5000;
+
 function MyApp({ Component, pageProps }) {
   const router = useRouter();
   const isIndexPage = router.pathname === "/";
@@ -22,7 +24,13 @@ function MyApp({ Component, pageProps }) {
 
   const getTierImage = async (tier) => {
     try {
-      const response = await fetch(`/api/tierImages/${tier}`);
+      const response = await fetch(`${backendUrl}/api/tierImages`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ tier }),
+      });
       const data = await response.json();
       return data.imageUrl;
     } catch (error) {
