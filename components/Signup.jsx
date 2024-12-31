@@ -2,8 +2,28 @@ import React, { useState } from "react";
 import axios from "axios";
 import bcrypt from "bcryptjs";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+import { debounce } from "lodash";
 
 const backendUrl = "https://two-school-backend.onrender.com";
+
+const debouncedUsernameCheck = debounce(async (username, callback) => {
+  try {
+    await axios.post(`${backendUrl}/api/user/register`, {
+      username,
+      email: "temp@temp.com",
+      password: "tempPassword123!",
+    });
+    callback({ message: "", suggestion: "" });
+  } catch (err) {
+    const errorData = err.response?.data;
+    if (errorData?.field === "username") {
+      callback({
+        message: errorData.message,
+        suggestion: errorData.suggestion,
+      });
+    }
+  }
+}, 500);
 
 const Signup = () => {
   const [form, setForm] = useState({
@@ -25,8 +45,14 @@ const Signup = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
+
     if (name === "email") setEmailError("");
-    if (name === "username") setUsernameError({ message: "", suggestion: "" });
+    if (name === "username") {
+      setUsernameError({ message: "", suggestion: "" });
+      if (value.length > 0) {
+        debouncedUsernameCheck(value, setUsernameError);
+      }
+    }
   };
 
   const handleSubmit = async (e) => {
