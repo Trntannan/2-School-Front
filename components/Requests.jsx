@@ -86,13 +86,25 @@ const Requests = ({ requests, onRequestUpdate }) => {
                 ) : (
                   <>
                     <button
-                      onClick={() => handleAccept(request._id, request.groupId)}
+                      onClick={() =>
+                        handleAccept(
+                          request.userId,
+                          request.groupId,
+                          request.user.username
+                        )
+                      }
                       className={styles.acceptBtn}
                     >
                       Accept
                     </button>
                     <button
-                      onClick={() => handleRefuse(request._id, request.groupId)}
+                      onClick={() =>
+                        handleRefuse(
+                          request.userId,
+                          request.groupId,
+                          request.user.username
+                        )
+                      }
                       className={styles.refuseBtn}
                     >
                       Refuse

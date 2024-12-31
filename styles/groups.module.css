@@ -96,6 +96,15 @@
   @apply mx-3 inline-block;
 }
 
+.disabledButton {
+  opacity: 0.5;
+  cursor: not-allowed !important;
+}
+
+.disabledButton:hover {
+  background-color: inherit;
+}
+
 @media (max-width: 450px) {
   .trashIcon {
     @apply size-4 mx-1;

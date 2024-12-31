@@ -15,8 +15,18 @@ const Groups = () => {
   const [mapsApiInstance, setMapsApiInstance] = useState(null);
   const [isClient, setIsClient] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState(null);
+  const [userTier, setUserTier] = useState(null);
 
   const groupsListRef = React.useRef(null);
+
+  const getUserTierFromToken = () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      return payload.tier;
+    }
+    return null;
+  };
 
   const fetchUserGroups = async () => {
     setIsClient(false);
@@ -43,7 +53,14 @@ const Groups = () => {
 
   useEffect(() => {
     fetchUserGroups();
+    setUserTier(getUserTierFromToken());
   }, []);
+
+  const canAddGroup = () => {
+    if (!userTier) return false;
+    if (userTier === "GOLD" || userTier === "PLATINUM") return true;
+    return userGroups.length < 1;
+  };
 
   const handleGroupClick = (group) => {
     setSelectedGroup(group);
@@ -86,6 +103,28 @@ const Groups = () => {
       console.error("Error deleting group:", error);
       setIsClient(true);
     }
+  };
+
+  const renderAddGroupButton = () => {
+    const isBasicTier = userTier === "BRONZE" || userTier === "SILVER";
+    const hasMaxGroups = userGroups.length >= 1;
+
+    return (
+      <button
+        className={`${styles.addGroupButton} ${
+          !canAddGroup() ? styles.disabledButton : ""
+        }`}
+        onClick={() => canAddGroup() && setShowNewGroupForm(true)}
+        title={
+          isBasicTier && hasMaxGroups
+            ? "As a bronze or silver user you can only have 1 group at a time."
+            : "Add new group"
+        }
+        disabled={!canAddGroup()}
+      >
+        +
+      </button>
+    );
   };
 
   if (!isClient) {
@@ -141,12 +180,7 @@ const Groups = () => {
         <div className={styles.groupsList}>
           <div className={styles.groupsHeader}>
             <h2 className={styles.userGroups}>Your Groups</h2>
-            <button
-              className={styles.addGroupButton}
-              onClick={() => setShowNewGroupForm(true)}
-            >
-              +
-            </button>
+            {renderAddGroupButton()}
           </div>
           {userGroups.length > 0 ? (
             <ul>
