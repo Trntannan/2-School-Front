@@ -20,14 +20,15 @@ function MyApp({ Component, pageProps }) {
     }
   }, [isIndexPage]);
 
-  const getTierImage = (tier) => {
-    const tierImages = {
-      BRONZE: "/media/Tiers/bronze.png",
-      SILVER: "/media/Tiers/silver.png",
-      GOLD: "/media/Tiers/gold.png",
-      DIAMOND: "/media/Tiers/diamond.png",
-    };
-    return tierImages[tier];
+  const getTierImage = async (tier) => {
+    try {
+      const response = await fetch(`/api/tierImages/${tier}`);
+      const data = await response.json();
+      return data.imageUrl;
+    } catch (error) {
+      console.error("Error fetching tier image:", error);
+      return null;
+    }
   };
 
   const pageTitles = {

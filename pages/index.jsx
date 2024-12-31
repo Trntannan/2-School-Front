@@ -38,7 +38,7 @@ const Home = () => {
             </p>
             <div className={styles.benefitsList}>
               By joining our community, you will:
-              <ul>
+              <ul className={styles.benefitsListUI}>
                 <li>Save time on school runs</li>
                 <li>Help children build new and lasting friendships</li>
                 <li>Create a safer community presence</li>
