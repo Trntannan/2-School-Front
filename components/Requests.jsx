@@ -56,20 +56,27 @@ const Requests = ({ requests, onRequestUpdate }) => {
   return (
     <div className={styles.requestsModal}>
       <div className={styles.requestsContent}>
-        <h2>Join Requests</h2>
+        <div className={styles.requestsHeader}>Requests To Join Your Group</div>
         {requests.length === 0 ? (
           <p>No pending requests</p>
         ) : (
           requests.map((request) => (
             <div key={request._id} className={styles.requestCard}>
               <div className={styles.userInfo}>
-                <img
-                  src={request.user.profile.profilePic || "/default-avatar.png"}
-                  alt={request.user.username}
-                  className={styles.profilePic}
-                />
+                <div className={styles.userNameAndPic}>
+                  <img
+                    src={
+                      request.user.profile.profilePic?.data
+                        ? `data:image/jpeg;base64,${profile.profilePic}`
+                        : "https://randomuser.me/api/portraits/men/1.jpg"
+                    }
+                    alt="Profile"
+                    className={styles.profilePic}
+                  />
+                  <div className={styles.username}>{request.user.username}</div>
+                </div>
+
                 <div className={styles.userDetails}>
-                  <h3>{request.user.username}</h3>
                   <p>{request.user.profile.bio}</p>
                 </div>
               </div>

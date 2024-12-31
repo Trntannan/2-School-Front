@@ -95,23 +95,27 @@ const BottomNavBar = ({ activePage = [] }) => {
   return (
     <>
       <div className={styles.navbar}>
-        {getNavBar().map((item, idx) => (
-          <div
-            key={idx}
-            className={`${styles.navitem} ${
-              item === "requests" ? styles.navitemRequests : ""
-            }`}
-            onClick={
-              navItems[item].onClick || (() => router.push(navItems[item].path))
-            }
-          >
-            <FontAwesomeIcon icon={navItems[item].icon} />
-            <span>{navItems[item].label}</span>
-            {item === "requests" && requests.length > 0 && (
-              <span className={styles.indicator}>{requests.length}</span>
-            )}
-          </div>
-        ))}
+        {getNavBar().map((item, idx) => {
+          const key = `nav-item-${item}-${idx}`;
+          return (
+            <div
+              key={key}
+              className={`${styles.navitem} ${
+                item === "requests" ? styles.navitemRequests : ""
+              }`}
+              onClick={
+                navItems[item].onClick ||
+                (() => router.push(navItems[item].path))
+              }
+            >
+              <FontAwesomeIcon icon={navItems[item].icon} />
+              <span>{navItems[item].label}</span>
+              {item === "requests" && requests.length > 0 && (
+                <span className={styles.indicator}>{requests.length}</span>
+              )}
+            </div>
+          );
+        })}
       </div>
       {showRequests && (
         <div ref={requestsRef}>
