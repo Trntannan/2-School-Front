@@ -130,7 +130,7 @@ const MapComponent = ({
     const initMap = () => {
       const map = new window.google.maps.Map(mapElementRef.current, {
         center: userLocation,
-        zoom: 13,
+        zoom: 9,
       });
 
       const userMarker = new window.google.maps.Marker({
@@ -150,7 +150,7 @@ const MapComponent = ({
           fillOpacity: 1,
           strokeWeight: 2,
           strokeColor: "#1a0d00",
-          scale: 20,
+          scale: 19,
         },
       });
 

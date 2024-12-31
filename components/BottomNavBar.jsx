@@ -18,6 +18,7 @@ const BottomNavBar = ({ activePage = [] }) => {
   const router = useRouter();
   const [showRequests, setShowRequests] = useState(false);
   const [requests, setRequests] = useState([]);
+  const requestsRef = React.createRef();
 
   const fetchRequests = async () => {
     try {
@@ -71,8 +72,6 @@ const BottomNavBar = ({ activePage = [] }) => {
     }
   };
 
-  const requestsRef = React.createRef();
-
   useEffect(() => {
     const handleDocumentClick = (event) => {
       if (requestsRef.current && !requestsRef.current.contains(event.target)) {
@@ -80,10 +79,8 @@ const BottomNavBar = ({ activePage = [] }) => {
       }
     };
 
-    document.body.addEventListener("click", handleDocumentClick);
-    return () => {
-      document.body.removeEventListener("click", handleDocumentClick);
-    };
+    window.addEventListener("click", handleDocumentClick);
+    return () => window.removeEventListener("click", handleDocumentClick);
   }, []);
 
   useEffect(() => {
