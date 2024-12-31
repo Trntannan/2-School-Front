@@ -180,7 +180,12 @@ const Groups = () => {
         <div className={styles.groupsList}>
           <div className={styles.groupsHeader}>
             <h2 className={styles.userGroups}>Your Groups</h2>
-            {renderAddGroupButton()}
+            <button
+              className={styles.addGroupButton}
+              onClick={() => setShowNewGroupForm(true)}
+            >
+              +
+            </button>
           </div>
           {userGroups.length > 0 ? (
             <ul>

@@ -46,7 +46,7 @@ function MyApp({ Component, pageProps }) {
           <PageHeader title={pageTitles[router.pathname]} />
           {userTier && (
             <div className="fixed right-4 top-4 z-50">
-              <img
+              <Image
                 src={getTierImage(userTier)}
                 alt={`${userTier}`}
                 width={32}
