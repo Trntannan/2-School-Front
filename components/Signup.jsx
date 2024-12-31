@@ -8,11 +8,9 @@ const backendUrl = "https://two-school-backend.onrender.com";
 
 const debouncedUsernameCheck = debounce(async (username, callback) => {
   try {
-    await axios.post(`${backendUrl}/api/user/register`, {
-      username,
-      email: "temp@temp.com",
-      password: "tempPassword123!",
-    });
+    const response = await axios.get(
+      `${backendUrl}/api/user/check-username/${username}`
+    );
     callback({ message: "", suggestion: "" });
   } catch (err) {
     const errorData = err.response?.data;
