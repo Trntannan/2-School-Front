@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import styles from "../styles/groups.module.css";
 import axios from "axios";
 import { MarkerClusterer } from "@googlemaps/markerclusterer";
+import { jwtDecode } from "jwt-decode";
 
 const backendUrl = "https://two-school-backend.onrender.com";
 
@@ -14,10 +15,19 @@ const MapComponent = ({
 }) => {
   const mapElementRef = useRef(null);
   const [allGroups, setAllGroups] = useState([]);
+  const [userId, setUserId] = useState(null);
   const [userLocation, setUserLocation] = useState({
     lat: -36.892057,
     lng: 174.618656,
   });
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      setUserId(decodedToken.id);
+    }
+  }, []);
 
   const getUserLocation = () => {
     if (navigator.geolocation) {
@@ -176,8 +186,6 @@ const MapComponent = ({
     };
 
     const renderGroupOnMap = (group, color, map, isSelected = false) => {
-      console.log("Rendering group with ID:", group._id);
-
       const startLocation = new window.google.maps.LatLng(
         parseFloat(group.routes[0].start.latitude),
         parseFloat(group.routes[0].start.longitude)
@@ -253,9 +261,9 @@ const MapComponent = ({
                 <p>Estimated Walking Time: ${duration}</p>
                 ${
                   !isSelected
-                    ? `<button data-group-id="${group._id}" onclick="handleJoinRequest(this.dataset.groupId)">
-                    Ask to join
-                  </button>`
+                    ? group.requests.includes(userId)
+                      ? '<div style="background-color: #f0f0f0; padding: 8px; border-radius: 4px; text-align: center;">Request Pending</div>'
+                      : `<button data-group-id="${group._id}" onclick="handleJoinRequest(this.dataset.groupId)">Ask to join</button>`
                     : ""
                 }</div>`,
             });

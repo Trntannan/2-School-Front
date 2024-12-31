@@ -19,36 +19,26 @@ const BottomNavBar = ({ activePage = [] }) => {
   const [showRequests, setShowRequests] = useState(false);
   const [requests, setRequests] = useState([]);
 
+  const fetchRequests = async () => {
+    try {
+      const response = await axios.get(`${backendUrl}/api/user/get-requests`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      });
+      console.log(response.data);
+      setRequests(response.data);
+    } catch (error) {
+      console.error("Error fetching requests:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchRequests = async () => {
-      try {
-        const response = await axios.get(
-          `${backendUrl}/api/user/get-requests`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        if (response.ok) {
-          const data = await response.json();
-          setRequests(data);
-        }
-      } catch (error) {
-        console.error("Error fetching requests:", error);
-      }
-    };
-
     fetchRequests();
-
-    // const interval = setInterval(fetchRequests, 30000);
-
-    // return () => clearInterval(interval);
+    const interval = setInterval(fetchRequests, 30000);
+    return () => clearInterval(interval);
   }, []);
-
-  const numRequests = requests.length;
 
   const handleRequestsClick = () => {
     setShowRequests(!showRequests);
@@ -86,16 +76,15 @@ const BottomNavBar = ({ activePage = [] }) => {
   useEffect(() => {
     const handleDocumentClick = (event) => {
       if (requestsRef.current && !requestsRef.current.contains(event.target)) {
-        setShowRequests(null);
+        setShowRequests(false);
       }
     };
 
     document.body.addEventListener("click", handleDocumentClick);
-
     return () => {
       document.body.removeEventListener("click", handleDocumentClick);
     };
-  }, [setShowRequests]);
+  }, []);
 
   useEffect(() => {
     if (showRequests) {
@@ -118,25 +107,15 @@ const BottomNavBar = ({ activePage = [] }) => {
           >
             <FontAwesomeIcon icon={navItems[item].icon} />
             <span>{navItems[item].label}</span>
-            {item === "requests" && numRequests > 0 && (
-              <span className={`${styles.indicator} `}>{numRequests}</span>
+            {item === "requests" && requests.length > 0 && (
+              <span className={styles.indicator}>{requests.length}</span>
             )}
           </div>
         ))}
       </div>
       {showRequests && (
         <div ref={requestsRef}>
-          <Requests
-            requests={requests}
-            onAccept={(id) => {
-              console.log(`Accepted request with ID: ${id}`);
-              setShowRequests(false);
-            }}
-            onRefuse={(id) => {
-              console.log(`Refused request with ID: ${id}`);
-              setShowRequests(false);
-            }}
-          />
+          <Requests requests={requests} onRequestUpdate={fetchRequests} />
         </div>
       )}
     </>

@@ -1,98 +1,102 @@
 import React, { useState } from "react";
 import styles from "../styles/Requests.module.css";
+import axios from "axios";
 
-const Requests = ({ requests }) => {
-  const [bioExpanded, setBioExpanded] = React.useState({});
-  const [requestStatus, setRequestStatus] = useState({});
+const backendUrl = "https://two-school-backend.onrender.com";
 
-  const handleBioToggle = (index) => {
-    setBioExpanded((prevBioExpanded) => ({
-      ...prevBioExpanded,
-      [index]: !prevBioExpanded[index],
-    }));
+const Requests = ({ requests, onRequestUpdate }) => {
+  const [processingRequests, setProcessingRequests] = useState({});
+
+  const handleAccept = async (requestId, groupId) => {
+    setProcessingRequests((prev) => ({ ...prev, [requestId]: true }));
+    try {
+      await axios.post(
+        `${backendUrl}/api/user/accept-request`,
+        {
+          requestId,
+          groupId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      onRequestUpdate();
+    } catch (error) {
+      console.error("Error accepting request:", error);
+    }
+    setProcessingRequests((prev) => ({ ...prev, [requestId]: false }));
   };
 
-  const onAccept = (id) => {
-    setRequestStatus((prevStatus) => ({ ...prevStatus, [id]: "accepted" }));
-  };
-
-  const onRefuse = (id) => {
-    setRequestStatus((prevStatus) => ({ ...prevStatus, [id]: "refused" }));
+  const handleRefuse = async (requestId, groupId) => {
+    setProcessingRequests((prev) => ({ ...prev, [requestId]: true }));
+    try {
+      await axios.post(
+        `${backendUrl}/api/user/refuse-request`,
+        {
+          requestId,
+          groupId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      onRequestUpdate();
+    } catch (error) {
+      console.error("Error refusing request:", error);
+    }
+    setProcessingRequests((prev) => ({ ...prev, [requestId]: false }));
   };
 
   return (
-    <div className={styles.popup}>
-      <h2>Requests</h2>
-      {requests.map((request, index) => (
-        <div key={index} className={styles.request}>
-          <div className={styles.profile}>
-            <img
-              src={request.profilePic}
-              alt={`${request.name}'s profile`}
-              className={styles.profilePic}
-            />
-
-            <div>
-              <h3>{request.name}</h3>
-              <div className={styles.bio}>
-                {bioExpanded[index] ? (
-                  <span className={styles.bioFull}>{request.bio}</span>
+    <div className={styles.requestsModal}>
+      <div className={styles.requestsContent}>
+        <h2>Join Requests</h2>
+        {requests.length === 0 ? (
+          <p>No pending requests</p>
+        ) : (
+          requests.map((request) => (
+            <div key={request._id} className={styles.requestCard}>
+              <div className={styles.userInfo}>
+                <img
+                  src={request.user.profile.profilePic || "/default-avatar.png"}
+                  alt={request.user.username}
+                  className={styles.profilePic}
+                />
+                <div className={styles.userDetails}>
+                  <h3>{request.user.username}</h3>
+                  <p>{request.user.profile.bio}</p>
+                </div>
+              </div>
+              <div className={styles.actions}>
+                {processingRequests[request._id] ? (
+                  <div className={styles.processing}>Processing...</div>
                 ) : (
-                  <span className={styles.bioSummary}>
-                    {request.bio.substring(0, 50)}...
-                  </span>
+                  <>
+                    <button
+                      onClick={() => handleAccept(request._id, request.groupId)}
+                      className={styles.acceptBtn}
+                    >
+                      Accept
+                    </button>
+                    <button
+                      onClick={() => handleRefuse(request._id, request.groupId)}
+                      className={styles.refuseBtn}
+                    >
+                      Refuse
+                    </button>
+                  </>
                 )}
               </div>
             </div>
-          </div>
-          {requestStatus[request.id] === "accepted" ? (
-            <main className="request-main flex items-center justify-center m-0">
-              <button
-                type="button"
-                className="inline-flex items-center px-4 py-2 font-semibold leading-6 text-sm shadow rounded-md text-white bg-indigo-500 hover:bg-indigo-400 transition ease-in-out duration-150 cursor-default"
-                disabled
-              >
-                <svg
-                  className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                  ></path>
-                </svg>
-                Processing...
-              </button>
-            </main>
-          ) : requestStatus[request.id] === "refused" ? null : (
-            <div>
-              <button
-                className={styles.accept}
-                onClick={() => onAccept(request.id)}
-              >
-                Accept
-              </button>
-              <button
-                className={styles.refuse}
-                onClick={() => onRefuse(request.id)}
-              >
-                Refuse
-              </button>
-            </div>
-          )}
-        </div>
-      ))}
+          ))
+        )}
+      </div>
     </div>
   );
 };
