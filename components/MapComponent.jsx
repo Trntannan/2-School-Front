@@ -130,7 +130,7 @@ const MapComponent = ({
     const initMap = () => {
       const map = new window.google.maps.Map(mapElementRef.current, {
         center: userLocation,
-        zoom: 9,
+        zoom: 15,
       });
 
       const userMarker = new window.google.maps.Marker({
