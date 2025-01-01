@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import "../styles/globals.css";
 import { useRouter } from "next/router";
 import PageHeader from "../components/pageHeader";
+import axios from "axios";
+import jwtDecode from "jwt-decode";
 import BottomNavBar from "../components/BottomNavBar";
 import Image from "next/image";
 
@@ -11,28 +13,39 @@ function MyApp({ Component, pageProps }) {
   const router = useRouter();
   const isIndexPage = router.pathname === "/";
   const [userTier, setUserTier] = useState(null);
+  const [tierImageURL, setTierImageURL] = useState(null);
 
   useEffect(() => {
     if (!isIndexPage) {
       const token = localStorage.getItem("token");
       if (token) {
-        const decodedToken = JSON.parse(atob(token.split(".")[1]));
+        const decodedToken = jwtDecode(token);
         setUserTier(decodedToken.tier);
       }
     }
   }, [isIndexPage]);
 
-  const getTierImage = async (tier) => {
+  useEffect(() => {
+    if (userTier) {
+      const loadTierImage = async () => {
+        const imageUrl = await getTierImage(userTier);
+        setTierImage(imageUrl);
+      };
+      loadTierImage();
+    }
+  }, [userTier]);
+
+  const getTierImage = async () => {
     try {
-      const response = await fetch(`${backendUrl}/api/tierImages`, {
-        method: "POST",
+      const token = localStorage.getItem("token");
+      const response = await axios.get(`${backendUrl}/api/tierImages/all`, {
         headers: {
-          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ tier }),
       });
-      const data = await response.json();
-      return data.imageUrl;
+
+      setTierImageUrl(response.data.tierImages);
+      return response.data.tierImages[userTier];
     } catch (error) {
       console.error("Error fetching tier image:", error);
       return null;
@@ -53,13 +66,16 @@ function MyApp({ Component, pageProps }) {
       {!isIndexPage && (
         <div>
           <PageHeader title={pageTitles[router.pathname]} />
-          {userTier && (
-            <div className="fixed right-3  z-50">
+          {userTier && tierImageUrl && (
+            <div className="fixed right-3 z-50">
               <Image
-                src={getTierImage(userTier)}
-                alt={`${userTier}`}
+                src={`data:image/png;base64,${
+                  tierImageUrl[userTier.toLowerCase()]
+                }`}
+                alt={`${userTier} Tier`}
                 width={55}
                 height={47}
+                priority
               />
             </div>
           )}
