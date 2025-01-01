@@ -23,16 +23,11 @@ function MyApp({ Component, pageProps }) {
   }, [isIndexPage]);
 
   const getTierImage = (tier) => {
-    const isDevelopment = process.env.NODE_ENV === "development";
-    const baseUrl = isDevelopment
-      ? ""
-      : "https://two-school-front.onrender.com";
-
     const tierImages = {
-      BRONZE: `${baseUrl}/Tiers/bronze.png`,
-      SILVER: `${baseUrl}/Tiers/silver.png`,
-      GOLD: `${baseUrl}/Tiers/gold.png`,
-      DIAMOND: `${baseUrl}/Tiers/diamond.png`,
+      BRONZE: "/Tiers/bronze.png",
+      SILVER: "/Tiers/silver.png",
+      GOLD: "/Tiers/gold.png",
+      DIAMOND: "/Tiers/diamond.png",
     };
     return tierImages[tier];
   };
