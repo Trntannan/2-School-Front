@@ -22,10 +22,10 @@ function MyApp({ Component, pageProps }) {
 
   const getTierImage = (tier) => {
     const tierImages = {
-      BRONZE: "/media/Tiers/bronze.png",
-      SILVER: "/media/Tiers/silver.png",
-      GOLD: "/media/Tiers/gold.png",
-      DIAMOND: "/media/Tiers/diamond.png",
+      BRONZE: "/Tiers/bronze.png",
+      SILVER: "/Tiers/silver.png",
+      GOLD: "/Tiers/gold.png",
+      DIAMOND: "/Tiers/diamond.png",
     };
     return tierImages[tier];
   };
