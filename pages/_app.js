@@ -5,8 +5,6 @@ import PageHeader from "../components/pageHeader";
 import BottomNavBar from "../components/BottomNavBar";
 import Image from "next/image";
 
-const frontEndUrl = "https://two-school-front.onrender.com/";
-
 function MyApp({ Component, pageProps }) {
   const router = useRouter();
   const isIndexPage = router.pathname === "/";
