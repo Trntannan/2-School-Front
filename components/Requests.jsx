@@ -30,13 +30,6 @@ const Requests = ({ requests, onRequestUpdate }) => {
         }
       );
 
-      const updatedRequests = requests.map((req) => {
-        if (req.userId === userId) {
-          return { ...req, status: response.data.status };
-        }
-        return req;
-      });
-
       onRequestUpdate();
     } catch (error) {
       console.error("Error accepting request:", error);
@@ -145,7 +138,7 @@ const Requests = ({ requests, onRequestUpdate }) => {
                           request.userId,
                           request.groupId,
                           request.user.username,
-                          request.tier
+                          request.user.tier
                         )
                       }
                       className={styles.acceptBtn}
