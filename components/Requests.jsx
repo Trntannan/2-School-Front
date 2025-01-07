@@ -6,6 +6,8 @@ const backendUrl = "https://two-school-backend.onrender.com";
 
 const Requests = ({ requests, onRequestUpdate }) => {
   const [processingRequests, setProcessingRequests] = useState({});
+  const [showScanner, setShowScanner] = useState(false);
+  const [currentVerification, setCurrentVerification] = useState(null);
 
   const handleAccept = async (userId, groupId, username) => {
     setProcessingRequests((prev) => ({ ...prev, [userId]: true }));
@@ -55,6 +57,38 @@ const Requests = ({ requests, onRequestUpdate }) => {
     setProcessingRequests((prev) => ({ ...prev, [userId]: false }));
   };
 
+  const handleVerify = (request) => {
+    setCurrentVerification(request);
+    setShowScanner(true);
+  };
+
+  const handleScanComplete = async (scannedData) => {
+    try {
+      const response = await axios.post(
+        `${backendUrl}/api/user/verify-member`,
+        {
+          scannedUsername: scannedData,
+          groupId: currentVerification.groupId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      if (response.data.success) {
+        toast.success("Member verified successfully!");
+        onRequestUpdate();
+      }
+    } catch (error) {
+      toast.error("Verification failed. Please try again.");
+    } finally {
+      setShowScanner(false);
+      setCurrentVerification(null);
+    }
+  };
+
   return (
     <div className={styles.requestsModal}>
       <div className={styles.requestsContent}>
@@ -83,7 +117,14 @@ const Requests = ({ requests, onRequestUpdate }) => {
                 </div>
               </div>
               <div className={styles.actions}>
-                {processingRequests[request._id] ? (
+                {request.status === "QR_SCAN_NEEDED" ? (
+                  <button
+                    onClick={() => handleVerify(request)}
+                    className={styles.verifyBtn}
+                  >
+                    Verify
+                  </button>
+                ) : processingRequests[request._id] ? (
                   <div className={styles.processing}>Processing...</div>
                 ) : (
                   <>
@@ -118,6 +159,13 @@ const Requests = ({ requests, onRequestUpdate }) => {
           ))
         )}
       </div>
+
+      {showScanner && (
+        <QRScanner
+          onScan={handleScanComplete}
+          onClose={() => setShowScanner(false)}
+        />
+      )}
     </div>
   );
 };
