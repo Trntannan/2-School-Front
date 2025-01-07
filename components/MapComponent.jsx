@@ -354,6 +354,7 @@ MapComponent.propTypes = {
   groups: PropTypes.array.isRequired,
   onMapReady: PropTypes.func,
   onMapClick: PropTypes.func.isRequired,
+  selectedGroup: PropTypes.object,
 };
 
 export default MapComponent;
