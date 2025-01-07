@@ -12,8 +12,24 @@ const Settings = () => {
   const [deleteConfirmation, setDeleteConfirmation] = useState("");
 
   const handleLogout = async () => {
-    localStorage.removeItem("token");
-    window.location.href = "/";
+    const token = localStorage.getItem("token");
+
+    try {
+      await axios.post(
+        `${backendUrl}/api/user/logout`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      localStorage.removeItem("token");
+      window.location.href = "/";
+    } catch (error) {
+      console.error("Logout error:", error);
+      localStorage.removeItem("token");
+      window.location.href = "/";
+    }
   };
 
   const handleDelete = async () => {
