@@ -8,9 +8,9 @@ const QRScanner = ({ onScan, onClose }) => {
   const [pause, setPause] = useState(false);
 
   const handleScan = (detectedCodes) => {
+    console.log("Detected codes:", detectedCodes);
     setPause(true);
-    const scannedData = JSON.parse(detectedCodes[0].data);
-    onScan(scannedData.username);
+    onScan(detectedCodes[0].rawValue);
     setPause(false);
   };
 

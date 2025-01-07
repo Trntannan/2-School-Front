@@ -1,15 +1,27 @@
 import React, { useState } from "react";
 import styles from "../styles/Requests.module.css";
 import axios from "axios";
-import { toast } from "react-toastify";
 import QRScanner from "./QRScanner";
 
 const backendUrl = "https://two-school-backend.onrender.com";
+
+const SuccessPopup = ({ onClose }) => {
+  return (
+    <div className={styles.successPopup}>
+      <div className={styles.successContent}>
+        <h2>Welcome to the Group!</h2>
+        <p>You are now officially a member</p>
+        <button onClick={onClose}>Continue</button>
+      </div>
+    </div>
+  );
+};
 
 const Requests = ({ requests, onRequestUpdate }) => {
   const [processingRequests, setProcessingRequests] = useState({});
   const [showScanner, setShowScanner] = useState(false);
   const [currentVerification, setCurrentVerification] = useState(null);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
   const handleAccept = async (userId, groupId, username, tier) => {
     setProcessingRequests((prev) => ({ ...prev, [userId]: true }));
@@ -66,12 +78,15 @@ const Requests = ({ requests, onRequestUpdate }) => {
     setShowScanner(true);
   };
 
-  const handleScanComplete = async (scannedUsername) => {
+  const handleScanComplete = async (scannedData) => {
+    const parsedData = JSON.parse(scannedData);
+    console.log("Parsed scan data:", parsedData);
+
     try {
       const response = await axios.post(
         `${backendUrl}/api/user/verify-member`,
         {
-          scannedUsername,
+          scannedUsername: parsedData.username,
           groupId: currentVerification.groupId,
         },
         {
@@ -82,14 +97,16 @@ const Requests = ({ requests, onRequestUpdate }) => {
       );
 
       if (response.data.success) {
-        toast.success("Member verified successfully!");
+        setShowSuccessPopup(true);
+        setShowScanner(false);
+        setCurrentVerification(null);
         onRequestUpdate();
+        setTimeout(() => {
+          window.location.reload();
+        }, 3000);
       }
     } catch (error) {
-      toast.error("Verification failed. Please try again.");
-    } finally {
-      setShowScanner(false);
-      setCurrentVerification(null);
+      alert("Verification failed. Please try again.");
     }
   };
 
@@ -166,6 +183,15 @@ const Requests = ({ requests, onRequestUpdate }) => {
         <QRScanner
           onScan={handleScanComplete}
           onClose={() => setShowScanner(false)}
+        />
+      )}
+
+      {showSuccessPopup && (
+        <SuccessPopup
+          onClose={() => {
+            setShowSuccessPopup(false);
+            window.location.reload();
+          }}
         />
       )}
     </div>

@@ -20,9 +20,7 @@ const QRCode = () => {
         setUserTier(tier);
 
         const qrData = {
-          userId,
           username,
-          tier,
         };
 
         const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(
