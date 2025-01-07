@@ -42,7 +42,7 @@ const QRScanner = ({ onScan, onClose }) => {
         <button className={styles.closeButton} onClick={onClose}>
           ×
         </button>
-        <div className={styles.controls}>
+        {/* <div className={styles.controls}>
           <select onChange={(e) => setDeviceId(e.target.value)}>
             <option value={undefined}>Select a device</option>
             {devices.map((device, index) => (
@@ -51,13 +51,7 @@ const QRScanner = ({ onScan, onClose }) => {
               </option>
             ))}
           </select>
-          <select onChange={(e) => setTracker(e.target.value)}>
-            <option value="centerText">Center Text</option>
-            <option value="outline">Outline</option>
-            <option value="boundingBox">Bounding Box</option>
-            <option value={undefined}>No Tracker</option>
-          </select>
-        </div>
+        </div> */}
         <Scanner
           formats={["qr_code", "micro_qr_code", "aztec", "data_matrix"]}
           constraints={{
@@ -65,7 +59,7 @@ const QRScanner = ({ onScan, onClose }) => {
           }}
           onScan={handleScan}
           onError={(error) => console.log(error?.message)}
-          styles={{ container: { height: "400px", width: "350px" } }}
+          styles={{ container: { height: "350px", width: "350px" } }}
           components={{
             audio: true,
             onOff: true,

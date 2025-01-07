@@ -106,7 +106,7 @@ const Requests = ({ requests, onRequestUpdate }) => {
                 <div className={styles.userNameAndPic}>
                   <img
                     src={
-                      request.user.profile.profilePic?.data
+                      request.user.profile.profilePic
                         ? `data:image/jpeg;base64,${request.user.profile.profilePic}`
                         : "https://randomuser.me/api/portraits/men/1.jpg"
                     }
@@ -115,10 +115,7 @@ const Requests = ({ requests, onRequestUpdate }) => {
                   />
                   <div className={styles.username}>{request.user.username}</div>
                 </div>
-
-                <div className={styles.userDetails}>
-                  <p>{request.user.profile.bio}</p>
-                </div>
+                <p className={styles.userDetails}>{request.user.profile.bio}</p>
               </div>
               <div className={styles.actions}>
                 {processingRequests[request.userId] ? (
