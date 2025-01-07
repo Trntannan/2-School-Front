@@ -14,8 +14,13 @@ function MyApp({ Component, pageProps }) {
     if (!isIndexPage) {
       const token = localStorage.getItem("token");
       if (token) {
-        const decodedToken = JSON.parse(atob(token.split(".")[1]));
-        setUserTier(decodedToken.tier);
+        fetch("YOUR_API_URL/api/current-tier", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+          .then((res) => res.json())
+          .then((data) => setUserTier(data.tier));
       }
     }
   }, [isIndexPage]);

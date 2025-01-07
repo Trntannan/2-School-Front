@@ -58,8 +58,9 @@ const Groups = () => {
 
   const canAddGroup = () => {
     if (!userTier) return false;
+    if (userTier === "BRONZE") return false;
     if (userTier === "GOLD" || userTier === "PLATINUM") return true;
-    return userGroups.length < 1;
+    return userGroups.length < 1; // For SILVER tier
   };
 
   const handleGroupClick = (group) => {
@@ -103,28 +104,6 @@ const Groups = () => {
       console.error("Error deleting group:", error);
       setIsClient(true);
     }
-  };
-
-  const renderAddGroupButton = () => {
-    const isBasicTier = userTier === "BRONZE" || userTier === "SILVER";
-    const hasMaxGroups = userGroups.length >= 1;
-
-    return (
-      <button
-        className={`${styles.addGroupButton} ${
-          !canAddGroup() ? styles.disabledButton : ""
-        }`}
-        onClick={() => canAddGroup() && setShowNewGroupForm(true)}
-        title={
-          isBasicTier && hasMaxGroups
-            ? "As a bronze or silver user you can only have 1 group at a time."
-            : "Add new group"
-        }
-        disabled={!canAddGroup()}
-      >
-        +
-      </button>
-    );
   };
 
   if (!isClient) {
@@ -180,12 +159,25 @@ const Groups = () => {
         <div className={styles.groupsList}>
           <div className={styles.groupsHeader}>
             <h2 className={styles.userGroups}>Your Groups</h2>
-            <button
-              className={styles.addGroupButton}
-              onClick={() => setShowNewGroupForm(true)}
+            <div
+              title={
+                userTier === "BRONZE"
+                  ? "Bronze tier users must join an existing group to be promoted to Silver tier before creating groups"
+                  : userTier === "SILVER" && userGroups.length >= 1
+                  ? "Silver tier users can only create one group"
+                  : "Create a new group"
+              }
             >
-              +
-            </button>
+              <button
+                className={`${styles.addGroupButton} ${
+                  !canAddGroup() ? styles.disabledButton : ""
+                }`}
+                onClick={() => canAddGroup() && setShowNewGroupForm(true)}
+                disabled={!canAddGroup()}
+              >
+                +
+              </button>
+            </div>
           </div>
           {userGroups.length > 0 ? (
             <ul>
