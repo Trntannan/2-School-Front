@@ -5,23 +5,26 @@ import PageHeader from "../components/pageHeader";
 import BottomNavBar from "../components/BottomNavBar";
 import Image from "next/image";
 
+const backendUrl = "https://two-school-backend.onrender.com";
+
 function MyApp({ Component, pageProps }) {
   const router = useRouter();
   const isIndexPage = router.pathname === "/";
   const [userTier, setUserTier] = useState(null);
 
+  const fetchUserTier = async () => {
+    const token = localStorage.getItem("token");
+    const response = await axios.get(`${backendUrl}/api/user/current-tier`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    setUserTier(response.data.tier);
+  };
+
   useEffect(() => {
     if (!isIndexPage) {
-      const token = localStorage.getItem("token");
-      if (token) {
-        fetch("YOUR_API_URL/api/current-tier", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-          .then((res) => res.json())
-          .then((data) => setUserTier(data.tier));
-      }
+      fetchUserTier();
     }
   }, [isIndexPage]);
 

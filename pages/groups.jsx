@@ -19,13 +19,14 @@ const Groups = () => {
 
   const groupsListRef = React.useRef(null);
 
-  const getUserTierFromToken = () => {
+  const fetchUserTier = async () => {
     const token = localStorage.getItem("token");
-    if (token) {
-      const payload = JSON.parse(atob(token.split(".")[1]));
-      return payload.tier;
-    }
-    return null;
+    const response = await axios.get(`${backendUrl}/api/user/current-tier`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    setUserTier(response.data.tier);
   };
 
   const fetchUserGroups = async () => {
@@ -53,7 +54,7 @@ const Groups = () => {
 
   useEffect(() => {
     fetchUserGroups();
-    setUserTier(getUserTierFromToken());
+    fetchUserTier();
   }, []);
 
   const canAddGroup = () => {
@@ -163,7 +164,7 @@ const Groups = () => {
               title={
                 userTier === "BRONZE"
                   ? "Bronze tier users must join an existing group to be promoted to Silver tier before creating groups"
-                  : userTier === "SILVER" && userGroups.length >= 1
+                  : userTier === "SILVER"
                   ? "Silver tier users can only create one group"
                   : "Create a new group"
               }

@@ -24,14 +24,17 @@ const Profile = () => {
     return tierImages[tier];
   };
 
-  useEffect(() => {
+  const fetchUserTier = async () => {
     const token = localStorage.getItem("token");
-    if (token) {
-      const decoded = jwt.decode(token);
-      setUserTier(decoded.tier);
-    }
-    fetchProfile();
-    setIsClient(true);
+    const response = await axios.get(`${backendUrl}/api/user/current-tier`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    setUserTier(response.data.tier);
+  };
+  useEffect(() => {
+    fetchUserTier();
   }, []);
 
   const fetchProfile = async () => {

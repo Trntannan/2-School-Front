@@ -44,7 +44,7 @@
 }
 
 .qr {
-  @apply w-[200px] h-[200px] border-transparent;
+  @apply w-[190px] h-[190px];
 }
 
 .qrCodeButton {
@@ -60,7 +60,7 @@
 }
 
 .tierBackground {
-  @apply absolute w-full h-full;
+  @apply absolute w-full h-full left-1 top-2;
 }
 
 .qrOverlay {
