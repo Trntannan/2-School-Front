@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import styles from "../styles/Requests.module.css";
 import axios from "axios";
+import { toast } from "react-toastify";
+import QRScanner from "./QRScanner";
 
 const backendUrl = "https://two-school-backend.onrender.com";
 
@@ -12,7 +14,7 @@ const Requests = ({ requests, onRequestUpdate }) => {
   const handleAccept = async (userId, groupId, username) => {
     setProcessingRequests((prev) => ({ ...prev, [userId]: true }));
     try {
-      await axios.post(
+      const response = await axios.post(
         `${backendUrl}/api/user/accept-request`,
         {
           userId,
@@ -26,6 +28,14 @@ const Requests = ({ requests, onRequestUpdate }) => {
           },
         }
       );
+
+      const updatedRequests = requests.map((req) => {
+        if (req.userId === userId) {
+          return { ...req, status: response.data.status };
+        }
+        return req;
+      });
+
       onRequestUpdate();
     } catch (error) {
       console.error("Error accepting request:", error);
@@ -103,7 +113,7 @@ const Requests = ({ requests, onRequestUpdate }) => {
                   <img
                     src={
                       request.user.profile.profilePic?.data
-                        ? `data:image/jpeg;base64,${profile.profilePic}`
+                        ? `data:image/jpeg;base64,${request.user.profile.profilePic}`
                         : "https://randomuser.me/api/portraits/men/1.jpg"
                     }
                     alt="Profile"
@@ -117,15 +127,15 @@ const Requests = ({ requests, onRequestUpdate }) => {
                 </div>
               </div>
               <div className={styles.actions}>
-                {request.status === "QR_SCAN_NEEDED" ? (
+                {processingRequests[request.userId] ? (
+                  <div className={styles.processing}>Processing...</div>
+                ) : request.user.status === "QR_SCAN_NEEDED" ? (
                   <button
                     onClick={() => handleVerify(request)}
                     className={styles.verifyBtn}
                   >
                     Verify
                   </button>
-                ) : processingRequests[request._id] ? (
-                  <div className={styles.processing}>Processing...</div>
                 ) : (
                   <>
                     <button
