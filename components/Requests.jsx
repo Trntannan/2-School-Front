@@ -11,7 +11,7 @@ const Requests = ({ requests, onRequestUpdate }) => {
   const [showScanner, setShowScanner] = useState(false);
   const [currentVerification, setCurrentVerification] = useState(null);
 
-  const handleAccept = async (userId, groupId, username) => {
+  const handleAccept = async (userId, groupId, username, tier) => {
     setProcessingRequests((prev) => ({ ...prev, [userId]: true }));
     try {
       const response = await axios.post(
@@ -20,6 +20,7 @@ const Requests = ({ requests, onRequestUpdate }) => {
           userId,
           groupId,
           username,
+          tier,
         },
         {
           headers: {
@@ -129,7 +130,7 @@ const Requests = ({ requests, onRequestUpdate }) => {
               <div className={styles.actions}>
                 {processingRequests[request.userId] ? (
                   <div className={styles.processing}>Processing...</div>
-                ) : request.status === "SCAN" ? (
+                ) : request.status === "pending" ? (
                   <button
                     onClick={() => handleVerify(request)}
                     className={styles.verifyBtn}
