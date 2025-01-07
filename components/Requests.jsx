@@ -10,7 +10,6 @@ const Requests = ({ requests, onRequestUpdate }) => {
   const [processingRequests, setProcessingRequests] = useState({});
   const [showScanner, setShowScanner] = useState(false);
   const [currentVerification, setCurrentVerification] = useState(null);
-  const [verify, setVerify] = useState({});
 
   const handleAccept = async (userId, groupId, username) => {
     setProcessingRequests((prev) => ({ ...prev, [userId]: true }));
@@ -30,9 +29,13 @@ const Requests = ({ requests, onRequestUpdate }) => {
         }
       );
 
-      if (response.data.requiresQR) {
-        setVerify((prev) => ({ ...prev, [userId]: true }));
-      }
+      const updatedRequests = requests.map((req) => {
+        if (req.userId === userId) {
+          return { ...req, status: response.data.status };
+        }
+        return req;
+      });
+
       onRequestUpdate();
     } catch (error) {
       console.error("Error accepting request:", error);
@@ -109,7 +112,7 @@ const Requests = ({ requests, onRequestUpdate }) => {
                 <div className={styles.userNameAndPic}>
                   <img
                     src={
-                      request.user.profile?.profilePic
+                      request.user.profile.profilePic?.data
                         ? `data:image/jpeg;base64,${request.user.profile.profilePic}`
                         : "https://randomuser.me/api/portraits/men/1.jpg"
                     }
@@ -126,7 +129,7 @@ const Requests = ({ requests, onRequestUpdate }) => {
               <div className={styles.actions}>
                 {processingRequests[request.userId] ? (
                   <div className={styles.processing}>Processing...</div>
-                ) : verify[request.userId] ? (
+                ) : request.status === "SCAN" ? (
                   <button
                     onClick={() => handleVerify(request)}
                     className={styles.verifyBtn}
