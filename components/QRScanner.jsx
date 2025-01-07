@@ -11,24 +11,7 @@ import {
 import styles from "../styles/QRScanner.module.css";
 
 const QRScanner = ({ onScan, onClose }) => {
-  const [deviceId, setDeviceId] = useState(undefined);
-  const [tracker, setTracker] = useState("centerText");
   const [pause, setPause] = useState(false);
-
-  const devices = useDevices();
-
-  function getTracker() {
-    switch (tracker) {
-      case "outline":
-        return outline;
-      case "boundingBox":
-        return boundingBox;
-      case "centerText":
-        return centerText;
-      default:
-        return undefined;
-    }
-  }
 
   const handleScan = (detectedCodes) => {
     setPause(true);
@@ -42,31 +25,17 @@ const QRScanner = ({ onScan, onClose }) => {
         <button className={styles.closeButton} onClick={onClose}>
           ×
         </button>
-        {/* <div className={styles.controls}>
-          <select onChange={(e) => setDeviceId(e.target.value)}>
-            <option value={undefined}>Select a device</option>
-            {devices.map((device, index) => (
-              <option key={index} value={device.deviceId}>
-                {device.label}
-              </option>
-            ))}
-          </select>
-        </div> */}
         <Scanner
           formats={["qr_code", "micro_qr_code", "aztec", "data_matrix"]}
-          constraints={{
-            deviceId: deviceId,
-          }}
           onScan={handleScan}
           onError={(error) => console.log(error?.message)}
-          styles={{ container: { height: "350px", width: "350px" } }}
+          styles={{ container: { height: "90%", width: "90%" } }}
           components={{
             audio: true,
             onOff: true,
             torch: true,
             zoom: true,
             finder: true,
-            tracker: getTracker(),
           }}
           scanDelay={2000}
           paused={pause}

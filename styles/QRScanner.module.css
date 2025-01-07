@@ -16,7 +16,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 90%;
+  width: 80%;
   height: 90%;
   background: white;
   padding: 20px;
@@ -26,9 +26,9 @@
 
 .closeButton {
   position: absolute;
-  right: 10px;
-  top: 10px;
-  font-size: 24px;
+  right: 8px;
+  top: -5px;
+  font-size: 26px;
   background: none;
   border: none;
   cursor: pointer;
