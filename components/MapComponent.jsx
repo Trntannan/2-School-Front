@@ -264,12 +264,30 @@ const MapComponent = ({
                 <p>Estimated Walking Time: ${duration}</p>
                 ${
                   !isSelected
-                    ? group.requests.includes(userId)
+                    ? group.requests.some(
+                        (request) => request.userId === userId
+                      )
                       ? '<div style="background-color: #f0f0f0; padding: 8px; border-radius: 4px; text-align: center;">Request Pending</div>'
                       : `<button data-group-id="${group._id}" onclick="handleJoinRequest(this.dataset.groupId)">Ask to join</button>`
                     : ""
                 }</div>`,
             });
+
+            // const infoWindow = new window.google.maps.InfoWindow({
+            //   content: `<div style="color: black;">
+            //     <h4>${group.name}</h4>
+            //     <p>Start Time: ${new Date(
+            //       group.startTime
+            //     ).toLocaleTimeString()}</p>
+            //     <p>Estimated Walking Time: ${duration}</p>
+            //     ${
+            //       !isSelected
+            //         ? group.requests.includes(userId)
+            //           ? '<div style="background-color: #f0f0f0; padding: 8px; border-radius: 4px; text-align: center;">Request Pending</div>'
+            //           : `<button data-group-id="${group._id}" onclick="handleJoinRequest(this.dataset.groupId)">Ask to join</button>`
+            //         : ""
+            //     }</div>`,
+            // });
 
             startMarker.addListener("click", () => {
               if (currentInfoWindow) {
