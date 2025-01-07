@@ -130,7 +130,7 @@ const Requests = ({ requests, onRequestUpdate }) => {
               <div className={styles.actions}>
                 {processingRequests[request.userId] ? (
                   <div className={styles.processing}>Processing...</div>
-                ) : request.status === "pending" ? (
+                ) : request.status === "SCAN" ? (
                   <button
                     onClick={() => handleVerify(request)}
                     className={styles.verifyBtn}
@@ -144,7 +144,8 @@ const Requests = ({ requests, onRequestUpdate }) => {
                         handleAccept(
                           request.userId,
                           request.groupId,
-                          request.user.username
+                          request.user.username,
+                          request.tier
                         )
                       }
                       className={styles.acceptBtn}
