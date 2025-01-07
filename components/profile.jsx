@@ -14,12 +14,14 @@ const Profile = () => {
   const [showQrModal, setShowQrModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [userTier, setUserTier] = useState(null);
-
-  const tierColors = {
-    BRONZE: "#CD7F32",
-    SILVER: "#C0C0C0",
-    GOLD: "#FFD700",
-    PLATINUM: "#E5E4E2",
+  const getTierImage = (tier) => {
+    const tierImages = {
+      BRONZE: "/Tiers/bronze.png",
+      SILVER: "/Tiers/silver.png",
+      GOLD: "/Tiers/gold.png",
+      DIAMOND: "/Tiers/diamond.png",
+    };
+    return tierImages[tier];
   };
 
   useEffect(() => {
@@ -268,11 +270,17 @@ const Profile = () => {
 
         {showQrModal && (
           <div className={styles.qrModal} onClick={() => setShowQrModal(false)}>
-            <div
-              className={styles.qrModalContent}
-              style={{ backgroundColor: tierColors[userTier] }}
-            >
-              <QRCode userId={localStorage.getItem("userId")} />
+            <div className={styles.qrModalContent}>
+              <div className={styles.qrBackground}>
+                <img
+                  src={getTierImage(userTier)}
+                  alt={`${userTier} background`}
+                  className={styles.tierBackground}
+                />
+                <div className={styles.qrOverlay}>
+                  <QRCode userId={localStorage.getItem("userId")} />
+                </div>
+              </div>
             </div>
           </div>
         )}

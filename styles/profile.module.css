@@ -44,7 +44,7 @@
 }
 
 .qr {
-  @apply w-[200px] h-[200px];
+  @apply w-[200px] h-[200px] border-transparent;
 }
 
 .qrCodeButton {
@@ -55,8 +55,20 @@
   @apply fixed w-full h-full z-[1000] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black bg-opacity-40 flex justify-center items-center;
 }
 
+.qrBackground {
+  @apply relative w-[523px] h-[450px];
+}
+
+.tierBackground {
+  @apply absolute w-full h-full;
+}
+
+.qrOverlay {
+  @apply absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2;
+}
+
 .qrModalContent {
-  @apply flex items-center justify-center w-[250px] h-[250px] bg-white rounded-lg;
+  @apply flex items-center justify-center w-[523px] h-[450px] bg-transparent rounded-lg;
 }
 
 .usernameInput {
