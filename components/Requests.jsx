@@ -7,14 +7,15 @@ const backendUrl = "https://two-school-backend.onrender.com";
 const Requests = ({ requests, onRequestUpdate }) => {
   const [processingRequests, setProcessingRequests] = useState({});
 
-  const handleAccept = async (requestId, groupId) => {
-    setProcessingRequests((prev) => ({ ...prev, [requestId]: true }));
+  const handleAccept = async (userId, groupId, username) => {
+    setProcessingRequests((prev) => ({ ...prev, [userId]: true }));
     try {
       await axios.post(
         `${backendUrl}/api/user/accept-request`,
         {
-          requestId,
+          userId,
           groupId,
+          username,
         },
         {
           headers: {
@@ -27,17 +28,18 @@ const Requests = ({ requests, onRequestUpdate }) => {
     } catch (error) {
       console.error("Error accepting request:", error);
     }
-    setProcessingRequests((prev) => ({ ...prev, [requestId]: false }));
+    setProcessingRequests((prev) => ({ ...prev, [userId]: false }));
   };
 
-  const handleRefuse = async (requestId, groupId) => {
-    setProcessingRequests((prev) => ({ ...prev, [requestId]: true }));
+  const handleDeny = async (userId, groupId, username) => {
+    setProcessingRequests((prev) => ({ ...prev, [userId]: true }));
     try {
       await axios.post(
-        `${backendUrl}/api/user/refuse-request`,
+        `${backendUrl}/api/user/deny-request`,
         {
-          requestId,
+          userId,
           groupId,
+          username,
         },
         {
           headers: {
@@ -50,7 +52,7 @@ const Requests = ({ requests, onRequestUpdate }) => {
     } catch (error) {
       console.error("Error refusing request:", error);
     }
-    setProcessingRequests((prev) => ({ ...prev, [requestId]: false }));
+    setProcessingRequests((prev) => ({ ...prev, [userId]: false }));
   };
 
   return (
@@ -99,7 +101,7 @@ const Requests = ({ requests, onRequestUpdate }) => {
                     </button>
                     <button
                       onClick={() =>
-                        handleRefuse(
+                        handleDeny(
                           request.userId,
                           request.groupId,
                           request.user.username
