@@ -1,4 +1,4 @@
-import { QrReader } from "react-qr-reader";
+import { QrScanner } from "react-qr-scanner";
 import styles from "../styles/QRScanner.module.css";
 
 const QRScanner = ({ onScan, onClose }) => {
@@ -8,7 +8,7 @@ const QRScanner = ({ onScan, onClose }) => {
         <button className={styles.closeButton} onClick={onClose}>
           ×
         </button>
-        <QrReader
+        <QrScanner
           constraints={{ facingMode: "environment" }}
           onResult={(result) => {
             if (result) {
