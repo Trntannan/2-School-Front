@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../styles/globals.css";
 import { useRouter } from "next/router";
+import axios from "axios";
 import PageHeader from "../components/pageHeader";
 import BottomNavBar from "../components/BottomNavBar";
 import Image from "next/image";
