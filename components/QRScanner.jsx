@@ -1,13 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import {
-  Scanner,
-  useDevices,
-  outline,
-  boundingBox,
-  centerText,
-} from "@yudiel/react-qr-scanner";
+import { Scanner } from "@yudiel/react-qr-scanner";
 import styles from "../styles/QRScanner.module.css";
 
 const QRScanner = ({ onScan, onClose }) => {
@@ -15,7 +9,8 @@ const QRScanner = ({ onScan, onClose }) => {
 
   const handleScan = (detectedCodes) => {
     setPause(true);
-    onScan(detectedCodes[0].rawValue);
+    const scannedData = JSON.parse(detectedCodes[0].data);
+    onScan(scannedData.username);
     setPause(false);
   };
 
@@ -26,7 +21,7 @@ const QRScanner = ({ onScan, onClose }) => {
           ×
         </button>
         <Scanner
-          formats={["qr_code", "micro_qr_code", "aztec", "data_matrix"]}
+          formats={["qr_code"]}
           onScan={handleScan}
           onError={(error) => console.log(error?.message)}
           styles={{ container: { height: "90%", width: "90%" } }}
@@ -34,7 +29,6 @@ const QRScanner = ({ onScan, onClose }) => {
             audio: true,
             onOff: true,
             torch: true,
-            zoom: true,
             finder: true,
           }}
           scanDelay={2000}

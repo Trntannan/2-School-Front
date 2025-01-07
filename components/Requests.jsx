@@ -66,12 +66,12 @@ const Requests = ({ requests, onRequestUpdate }) => {
     setShowScanner(true);
   };
 
-  const handleScanComplete = async (scannedData) => {
+  const handleScanComplete = async (scannedUsername) => {
     try {
       const response = await axios.post(
         `${backendUrl}/api/user/verify-member`,
         {
-          scannedUsername: scannedData,
+          scannedUsername,
           groupId: currentVerification.groupId,
         },
         {
