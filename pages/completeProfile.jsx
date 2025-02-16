@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import styles from "../styles/profile.module.css";
 import axios from "axios";
 
-require("dotenv").config();
-
 const backendUrl = "https://two-school-backend.onrender.com" || 5000;
 
 const CompleteProfile = () => {
@@ -36,7 +34,8 @@ const CompleteProfile = () => {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "multipart/form-data",
-            "Access-Control-Allow-Origin": "*",
+            " Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
           },
         }
       );

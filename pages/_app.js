@@ -11,6 +11,7 @@ const backendUrl = "https://two-school-backend.onrender.com";
 function MyApp({ Component, pageProps }) {
   const router = useRouter();
   const isIndexPage = router.pathname === "/";
+  const isCompleteProfilePage = router.pathname === "/completeProfile";
   const [userTier, setUserTier] = useState(null);
 
   const fetchUserTier = async () => {
@@ -24,10 +25,10 @@ function MyApp({ Component, pageProps }) {
   };
 
   useEffect(() => {
-    if (!isIndexPage) {
+    if (!isIndexPage && !isCompleteProfilePage) {
       fetchUserTier();
     }
-  }, [isIndexPage]);
+  }, [isIndexPage && !isCompleteProfilePage]);
 
   const getTierImage = (tier) => {
     const tierImages = {
@@ -44,7 +45,7 @@ function MyApp({ Component, pageProps }) {
     "/groups": "Groups",
     "/settings": "Settings",
     "/ChatPage": "Chat",
-    "/completeProfile": "Bio and Profile Picture",
+    "/completeProfile": "Complete Profile",
     "/": "",
   };
 

@@ -36,10 +36,12 @@ const BottomNavBar = ({ activePage = [] }) => {
   };
 
   useEffect(() => {
-    fetchRequests();
-    const interval = setInterval(fetchRequests, 30000);
-    return () => clearInterval(interval);
-  }, []);
+    if (router.pathname !== "/completeProfile") {
+      fetchRequests();
+      const interval = setInterval(fetchRequests, 30000);
+      return () => clearInterval(interval);
+    }
+  }, [router.pathname]);
 
   const handleRequestsClick = () => {
     setShowRequests(!showRequests);
