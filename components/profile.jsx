@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import styles from "../styles/profile.module.css";
 import QRCode from "./QrCode";
 import axios from "axios";
-import jwt from "jsonwebtoken";
 
 const backendUrl = "https://two-school-backend.onrender.com" || 5000;
 

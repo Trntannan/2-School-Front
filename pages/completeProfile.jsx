@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styles from "../styles/profile.module.css";
 import axios from "axios";
 
-const backendUrl = "https://two-school-backend.onrender.com" || 5000;
+const backendUrl = "https://two-school-backend.onrender.com";
 
 const CompleteProfile = () => {
   const [isProcessing, setIsProcessing] = useState(false);
@@ -22,6 +22,10 @@ const CompleteProfile = () => {
     const { bio, profilePic } = formData;
 
     const token = localStorage.getItem("token");
+    if (!token) {
+      console.error("No token found");
+      return;
+    }
     try {
       const formDataToSend = new FormData();
       formDataToSend.append("bio", bio);
@@ -34,8 +38,7 @@ const CompleteProfile = () => {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "multipart/form-data",
-            " Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+            "Access-Control-Allow-Origin": "*",
           },
         }
       );

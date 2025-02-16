@@ -9,7 +9,8 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 const backendUrl = "https://two-school-backend.onrender.com" || 5000;
 
 const Groups = () => {
-  const [userGroups, setUserGroups] = useState([]);
+  const [ownedGroups, setOwnedGroups] = useState([]);
+  const [memberGroups, setMemberGroups] = useState([]);
   const [showNewGroupForm, setShowNewGroupForm] = useState(false);
   const [mapInstance, setMapInstance] = useState(null);
   const [mapsApiInstance, setMapsApiInstance] = useState(null);
@@ -32,6 +33,7 @@ const Groups = () => {
   const fetchUserGroups = async () => {
     setIsClient(false);
     const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
     try {
       const response = await axios.get(`${backendUrl}/api/user/get-group`, {
         headers: {
@@ -41,9 +43,13 @@ const Groups = () => {
       });
 
       if (response.data) {
-        setUserGroups(response.data);
+        const owned = response.data.filter((group) => group.owner === userId);
+        const member = response.data.filter((group) => group.owner !== userId);
+        setOwnedGroups(owned);
+        setMemberGroups(member);
       } else {
-        setUserGroups([]);
+        setOwnedGroups([]);
+        setMemberGroups([]);
       }
       setIsClient(true);
     } catch (error) {
@@ -61,7 +67,7 @@ const Groups = () => {
     if (!userTier) return false;
     if (userTier === "BRONZE") return false;
     if (userTier === "GOLD" || userTier === "PLATINUM") return true;
-    return userGroups.length < 1; // For SILVER tier
+    return ownedGroups.length < 1;
   };
 
   const handleGroupClick = (group) => {
@@ -147,7 +153,7 @@ const Groups = () => {
     <div className="page-container">
       <main className={styles.mainContent}>
         <MapComponent
-          groups={userGroups}
+          groups={[...ownedGroups, ...memberGroups]}
           className={styles.mapContainer}
           setSelectedGroup={setSelectedGroup}
           onMapReady={(mapInstance, mapsApiInstance) => {
@@ -157,7 +163,7 @@ const Groups = () => {
           selectedGroup={selectedGroup}
           onMapClick={() => setSelectedGroup(null)}
         />
-        <div className={styles.groupsList}>
+        <div className={styles.groupsList} ref={groupsListRef}>
           <div className={styles.groupsHeader}>
             <h2 className={styles.userGroups}>Your Groups</h2>
             <div
@@ -180,30 +186,53 @@ const Groups = () => {
               </button>
             </div>
           </div>
-          {userGroups.length > 0 ? (
-            <ul>
-              {userGroups.map((group) => (
-                <li className={styles.groupItem} key={group._id}>
-                  <div
-                    className={styles.groupName}
-                    onClick={() => handleGroupClick(group)}
-                  >
-                    {group.name}
-                  </div>
 
-                  <div className={styles.actionIcons}>
-                    <FontAwesomeIcon
-                      icon={faTrash}
-                      onClick={() => handleDeleteGroup(group._id)}
-                      className={styles.trashIcon}
-                    />
-                  </div>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>No groups found.</p>
-          )}
+          <div className={styles.ownedGroups}>
+            <h3>Groups You Own</h3>
+            {ownedGroups.length > 0 ? (
+              <ul>
+                {ownedGroups.map((group) => (
+                  <li className={styles.groupItem} key={group._id}>
+                    <div
+                      className={styles.groupName}
+                      onClick={() => handleGroupClick(group)}
+                    >
+                      {group.name}
+                    </div>
+                    <div className={styles.actionIcons}>
+                      <FontAwesomeIcon
+                        icon={faTrash}
+                        onClick={() => handleDeleteGroup(group._id)}
+                        className={styles.trashIcon}
+                      />
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No owned groups found.</p>
+            )}
+          </div>
+
+          <div className={styles.memberGroups}>
+            <h3>Groups You're In</h3>
+            {memberGroups.length > 0 ? (
+              <ul>
+                {memberGroups.map((group) => (
+                  <li className={styles.groupItem} key={group._id}>
+                    <div
+                      className={styles.groupName}
+                      onClick={() => handleGroupClick(group)}
+                    >
+                      {group.name}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No member groups found.</p>
+            )}
+          </div>
         </div>
       </main>
       {showNewGroupForm && (
