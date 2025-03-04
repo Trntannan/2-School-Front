@@ -24,14 +24,6 @@
   color: var(--primary-hover-color);
 }
 
-/* .addGroupButton {
-  @apply self-center bg-white text-blue-600 text-3xl border-none;
-}
-
-.addGroupButton:hover {
-  @apply text-blue-800;
-} */
-
 .groupName {
   @apply text-lg font-extrabold cursor-pointer;
 }
@@ -54,18 +46,6 @@
 
 .groupItem span {
   @apply inline-block w-2.5 h-2.5 rounded-full mr-2.5;
-}
-
-.green {
-  @apply bg-green-500;
-}
-
-.grey {
-  @apply bg-gray-500;
-}
-
-.yellow {
-  @apply bg-yellow-500;
 }
 
 .modalOverlay {

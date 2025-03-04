@@ -5,6 +5,7 @@ import NewGroupForm from "../components/newGroupForm";
 import MapComponent from "../components/MapComponent";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import jwt_decode from "jwt-decode";
 
 const backendUrl = "https://two-school-backend.onrender.com" || 5000;
 
@@ -33,7 +34,6 @@ const Groups = () => {
   const fetchUserGroups = async () => {
     setIsClient(false);
     const token = localStorage.getItem("token");
-    const userId = localStorage.getItem("userId");
     try {
       const response = await axios.get(`${backendUrl}/api/user/get-group`, {
         headers: {
@@ -43,6 +43,9 @@ const Groups = () => {
       });
 
       if (response.data) {
+        const decodedToken = jwt_decode(token);
+        const userId = decodedToken.id;
+
         const owned = response.data.filter((group) => group.owner === userId);
         const member = response.data.filter((group) => group.owner !== userId);
         setOwnedGroups(owned);
@@ -210,7 +213,7 @@ const Groups = () => {
                 ))}
               </ul>
             ) : (
-              <p>No owned groups found.</p>
+              <p>None.</p>
             )}
           </div>
 
@@ -230,7 +233,7 @@ const Groups = () => {
                 ))}
               </ul>
             ) : (
-              <p>No member groups found.</p>
+              <p>None.</p>
             )}
           </div>
         </div>
