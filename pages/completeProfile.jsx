@@ -7,6 +7,8 @@ const backendUrl = "https://two-school-backend.onrender.com";
 const CompleteProfile = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [formData, setForm] = useState({
+    childName: "",
+    schoolName: "",
     bio: "",
     profilePic: null,
   });
@@ -19,7 +21,7 @@ const CompleteProfile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsProcessing(true);
-    const { bio, profilePic } = formData;
+    const { bio, profilePic, childName, schoolName } = formData;
 
     const token = localStorage.getItem("token");
     if (!token) {
@@ -29,6 +31,8 @@ const CompleteProfile = () => {
     try {
       const formDataToSend = new FormData();
       formDataToSend.append("bio", bio);
+      formDataToSend.append("childName", childName);
+      formDataToSend.append("schoolName", schoolName);
       if (profilePic) formDataToSend.append("profilePic", profilePic);
 
       await axios.post(
@@ -61,6 +65,30 @@ const CompleteProfile = () => {
         }`}
       >
         <form onSubmit={handleSubmit} className="form-container">
+          <label className="form-label" htmlFor="childName">
+            Kids Name:
+          </label>
+          <input
+            id="childName"
+            type="text"
+            name="childName"
+            value={formData.childName}
+            onChange={handleChange}
+            className="form-group"
+            required
+          />
+          <label className="form-label" htmlFor="schoolName">
+            School:
+          </label>
+          <input
+            id="schoolName"
+            type="text"
+            name="schoolName"
+            value={formData.schoolName}
+            onChange={handleChange}
+            className="form-group"
+            required
+          />
           <label className="form-label" htmlFor="bio">
             Tell us a little bit about yourself, This will be displayed in your
             profile.
