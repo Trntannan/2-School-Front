@@ -21,21 +21,11 @@ const Groups = () => {
 
   const groupsListRef = React.useRef(null);
 
-  const fetchUserTier = async () => {
-    const token = localStorage.getItem("token");
-    const response = await axios.get(`${backendUrl}/api/user/current-tier`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    setUserTier(response.data.tier);
-  };
-
   const fetchUserGroups = async () => {
     setIsClient(false);
     const token = localStorage.getItem("token");
     try {
-      const response = await axios.get(`${backendUrl}/api/user/get-group`, {
+      const response = await axios.get(`${backendUrl}/api/user/all-groups`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -48,8 +38,11 @@ const Groups = () => {
 
         const owned = response.data.filter((group) => group.owner === username);
         const member = response.data.filter(
-          (group) => group.owner !== username
+          (group) =>
+            group.owner !== username &&
+            group.members.some((member) => member.username === username)
         );
+
         setOwnedGroups(owned);
         setMemberGroups(member);
       } else {
@@ -64,8 +57,12 @@ const Groups = () => {
   };
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decodedToken = jwt_decode(token);
+      setUserTier(decodedToken.tier);
+    }
     fetchUserGroups();
-    fetchUserTier();
   }, []);
 
   const canAddGroup = () => {
