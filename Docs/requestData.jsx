@@ -1,5 +1,5 @@
 import React from "react";
-import Requests from "./Requests";
+import Requests from "../components/Requests";
 
 const regularRequests = [];
 
