@@ -25,7 +25,7 @@ const Groups = () => {
     setIsClient(false);
     const token = localStorage.getItem("token");
     try {
-      const response = await axios.get(`${backendUrl}/api/user/all-groups`, {
+      const response = await axios.get(`${backendUrl}/api/user/get-group`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -68,7 +68,8 @@ const Groups = () => {
   const canAddGroup = () => {
     if (!userTier) return false;
     if (userTier === "BRONZE") return false;
-    if (userTier === "GOLD" || userTier === "PLATINUM") return true;
+    if (userTier === "SILVER" || userTier === "GOLD" || userTier === "PLATINUM")
+      return true;
     return ownedGroups.length < 1;
   };
 
