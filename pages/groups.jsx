@@ -5,7 +5,7 @@ import NewGroupForm from "../components/newGroupForm";
 import MapComponent from "../components/MapComponent";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import jwt_decode from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 const backendUrl = "https://two-school-backend.onrender.com" || 5000;
 
@@ -33,7 +33,7 @@ const Groups = () => {
       });
 
       if (response.data) {
-        const decodedToken = jwt_decode(token);
+        const decodedToken = jwtDecode(token);
         const username = decodedToken.username;
 
         const owned = response.data.filter((group) => group.owner === username);
