@@ -59,7 +59,7 @@ const Groups = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      const decodedToken = jwt_decode(token);
+      const decodedToken = jwtDecode(token);
       setUserTier(decodedToken.tier);
     }
     fetchUserGroups();
