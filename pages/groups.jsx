@@ -44,10 +44,12 @@ const Groups = () => {
 
       if (response.data) {
         const decodedToken = jwt_decode(token);
-        const userId = decodedToken.id;
+        const username = decodedToken.username;
 
-        const owned = response.data.filter((group) => group.owner === userId);
-        const member = response.data.filter((group) => group.owner !== userId);
+        const owned = response.data.filter((group) => group.owner === username);
+        const member = response.data.filter(
+          (group) => group.owner !== username
+        );
         setOwnedGroups(owned);
         setMemberGroups(member);
       } else {
